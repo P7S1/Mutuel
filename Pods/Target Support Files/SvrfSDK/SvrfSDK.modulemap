@@ -1,0 +1,6 @@
+framework module SvrfSDK {
+  umbrella header "SvrfSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}
