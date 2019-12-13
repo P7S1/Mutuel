@@ -1,26 +1,26 @@
-# Uncomment the next line to define a global platform for your project
-platform :ios, '11.0'
-
+  
 # include public/private pods
 source 'git@github.com:cocoapods/Specs.git'
 
 
+
 workspace './Pidgin.xcworkspace'
-swift_version = '5.0'
+
 use_frameworks!
 
 target 'Pidgin' do
-  pod 'NextLevel', '0.16.0'
   pod 'SvrfSDK'
-end
-
-post_install do |installer|
-    installer.pods_project.targets.each do |target|
-        # setup NextLevel for ARKit use
-        if target.name == 'NextLevel'
-          target.build_configurations.each do |config|
-            config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -DUSE_ARKIT'
-          end
-        end
-    end
+  pod 'NextLevel'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/Storage'
+  pod 'MessageKit', :git => 'https://github.com/P7S1/MessageKit'
+  pod 'Eureka'
+  pod 'NotificationBannerSwift', '~> 3.0.0'
+  pod 'ImageRow'
+  pod 'Kingfisher'
+  pod 'Lightbox'
+  pod 'Giphy'
 end

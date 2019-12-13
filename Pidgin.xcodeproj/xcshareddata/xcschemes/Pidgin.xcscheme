@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DF4F7A07234C239A001D6CE8"
-               BuildableName = "Pidgin.app"
+               BuildableName = "Mutuel.app"
                BlueprintName = "Pidgin"
                ReferencedContainer = "container:Pidgin.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DF4F7A07234C239A001D6CE8"
-            BuildableName = "Pidgin.app"
+            BuildableName = "Mutuel.app"
             BlueprintName = "Pidgin"
             ReferencedContainer = "container:Pidgin.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DF4F7A07234C239A001D6CE8"
-            BuildableName = "Pidgin.app"
+            BuildableName = "Mutuel.app"
             BlueprintName = "Pidgin"
             ReferencedContainer = "container:Pidgin.xcodeproj">
          </BuildableReference>
