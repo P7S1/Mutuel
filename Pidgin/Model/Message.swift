@@ -74,9 +74,13 @@ class Message : MessageType, Equatable, Comparable{
         } else if messageKind == "video"{
             
         }else{
-               if let x = dictionary.value(forKey: "content"){
-                   content  = x as? String
+               if let x = dictionary.value(forKey: "content") as? String{
+                   content  = x
+                if x.containsOnlyEmoji && x.count < 4{
+                    kind = MessageKind.emoji(x)
+                }else{
                    kind = MessageKind.text(content!)
+                }
         }
         }
         if let x = dictionary.value(forKey: "messageID"){
@@ -114,9 +118,13 @@ class Message : MessageType, Equatable, Comparable{
                 kind = .video(VideoMediaItem(videoURL: url))
             }
         }else{
-        if let x = dictionary.get("content"){
-            content  = x as? String
-            kind = MessageKind.text(content ?? "")
+        if let x = dictionary.get("content") as? String{
+            content  = x
+            if x.containsOnlyEmoji && x.count < 4{
+                kind = MessageKind.emoji(x)
+            }else{
+                kind = MessageKind.text(self.content ?? "")
+            }
         }
         }
         if let x = dictionary.get("messageID"){

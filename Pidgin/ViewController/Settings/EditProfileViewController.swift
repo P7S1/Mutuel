@@ -10,6 +10,7 @@ import UIKit
 import Eureka
 import ImageRow
 import FirebaseFirestore
+import CropViewController
 class EditProfileViewController: FormViewController {
 
     override func viewDidLoad() {

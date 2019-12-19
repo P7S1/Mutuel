@@ -17,6 +17,8 @@ import Photos
 import Lightbox
 import GiphyUISDK
 import GiphyCoreSDK
+import SafariServices
+import NotificationBannerSwift
 class ChatViewController: MessagesViewController {
     
     var name = ""
@@ -26,6 +28,8 @@ class ChatViewController: MessagesViewController {
     var chatListener : ListenerRegistration?
     
     var didViewAppear = false
+    
+    var didUpdateInset = false
     
     var editingIndex = 0
 
@@ -41,11 +45,19 @@ class ChatViewController: MessagesViewController {
     
     var listenerHasRan = false
     
+    var currentlyLoadingMessages = false
+    
+    
     static var lastMessage : NSMutableDictionary = NSMutableDictionary()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     updateLastOpened()
+    let backButton = UIBarButtonItem()
+    backButton.title = "" //in your case it will be empty or you can put the title of your choice
+    self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+    //self.navigationController?.navigationBar.topItem?.title = " "
+    //messagesCollectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
     refreshControl.beginRefreshing()
      GiphyUISDK.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
     NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name:NSNotification.Name(rawValue: "reloadData"), object: nil)
@@ -58,6 +70,11 @@ class ChatViewController: MessagesViewController {
     selector: #selector(applicationWillEnterBackground),
     name: UIApplication.willResignActiveNotification,
     object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+    selector: #selector(applicationWillTerminate),
+    name: UIApplication.willTerminateNotification,
+    object: nil)
     scrollsToBottomOnKeyboardBeginsEditing = true
     
     messageInputBar.delegate = self
@@ -68,8 +85,13 @@ class ChatViewController: MessagesViewController {
     messagesCollectionView.messagesDisplayDelegate = self
     self.messageInputBar.inputTextView.delegate = self
 
+    
+        if #available(iOS 13.0, *) {
+               configureMessageForDarkMode()
+           }
+    
     messagesCollectionView.addSubview(refreshControl)
-    refreshControl.addTarget(self, action: #selector(loadMoreMessages), for: .valueChanged)
+    refreshControl.beginRefreshing()
     
     messageInputBar.sendButton.setSize(CGSize(width: 40, height: 40), animated: false)
     messageInputBar.setRightStackViewWidthConstant(to: 36, animated: false)
@@ -81,7 +103,9 @@ class ChatViewController: MessagesViewController {
     createCameraButton()
     
     let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout
-    layout?.sectionInset = UIEdgeInsets(top: 1, left: 8, bottom: 1, right: 8)
+    
+    layout?.emojiMessageSizeCalculator.messageLabelFont = UIFont.systemFont(ofSize: 52)
+    layout?.sectionInset = UIEdgeInsets(top: 1, left: 8, bottom: 4, right: 8)
     
     layout?.setMessageOutgoingAvatarSize(.zero)
     if channel?.groupChat == nil{
@@ -107,12 +131,9 @@ class ChatViewController: MessagesViewController {
     
     navigationItem.largeTitleDisplayMode = .never
     
-    //maintainPositionOnKeyboardFrameChanged = true
+    maintainPositionOnKeyboardFrameChanged = true
     //messageInputBar.sendButton.setTitleColor(.primary, for: .normal)
-    if #available(iOS 13.0, *) {
-        configureMessageForDarkMode()
-    }
-    
+    updateConstraints()
         setSetttingsButton()
     
   }
@@ -124,10 +145,17 @@ class ChatViewController: MessagesViewController {
             channel?.reading = channels[index].reading
             
         }
-        if self.didViewAppear{
-        messagesCollectionView.reloadData()
-        }else{
-            messagesCollectionView.reloadDataAndKeepOffset()
+        if let messages = channel?.messages{
+        for message in messages{
+            guard let index = channel?.messages.firstIndex(of: message) else{
+                return
+            }
+            let indexPath = IndexPath(item: 0, section: index)
+            if isLastMessage(at: indexPath){
+                messagesCollectionView.reloadSections(IndexSet(integer: index))
+                break
+            }
+        }
         }
     }
     
@@ -136,6 +164,10 @@ class ChatViewController: MessagesViewController {
     }
     
     @objc func applicationWillEnterBackground(){
+        removeLastOpened()
+    }
+    
+    @objc func applicationWillTerminate(){
         removeLastOpened()
     }
 
@@ -152,22 +184,26 @@ class ChatViewController: MessagesViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        writeLastOpened()
-        UIView.animate(withDuration: 0.2) {
-            self.tabBarController?.tabBar.isHidden = true
-        }
         getMessageArray()
+        writeLastOpened()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         removeLastOpened()
-        UIView.animate(withDuration: 0.2) {
-            self.tabBarController?.tabBar.isHidden = false
-        }
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         chatListener?.remove()
     }
-    
+    func updateConstraints(){
+        NSLayoutConstraint.activate([
+        messagesCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+        messagesCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
+        messagesCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        messagesCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor)
+        ])
+    }
     func removeLastOpened(){
        print("writing last opened...")
         if let id = channel?.id, let uid = User.shared.uid{
@@ -192,7 +228,7 @@ class ChatViewController: MessagesViewController {
     func createCameraButton(){
         let cameraItem = InputBarButtonItem(type: .system) // 1
         cameraItem.tintColor = .secondaryLabel
-        cameraItem.image = UIImage.init(systemName: "camera.fill")
+        cameraItem.image = UIImage.init(systemName: "plus.circle")
         cameraItem.addTarget(
           self,
           action: #selector(cameraButtonPressed), // 2
@@ -201,16 +237,18 @@ class ChatViewController: MessagesViewController {
         
         let giphy = InputBarButtonItem(type: .system)// 1
          giphy.tintColor = .secondaryLabel
-         giphy.image = UIImage.init(systemName: "photo.fill")
+        giphy.image = UIImage.init(systemName: "smiley")
          giphy.addTarget(
            self,
            action: #selector(giphyButtonPressed), // 2
            for: .primaryActionTriggered
          )
+        
         cameraItem.setSize(CGSize(width: 30, height: 30), animated: false)
         giphy.setSize(CGSize(width: 30, height: 30), animated: false)
         messageInputBar.setLeftStackViewWidthConstant(to: 85, animated: false)
         messageInputBar.setStackViewItems([cameraItem,giphy], forStack: .left, animated: false) // 3
+        messageInputBar.leftStackView.updateConstraintsIfNeeded()
     }
     
     @objc func giphyButtonPressed(){
@@ -221,10 +259,17 @@ class ChatViewController: MessagesViewController {
         giphy.layout = .waterfall
         giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
         giphy.showConfirmationScreen = true
-        giphy.theme = .dark
+        if self.traitCollection.userInterfaceStyle == .dark {
+            // User Interface is Dark
+            giphy.theme = .dark
+        } else {
+            giphy.theme = .light
+            // User Interface is Light
+        }
         giphy.delegate = self
         giphy.tabBarController?.tabBar.isHidden = true
-        self.present(giphy, animated: true, completion: nil)
+        giphy.hidesBottomBarWhenPushed = true
+        self.tabBarController?.present(giphy, animated: true, completion: nil)
     }
     
     @objc func cameraButtonPressed(){
@@ -255,7 +300,7 @@ class ChatViewController: MessagesViewController {
     
     func getMessageArray(){
         let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages")
-        let query = docRef.order(by: "sentDate", descending: true).limit(to: 30)
+        let query = docRef.order(by: "sentDate", descending: true).limit(to: 25)
         
         
         chatListener = query.addSnapshotListener { (snapshot, error) in
@@ -264,19 +309,18 @@ class ChatViewController: MessagesViewController {
                   self.handleDocumentChange(change)
                 }
                 self.refreshControl.endRefreshing()
-                    //self.messageList = messages
-                UIView.animate(withDuration: 0.2) {
-                    DispatchQueue.main.async {
-                        if self.listenerHasRan{
-                            self.messagesCollectionView.reloadData()
-                            self.messagesCollectionView.scrollToBottom(animated: true)
-                        }else{
+                DispatchQueue.main.async {
+                    if !self.didViewAppear && !self.didUpdateInset{
                         self.messagesCollectionView.reloadDataAndKeepOffset()
                         self.updateCollectionContentInset()
-                        }
-                        self.listenerHasRan = true
+                        self.didUpdateInset = true
+                    }else{
+                        self.messagesCollectionView.reloadData()
+                        self.messagesCollectionView.scrollToBottom(animated: true)
                     }
-                }
+
+                    }
+                
                 print(self.didViewAppear)
             }
         }
@@ -309,10 +353,22 @@ class ChatViewController: MessagesViewController {
         refreshControl.beginRefreshing()
         if let doc = lastDocument{
        let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages")
-        let query = docRef.order(by: "sentDate", descending: true).limit(to: 30).start(atDocument: doc)
-            
+        let query = docRef.order(by: "sentDate", descending: true).limit(to: 25).start(atDocument: doc)
+             self.currentlyLoadingMessages = true
             query.getDocuments { (snapshot, error) in
                 if error == nil{
+                    if snapshot!.documents.count == 0{
+                        
+                        let attributes: [NSAttributedString.Key: Any] = [
+                            .font: UIFont.systemFont(ofSize: 15, weight: .medium),
+                            .foregroundColor: UIColor.white,
+                        ]
+                        let attributedText = NSAttributedString(string: "No more messages", attributes: attributes)
+                        let banner = StatusBarNotificationBanner(attributedTitle: attributedText , style: .info, colors: CustomBannerColors())
+                        banner.duration = 2.5
+                        banner.show()
+                                   
+                    }
                     for document in snapshot!.documents{
                         self.lastDocument = document
                         let msg = Message(sender: Sender(id: "", displayName: ""), messageId: "", sentDate: Date(), kind: MessageKind.text(""))
@@ -320,6 +376,7 @@ class ChatViewController: MessagesViewController {
                         if !(self.channel?.messages.contains(msg))!{
                             self.channel?.messages.insert(msg, at: 0)
                             self.messagesCollectionView.reloadDataAndKeepOffset()
+                            self.currentlyLoadingMessages = false
                         }
                     }
                     self.refreshControl.endRefreshing()
@@ -392,16 +449,33 @@ class ChatViewController: MessagesViewController {
         guard !(channel?.messages.contains(msg))! else {
           return
         }
-        
-        channel?.messages.append(msg)
-        channel?.messages.sort()
-        
-      guard let index = channel?.messages.firstIndex(of: msg) else {
-          return
+        DispatchQueue.main.async {
+            self.channel?.messages.append(msg)
+            self.channel?.messages.sort()
+            
+           // guard let index = self.channel?.messages.firstIndex(of: msg) else {
+              return
+            //}
+            //
+            //self.messagesCollectionView.scrollToBottom()
+            //self.messagesCollectionView.insertSections(IndexSet(integer: index))
         }
-        if msg.sender.senderId != User.shared.uid && didViewAppear{
-            AudioServicesPlaySystemSound(recievedSound)
+        guard let index = self.channel?.messages.firstIndex(of: msg) else {
+                     return
+                   }
+    let indexPath = IndexPath(item: 0, section: index)
+    
+    /* if self.isPreviousMessageSameSender(at: indexPath){
+        self.messagesCollectionView.reloadSections(IndexSet(integer: index-1))
+    } */
+        if msg.sender.senderId != User.shared.uid && self.didViewAppear{
+        AudioServicesPlaySystemSound(self.recievedSound)
         }
+ /*   if self.isNextMessageSameSender(at: indexPath){
+       self.messagesCollectionView.reloadSections(IndexSet(integer: index+1))
+    } */
+        
+      
         
     /*    messagesCollectionView.performBatchUpdates({
             messagesCollectionView.insertSections(IndexSet(arrayLiteral: index))
@@ -419,6 +493,7 @@ class ChatViewController: MessagesViewController {
           return
         }
         channel?.messages[index] = msg
+        messagesCollectionView.reloadSections(IndexSet(integer: index))
     }
     func removeMessageFromTable(msg : Message){
         print("remove channel")
@@ -435,21 +510,21 @@ class ChatViewController: MessagesViewController {
     
     @available(iOS 13.0, *)
     func configureMessageForDarkMode(){
-        messageInputBar.isTranslucent = true
+        messageInputBar.isTranslucent = false
         messageInputBar.inputTextView.tintColor = .systemPink
-       messageInputBar.inputTextView.backgroundColor = UIColor.clear
-        messageInputBar.backgroundColor = .none
-        messageInputBar.blurView.effect = UIBlurEffect(style: .regular)
-        messageInputBar.separatorLine.backgroundColor = .separator
+        messageInputBar.inputTextView.backgroundColor = .none
+        messageInputBar.backgroundColor = .systemBackground
+        messageInputBar.separatorLine.removeFromSuperview()
         
         messageInputBar.inputTextView.placeholderTextColor = .secondaryLabel
         messageInputBar.inputTextView.textContainerInset = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 36)
         messageInputBar.inputTextView.placeholderLabelInsets = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 36)
-        messageInputBar.inputTextView.layer.borderColor = UIColor.separator.cgColor
         messageInputBar.inputTextView.layer.borderWidth = 0.0
         messageInputBar.inputTextView.layer.cornerRadius = 16.0
         messageInputBar.inputTextView.layer.masksToBounds = true
         messageInputBar.inputTextView.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        
+ 
         
         messageInputBar.sendButton.setTitleColor(.systemPink, for: .normal)
         messageInputBar.sendButton.setTitleColor(.secondaryLabel, for: .disabled)
@@ -461,9 +536,11 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.backgroundColor = .systemBackground
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = super.collectionView(collectionView, cellForItemAt: indexPath)
-        return cell
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 && !currentlyLoadingMessages{
+            print("loading more messages")
+            loadMoreMessages()
+        }
     }
   
 }
@@ -497,6 +574,21 @@ extension ChatViewController: MessagesDataSource {
 extension ChatViewController : MessageCellDelegate{
     func didTapAvatar(in cell: MessageCollectionViewCell) {
         print("Avatar tapped")
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        guard let indexPath = messagesCollectionView.indexPath(for: cell) else{
+            return
+        }
+        guard let message = channel?.messages[indexPath.section] else{
+            return
+        }
+        let docRef = db.collection("users").document(message.sender.senderId)
+        docRef.getDocument { (snapshot, error) in
+            let user = Account()
+            user.convertFromDocument(dictionary: snapshot!)
+            vc.user = user
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     
@@ -509,12 +601,18 @@ extension ChatViewController : MessageCellDelegate{
         let sent = "Sent \(MessageKitDateFormatter.shared.string(from: message.sentDate))"
         let alertController = UIAlertController(title: message.content ?? "", message: sent, preferredStyle: .actionSheet)
         
+        
         if message.messageKind == "photo" || message.messageKind == "video" {
                 if let string = message.photoURL{
                     self.showImage(string: string)
                 }
           
         }else{
+            if let string = message.content, let url = URL(string: string){
+                alertController.addAction(UIAlertAction(title: "Open Link", style: .default, handler: { (action) in
+                    self.didSelectURL(url)
+                }))
+            }
             if message.sender.senderId == User.shared.uid{
             alertController.addAction(UIAlertAction(title: "Unsave Message", style: .destructive, handler: { (action) in
                 let ref = db.collection("channels").document(self.channel!.id ?? "").collection("messages").document(message.messageId)
@@ -523,6 +621,19 @@ extension ChatViewController : MessageCellDelegate{
                     self.messagesCollectionView.deleteItems(at: [indexPath])
                 } */
                 ref.delete()
+                
+                    let leftView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+                leftView.image = UIImage(systemName: "checkmark.circle.fill")
+                    leftView.contentMode = .scaleAspectFill
+                    leftView.clipsToBounds = true
+                    leftView.layer.cornerRadius = leftView.frame.height/2
+                leftView.tintColor = .white
+                    
+                    let banner = NotificationBanner(title: "Message Unsaved", subtitle: "Message will disappear after you exit the chat", leftView: leftView, rightView: nil, style: .info, colors: CustomBannerColors())
+                banner.duration = 2.5
+                banner.show()
+                           
+                
             }))
             }
 
@@ -537,6 +648,22 @@ extension ChatViewController : MessageCellDelegate{
     
     }
     
+    func didSelectURL(_ url: URL) {
+        let config = SFSafariViewController.Configuration()
+        config.entersReaderIfAvailable = true
+        let vc = SFSafariViewController(url: url, configuration: config)
+        vc.preferredControlTintColor = .systemPink
+        self.present(vc, animated: true)
+    }
+    func didSelectAddress(_ addressComponents: [String : String]) {
+        print("selected address")
+    }
+    func didSelectDate(_ date: Date) {
+        print("selected date")
+    }
+    func didSelectPhoneNumber(_ phoneNumber: String) {
+        print("selected phone number")
+    }
     func didTapCellTopLabel(in cell: MessageCollectionViewCell) {
         print("Top cell label tapped")
     }
@@ -571,9 +698,10 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         AudioServicesPlaySystemSound(sentSound)
         print("did press send")
+        let string = text.trimmingCharacters(in: .whitespaces)
         messageInputBar.setLeftStackViewWidthConstant(to: 85, animated: true)
         self.messageInputBar.inputTextView.placeholder = "Sending..."
-        sendMessage(text: text, photoURL: nil, kind: "text", placeHolderURL: nil)
+        sendMessage(text: string, photoURL: nil, kind: "text", placeHolderURL: nil)
     }
     
     func sendMessage(text: String?, photoURL : String?, kind : String, placeHolderURL : String?){
@@ -790,7 +918,9 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
         return (!isNextMessageSameSender(at: indexPath) && isFromCurrentSender(message: message) && isLastMessage(at: indexPath)) ? 16 : 0
     }
     func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        if channel?.messages[indexPath.section].messageKind == "photo" || channel?.messages[indexPath.section].messageKind == "video"{
+        if channel?.messages[indexPath.section].messageKind == "photo" || channel?.messages[indexPath.section].messageKind == "video" ||
+            (channel?.messages[indexPath.section].content?.containsOnlyEmoji ?? false &&
+                channel?.messages[indexPath.section].content?.count ?? 0<=3){
             return UIColor.clear
         }else if isFromCurrentSender(message: message){
             return .systemBlue
@@ -814,6 +944,8 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
         }
     }
     
+    
+    
     func cellTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         if isTimeLabelVisible(at: indexPath) {
             return 18
@@ -824,7 +956,11 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
     func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedString.Key: Any] {
         switch detector {
         case .hashtag, .mention: if #available(iOS 13.0, *) {
-            return [.foregroundColor: UIColor.link]
+            if message.sender.senderId == User.shared.uid{
+             return [.foregroundColor: UIColor.white]
+            }else{
+                return [.foregroundColor: UIColor.label]
+            }
         } else {
             return [.foregroundColor: UIColor.blue]
             // Fallback on earlier versions
@@ -832,6 +968,7 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
         default: return MessageLabel.defaultAttributes
         }
     }
+    
     
     func messageBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if !isNextMessageSameSender(at: indexPath) && isFromCurrentSender(message: message) && isLastMessage(at: indexPath){
@@ -887,7 +1024,7 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
     }
     
     func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
-        return [.url, .address, .phoneNumber, .date, .transitInformation, .mention, .hashtag]
+        return [.url, .address, .phoneNumber, .transitInformation]
     }
     
     
@@ -1005,34 +1142,7 @@ extension ChatViewController: LightboxControllerPageDelegate, LightboxController
             
         }
         }
-        
-        LightboxConfig.loadImage = {
-          imageView, URL, completion in
-            imageView.kf.setImage(with: URL)
-            // add this line
-            completion?(nil)
-          // Custom image loading
-        }
-        
-        LightboxConfig.CloseButton.text = ""
-        LightboxConfig.CloseButton.size = CGSize(width: 40, height: 40)
-        LightboxConfig.CloseButton.image = UIImage(systemName: "xmark.circle.fill")
-        // Create an instance of LightboxController.
-        let controller = LightboxController(images: images)
-        print("going to page \(goToIndex)")
-        controller.view.tintColor = UIColor.systemPink
-
-        // Set delegates.
-        controller.pageDelegate = self
-        controller.dismissalDelegate = self
-
-        // Use dynamic background.
-        controller.dynamicBackground = true
-        controller.modalPresentationStyle = .fullScreen
-        // Present your controller.
-        controller.tabBarController?.tabBar.isHidden = true
-        present(controller, animated: true, completion: nil)
-        controller.goTo(goToIndex)
+        self.presentLightBoxController(images: images, goToIndex: goToIndex)
     }
 }
 
@@ -1048,4 +1158,3 @@ extension ChatViewController: GiphyDelegate {
         // your user dismissed the controller without selecting a GIF.
    }
 }
-

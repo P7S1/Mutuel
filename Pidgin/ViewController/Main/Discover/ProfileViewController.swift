@@ -10,7 +10,8 @@ import UIKit
 import FirebaseAuth
 import FirebaseStorage
 import Kingfisher
-class ProfileViewController: UIViewController {
+import Lightbox
+class ProfileViewController: UIViewController{
     
     @IBOutlet weak var followingStackView: UIStackView!
     @IBOutlet weak var followersStackView: UIStackView!
@@ -27,7 +28,9 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var following: UILabel!
     @IBOutlet weak var followers: UILabel!
     
-    @IBOutlet weak var settingsButton: UIButton!
+    @IBOutlet weak var moreButton: UIButton!
+    @IBOutlet weak var username: UILabel!
+    
     
     
     var isCurrentUser = false
@@ -46,18 +49,23 @@ class ProfileViewController: UIViewController {
         
         followersStackView.isUserInteractionEnabled = true
         followingStackView.isUserInteractionEnabled = true
-
+        profile.isUserInteractionEnabled = true
+        
+        
         let followersGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowersTapped))
         followersStackView.addGestureRecognizer(followersGesture)
         
         let followingGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowingTapped))
         followingStackView.addGestureRecognizer(followingGesture)
         
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTapped))
+        profile.addGestureRecognizer(gesture)
+        
         let settings = UIButton.init(type: .system)
         if isCurrentUser{
             settings.setImage(UIImage.init(named: "icons8-settings-100")?.withRenderingMode(.alwaysTemplate), for: UIControl.State.normal)
         }else{
-            settings.setImage(UIImage(systemName: "ellipsis.circle.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
+            settings.setImage(UIImage(systemName: "square.and.pencil")?.withRenderingMode(.alwaysTemplate), for: .normal)
         }
         settings.addTarget(self, action:#selector(settingsBarButtonPressed), for:.touchUpInside)
         settings.widthAnchor.constraint(equalToConstant: 25).isActive = true
@@ -81,6 +89,8 @@ class ProfileViewController: UIViewController {
         following.text = "\(user?.following.count ?? 0)"
     
         followButton.isEnabled = false
+        followButton.backgroundColor = .systemGray6
+        followButton.roundCorners()
         
         user?.printClass()
         
@@ -89,34 +99,30 @@ class ProfileViewController: UIViewController {
             if User.shared.following.contains(user?.uid ?? ""){
                 print("user follows")
                 self.setFollowingState()
+            }else{
+                self.setNotFollowingState()
             }
             
             self.followButton.isEnabled = true
         
         }else{
-            if #available(iOS 13.0, *) {
-                self.followButton.backgroundColor = .systemGray6
-            } else {
-                self.followButton.backgroundColor = .clear
-                // Fallback on earlier versions
-            }
-            followButton.setTitle("Activity", for: .normal)
+            followButton.setTitle("ACTIVITY", for: .normal)
             followButton.setTitleColor(.systemPink, for: .normal)
+            followButton.backgroundColor = .systemGray6
             followButton.isEnabled = true
         }
         
         
-        
-        
-       self.navigationItem.title = "\(user?.username ?? "Unknown")"
+        self.username.text = "@\(user?.username ?? "Unknown")"
+        self.navigationItem.title = ""
         
         displayName.text = user?.name ?? "Unknown"
-        
-        followButton.roundCorners()
         
 
         // Do any additional setup after loading the view.
     }
+    
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -126,6 +132,40 @@ class ProfileViewController: UIViewController {
             print("user is not signed in")
             returnToLoginScreen()
         }
+    }
+    
+    @IBAction func handleMoreButtonPressed(_ sender: Any) {
+        let alertController = UIAlertController(title: user?.name, message:"@\(user?.username ?? "Unknown")" , preferredStyle: .actionSheet)
+            
+            alertController.addAction(UIAlertAction(title: "Block \(user?.name ?? "")", style: .default, handler: { (action) in
+                print("blocking user")
+                let alert = UIAlertController(title: "Block \(self.user?.name ?? "")", message: "Are you sure you want to block \(self.user?.name ?? "")? This will make you both unfollow each other.", preferredStyle: .alert)
+                
+                alert.addAction(UIAlertAction(title: "Block", style: .destructive, handler: { (action) in
+                
+                    
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+                    print("user cancelled")
+                }))
+                alert.view.tintColor = .systemPink
+                self.present(alert, animated: true, completion: nil)
+            }))
+            
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+                print("cancelled")
+            }))
+            alertController.view.tintColor = .systemPink
+            self.present(alertController, animated: true, completion: nil)
+    }
+    
+    @objc func handleProfilePictureTapped(){
+        print("profile picture tappped")
+        if let string = user?.profileURL, let url = URL(string : string){
+            let images : [LightboxImage] = [LightboxImage(imageURL: url)]
+            self.presentLightBoxController(images: images, goToIndex: nil)
+        }
+        
     }
     
     @objc func handleFollowingTapped(){
@@ -154,21 +194,17 @@ class ProfileViewController: UIViewController {
     }
     
     func setFollowingState(){
-        self.followButton.setTitle("Unfollow", for: .normal)
-        self.followButton.setTitleColor(.systemPink, for: .normal)
-        if #available(iOS 13.0, *) {
-            self.followButton.backgroundColor = .systemGray6
-        } else {
-            self.followButton.backgroundColor = .clear
-            // Fallback on earlier versions
-        }
+        followButton.setTitle("UNFOLLOW", for: .normal)
+        followButton.setTitleColor(.systemPink, for: .normal)
+        followButton.backgroundColor = .systemGray6
         self.userFollows = true
     }
     
     func setNotFollowingState(){
-        self.followButton.setTitle("Follow", for: .normal)
-        self.followButton.setTitleColor(.white, for: .normal)
-        self.followButton.backgroundColor = .systemPink
+        followButton.tintColor = .systemPink
+        followButton.setTitle("FOLLOW", for: .normal)
+        followButton.setTitleColor(.white, for: .normal)
+        followButton.backgroundColor = .systemPink
         self.userFollows = false
     }
     
@@ -196,32 +232,17 @@ class ProfileViewController: UIViewController {
             let vc = storyboard.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController
         navigationController?.pushViewController(vc, animated: true)
         }else{
-        let alertController = UIAlertController(title: user?.name, message:"@\(user?.username ?? "Unknown")" , preferredStyle: .actionSheet)
-    
-        alertController.addAction(UIAlertAction(title: "Send Message", style: .default, handler: { (action) in
-            print("send message")
-        }))
-        
-        alertController.addAction(UIAlertAction(title: "Block \(user?.name ?? "")", style: .default, handler: { (action) in
-            print("blocking user")
-            let alert = UIAlertController(title: "Block \(self.user?.name ?? "")", message: "Are you sure you want to block \(self.user?.name ?? "")? This will make you both unfollow each other.", preferredStyle: .alert)
-            
-            alert.addAction(UIAlertAction(title: "Block", style: .destructive, handler: { (action) in
-            
-                
-            }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-                print("user cancelled")
-            }))
-            alert.view.tintColor = .systemPink
-            self.present(alert, animated: true, completion: nil)
-        }))
-        
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-            print("cancelled")
-        }))
-        alertController.view.tintColor = .systemPink
-        self.present(alertController, animated: true, completion: nil)
+        if let id1 = User.shared.uid, let id2 = user?.uid{
+        let docRef = db.collection("channels").document(FollowersHelper().getChannelID(id1: id1, id2: id2))
+            docRef.getDocument { (snapshot, error) in
+                if error == nil{
+                let channel = Channel(document: snapshot!)
+                let vc = ChatViewController()
+                vc.channel = channel
+                self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+        }
             
         }
     }
@@ -239,4 +260,3 @@ class ProfileViewController: UIViewController {
     */
 
 }
-

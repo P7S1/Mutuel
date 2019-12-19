@@ -26,8 +26,8 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     }
     
     override func viewDidLoad() {
-        videoGravity = .resizeAspectFill
         super.viewDidLoad()
+        videoGravity = .resizeAspectFill
         captureButton.delegate = self
         shouldPrompToAppSettings = true
         cameraDelegate = self
@@ -67,7 +67,7 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
             print("user is not signed in")
             returnToLoginScreen() 
         }
-        ProgressHUD.show()
+        //ProgressHUD.show()
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -82,7 +82,8 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     @IBAction func presentAR(_ sender: Any) {
        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ARCameraVC") as! ARCameraVC
-        
+        vc.isHeroEnabled = true
+        vc.hero.modalAnimationType = .selectBy(presenting:.zoom, dismissing:.zoomOut)
         vc.modalPresentationStyle = .fullScreen
         
         present(vc, animated: true, completion: nil)
@@ -94,7 +95,7 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     
     func swiftyCamSessionDidStartRunning(_ swiftyCam: SwiftyCamViewController) {
         print("Session did start running")
-        ProgressHUD.dismiss()
+        //ProgressHUD.dismiss()
         captureButton.buttonEnabled = true
     }
     

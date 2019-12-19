@@ -7,37 +7,29 @@
 //
 
 import UIKit
-
-class WebViewController: UIViewController, UIWebViewDelegate {
+import WebKit
+class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
     
     var index = 0
+    var url = URL(string: "https://www.google.com")!
+    var webView    = WKWebView()
     
-    let webView    = UIWebView()
-    
+    override func loadView() {
+        let webConfiguration = WKWebViewConfiguration()
+        
+        webView = WKWebView(frame: .zero, configuration: webConfiguration)
+        webView.uiDelegate = self
+        webView.navigationDelegate = self
+        webView.allowsBackForwardNavigationGestures = true
+        view = webView
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
-         webView.frame  = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-         webView.loadRequest(NSURLRequest(url: NSURL(string: "https://www.google.com")! as URL) as URLRequest)
-         webView.delegate = self
-         self.view.addSubview(webView)
-
+        tabBarController?.tabBar.isHidden = true
+        webView.load(URLRequest(url: url))
+            self.title = webView.title
         // Do any additional setup after loading the view.
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        ProgressHUD.dismiss()
-    }
-    
-    func webViewDidStartLoad(_ webView: UIWebView) {
-        ProgressHUD.show("Loading")
-    }
-    func webViewDidFinishLoad(_ webView: UIWebView) {
-        ProgressHUD.dismiss()
-    }
-    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
-        ProgressHUD.showError("Load failed")
     }
 
     /*

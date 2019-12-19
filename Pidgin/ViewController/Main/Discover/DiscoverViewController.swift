@@ -13,6 +13,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import NotificationBannerSwift
+import Lightbox
 class DiscoverViewController: HomeViewController, UICollectionViewDelegate {
 
     var segmentedController: UISegmentedControl!
@@ -188,6 +189,39 @@ extension UIViewController{
         
         
     }
+    
+    func presentLightBoxController(images : [LightboxImage], goToIndex : Int?){
+      LightboxConfig.CloseButton.text = "Done"
+      
+      let attributedStringShadow = NSShadow()
+      attributedStringShadow.shadowBlurRadius = 5.0
+      attributedStringShadow.shadowColor = UIColor.darkGray
+      
+      let attributes = [NSAttributedString.Key.shadow: attributedStringShadow,
+      NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold)]
+      LightboxConfig.CloseButton.textAttributes = attributes
+        LightboxConfig.loadImage = {
+          imageView, URL, completion in
+            imageView.kf.setImage(with: URL)
+            completion?(imageView.image)
+          // Custom image loading
+        }
+      // Create an instance of LightboxController.
+      let controller = LightboxController(images: images)
+      controller.view.tintColor = UIColor.white
+      // Use dynamic background.
+      controller.dynamicBackground = true
+      controller.modalPresentationStyle = .fullScreen
+      // Present your controller.
+        controller.isHeroEnabled = true
+        controller.hero.modalAnimationType = .selectBy(presenting:.zoom, dismissing:.zoomOut)
+      controller.tabBarController?.tabBar.isHidden = true
+        
+      present(controller, animated: true, completion: nil)
+        if let index = goToIndex{
+            controller.goTo(index)
+        }
+    }
 }
 
 class CustomBannerColors: BannerColorsProtocol {
@@ -202,4 +236,51 @@ class CustomBannerColors: BannerColorsProtocol {
     }
 
 }
+extension Character {
+    /// A simple emoji is one scalar and presented to the user as an Emoji
+    var isSimpleEmoji: Bool {
+        guard let firstProperties = unicodeScalars.first?.properties else {
+            return false
+        }
+        return unicodeScalars.count == 1 &&
+            (firstProperties.isEmojiPresentation ||
+                firstProperties.generalCategory == .otherSymbol)
+    }
 
+    /// Checks if the scalars will be merged into an emoji
+    var isCombinedIntoEmoji: Bool {
+        return (unicodeScalars.count > 1 &&
+               unicodeScalars.contains { $0.properties.isJoinControl || $0.properties.isVariationSelector })
+            || unicodeScalars.allSatisfy({ $0.properties.isEmojiPresentation })
+    }
+
+    var isEmoji: Bool {
+        return isSimpleEmoji || isCombinedIntoEmoji
+    }
+}
+
+extension String {
+    var isSingleEmoji: Bool {
+        return count == 1 && containsEmoji
+    }
+
+    var containsEmoji: Bool {
+        return contains { $0.isEmoji }
+    }
+
+    var containsOnlyEmoji: Bool {
+        return !isEmpty && !contains { !$0.isEmoji }
+    }
+
+    var emojiString: String {
+        return emojis.map { String($0) }.reduce("", +)
+    }
+
+    var emojis: [Character] {
+        return filter { $0.isEmoji }
+    }
+
+    var emojiScalars: [UnicodeScalar] {
+        return filter{ $0.isEmoji }.flatMap { $0.unicodeScalars }
+    }
+}

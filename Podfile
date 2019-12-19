@@ -23,4 +23,6 @@ target 'Pidgin' do
   pod 'Kingfisher'
   pod 'Lightbox'
   pod 'Giphy'
+  pod 'CropViewController'
+  pod 'Hero'
 end

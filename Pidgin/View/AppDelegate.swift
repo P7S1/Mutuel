@@ -15,8 +15,8 @@ let db = Firestore.firestore()
 var userListener: ListenerRegistration?
 var appDidLoad = false
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
 
+class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         print("did finish launching")
@@ -36,9 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         if #available(iOS 13.0, *) {
             configureNavBariOS13()
-        } else {
-           configureNavBar()
-            // Fallback on earlier versions
         }
         
         if Auth.auth().currentUser != nil {
@@ -55,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let storyboard = UIStoryboard.init(name: "Login", bundle: nil)
 
             let vc = storyboard.instantiateViewController(withIdentifier: "WelcomeViewController") as! WelcomeViewController
-
+            
             UIApplication.shared.windows.first?.rootViewController = vc
             appDidLoad = true
         }
@@ -91,36 +88,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-    
-    func configureNavBar(){
-        let navigationBarAppearace = UINavigationBar.appearance()
-        navigationBarAppearace.tintColor = .systemPink
-            navigationBarAppearace.barTintColor = UIColor.white
-        navigationBarAppearace.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.black]
-
-        
-        navigationBarAppearace.prefersLargeTitles = true
-    
-        navigationBarAppearace.backgroundColor = .clear
-    }
-    
     @available(iOS 13.0, *)
     func configureNavBariOS13(){
       let navBarAppearance = UINavigationBarAppearance()
-        navBarAppearance.configureWithDefaultBackground()
-        navBarAppearance.backgroundColor = .none
-        navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.label]
-        //navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
-        UINavigationBar.appearance().tintColor = .systemPink
+        navBarAppearance.backgroundColor = .systemBackground
+        navBarAppearance.shadowColor = .none
+      /*  self.navigationController?.navigationBar.layer.shadowColor = UIColor.lightGray.cgColor
+        self.navigationController?.navigationBar.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        self.navigationController?.navigationBar.layer.shadowRadius = 4.0
+        self.navigationController?.navigationBar.layer.shadowOpacity = 1.0
+        self.navigationController?.navigationBar.layer.masksToBounds = false
+        navBarAppearanc */
+        navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold)]
+        UINavigationBar.appearance().tintColor = UIColor.systemPink
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
-        
-        let largeTitleAppearence = UINavigationBarAppearance()
-        largeTitleAppearence.configureWithOpaqueBackground()
-        largeTitleAppearence.backgroundColor = .systemBackground
-        largeTitleAppearence.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
-        UINavigationBar.appearance().scrollEdgeAppearance = largeTitleAppearence
+        UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
     
+        
+        UITabBar.appearance().backgroundColor = .systemBackground
     }
     
     @objc func logUserIn(){
@@ -144,9 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         self.window?.rootViewController = viewController
                         self.window?.makeKeyAndVisible()
                     } */
-                    
-                    let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-                    let vc = storyboard.instantiateViewController(withIdentifier: "TabBarController") as! TabBarController
+                    let vc = TabBarController()
 
                     UIApplication.shared.windows.first?.rootViewController = vc
                     appDidLoad = true
@@ -170,3 +154,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 
 }
+

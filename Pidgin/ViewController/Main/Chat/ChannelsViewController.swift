@@ -32,7 +32,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     
     if let userID = User.shared.uid{
         
-    let query = channelReference.whereField("members", arrayContains: userID).limit(to: 15).order(by: "lastSentDate", descending: true)
+    let query = channelReference.whereField("members", arrayContains: userID).limit(to: 25).order(by: "lastSentDate", descending: true)
     
     channelListener = query.addSnapshotListener { querySnapshot, error in
       guard let snapshot = querySnapshot else {
@@ -169,10 +169,19 @@ extension ChannelsViewController {
    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return channels.count
   }
-  
-   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 75
-  }
+ /*   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let returnedView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)) //set these values as necessary
+        returnedView.backgroundColor = UIColor.secondarySystemBackground
+
+        return returnedView
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 32
+    } */
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+      return 75
+    }
   
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "ChannelCell", for: indexPath) as! ChannelTableViewCell
@@ -253,7 +262,7 @@ extension ChannelsViewController {
             cell.profilePic.image = FollowersHelper().getGroupProfilePicture()
         }
     }
-    cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+    cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
     cell.message.textColor = .secondaryLabel
     cell.message.font = UIFont.systemFont(ofSize: 15, weight: .regular)
     cell.timeStamp.textColor = .secondaryLabel
@@ -264,11 +273,11 @@ extension ChannelsViewController {
         if lastMsgDate > lastOpenDate.dateValue(){
             if channels[indexPath.row].lastSentUser != User.shared.uid{
         cell.readIndicator.isHidden = false
-        cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         cell.message.textColor = .label
-        cell.message.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        cell.message.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         cell.timeStamp.textColor = .label
-        cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
             }    }
     }
     
@@ -283,8 +292,6 @@ extension ChannelsViewController {
     let vc = ChatViewController()
     
     vc.channel = channel
-    
-    
     navigationController?.pushViewController(vc, animated: true)
 
   }
@@ -294,29 +301,6 @@ extension ChannelsViewController {
 extension ChannelsViewController : UITableViewDataSourcePrefetching{
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         print("prefetch rows")
-     /* if let doc = lastDocument{
 
-            if let userID = User.shared.uid{
-            let query = channelReference.whereField("members", arrayContains: userID).limit(to: 5).order(by: "lastSentDate", descending: true).start(atDocument: doc)
-                query.getDocuments { (snapshot, error) in
-                    if error == nil{
-                        for document in snapshot!.documents{
-                            self.lastDocument = document
-                            guard let channel = Channel(document: document) else {
-                              return
-                            }
-                            
-                            if !(channels.contains(channel)){
-                                channels.append(channel)
-                                tableView.insertRows(at: [IndexPath(row: channels.count-1, section: 0)], with: .automatic)
-                            }
-                            
-                            }
-                            
-                        }
-                }
-            }
-            
-    } */
 }
 }

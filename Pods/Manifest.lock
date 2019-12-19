@@ -167,6 +167,7 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.3)
   - BoringSSL-GRPC/Interface (0.0.3)
   - Cache (5.2.0)
+  - CropViewController (2.5.2)
   - DeepDiff (2.3.1)
   - Eureka (5.1.0)
   - Firebase/Analytics (6.13.0):
@@ -296,6 +297,7 @@ PODS:
     - nanopb (~> 0.3)
   - gRPC-Core/Interface (1.21.0)
   - GTMSessionFetcher/Core (1.3.0)
+  - Hero (1.5.0)
   - ImageRow (4.0.0):
     - Eureka (~> 5.0)
   - Imaginary (4.2.0):
@@ -338,6 +340,7 @@ PODS:
     - SvrfGLTFSceneKit (~> 1.3)
 
 DEPENDENCIES:
+  - CropViewController
   - Eureka
   - Firebase/Analytics
   - Firebase/Auth
@@ -345,6 +348,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/Storage
   - Giphy
+  - Hero
   - ImageRow
   - Kingfisher
   - Lightbox
@@ -360,6 +364,7 @@ SPEC REPOS:
     - Analytics
     - BoringSSL-GRPC
     - Cache
+    - CropViewController
     - DeepDiff
     - Eureka
     - Firebase
@@ -382,6 +387,7 @@ SPEC REPOS:
     - "gRPC-C++"
     - gRPC-Core
     - GTMSessionFetcher
+    - Hero
     - ImageRow
     - Imaginary
     - InputBarAccessoryView
@@ -414,6 +420,7 @@ SPEC CHECKSUMS:
   Analytics: 77fd5fb102a4a5eedafa2c2b0245ceb7b7c15e45
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   Cache: 807c5d86d01a177f06ede9865add3aea269bbfd4
+  CropViewController: 1aac40093c5739e60d992b04724a55d12a689a4c
   DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
   Eureka: 18a5076dcf0c41f9cd9748aa1c42f4d11434bdae
   Firebase: 458d109512200d1aca2e1b9b6cf7d68a869a4a46
@@ -436,6 +443,7 @@ SPEC CHECKSUMS:
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
   GTMSessionFetcher: 43b8b64263023d4f32caa0b40f4c8bfa3c5f36d8
+  Hero: b7385b75e7259da62f4f85462f59a5082d66b058
   ImageRow: e65b2e1a33f89062bf2a553a2aad61d975eb7428
   Imaginary: dae33d06dbc2ada22f98afef5eb45cc061311a2c
   InputBarAccessoryView: 2b937602598e2fab3149f37f51dd7ad795653812
@@ -454,6 +462,6 @@ SPEC CHECKSUMS:
   SvrfGLTFSceneKit: 6572849d8b42e779c2e816e666def4e344d4f081
   SvrfSDK: 3ab4891a6fde8a73b831b2c96477eb9839817272
 
-PODFILE CHECKSUM: fc061966bb74473c7ec745dfc7bd5d06000e4ada
+PODFILE CHECKSUM: 8b724a5c81dd80593cccf3bbb59f527ed05fd37f
 
 COCOAPODS: 1.8.4

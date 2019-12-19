@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import CropViewController
 class CreateGroupViewController: UIViewController{
     @IBOutlet weak var createGroupButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
@@ -31,7 +31,6 @@ class CreateGroupViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
-        self.tabBarController?.tabBar.isHidden = true
         errorLabel.isHidden = true
         createGroupButton.roundCorners()
         tableView.delegate = self
@@ -317,10 +316,26 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
 
 extension CreateGroupViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let newImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-        image.setImage(newImage, for: .normal)
-        FollowersHelper().uploadGroupPicture(data1: newImage?.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString, docID: channel.id ?? "")
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
-        picker.dismiss(animated: true, completion: nil)
+        picker.dismiss(animated: true) {
+            if let newImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
+                self.presentCropViewController(image: newImage)
+            }
+        }
     }
+}
+
+extension CreateGroupViewController : CropViewControllerDelegate{
+    func presentCropViewController(image : UIImage) {
+        let cropViewController = CropViewController(croppingStyle: .circular, image: image)
+      cropViewController.delegate = self
+        self.present(cropViewController, animated: true, completion: nil)
+    }
+
+    func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+            // 'image' is the newly cropped version of the original image
+        self.image.setImage(image, for: .normal)
+        FollowersHelper().uploadGroupPicture(data1: image.jpegData(compressionQuality: 0.2), imageName: UUID().uuidString, docID: channel.id ?? "")
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
+        cropViewController.dismiss(animated: true, completion: nil)
+        }
 }

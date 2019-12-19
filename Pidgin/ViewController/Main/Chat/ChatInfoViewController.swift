@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Lightbox
 class ChatInfoViewController: UIViewController {
     
     @IBOutlet weak var leaveGroupButton: UIButton!
@@ -29,6 +29,7 @@ class ChatInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         if let index = channel.members.firstIndex(of: User.shared.uid ?? ""){
         channel.members.remove(at: index)
@@ -70,7 +71,32 @@ class ChatInfoViewController: UIViewController {
         }
         image.layer.cornerRadius = image.bounds.height/2
         image.clipsToBounds = true
+        image.isUserInteractionEnabled = true
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTap))
+        image.addGestureRecognizer(gesture)
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func handleProfilePictureTap(){
+        print("tap gesture profile picture")
+        if channel.groupChat ?? false{
+            
+            if let string = channel.profilePics?.value(forKey: channel.id ?? "") as? String,
+                let url = URL(string: string){
+                let image = LightboxImage(imageURL: url)
+                presentLightBoxController(images: [image], goToIndex: nil)
+            }
+            
+        }else{
+            
+            if let string = channel.profilePics?.value(forKey: channel.getSenderID() ?? "") as? String,
+                let url = URL(string: string){
+                let image = LightboxImage(imageURL: url)
+                presentLightBoxController(images: [image], goToIndex: nil)
+            }
+            
+        }
+        
     }
     
     @IBAction func leaveGroupButtonPressed(_ sender: Any) {

@@ -32,10 +32,16 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Ll-UG-zPS">
                                 <rect key="frame" x="0.0" y="44" width="414" height="200"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HuE-4Y-n3b">
-                                        <rect key="frame" x="95.5" y="69" width="223" height="62.5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mutuel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HuE-4Y-n3b">
+                                        <rect key="frame" x="123.5" y="69" width="167" height="62.5"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="52"/>
                                         <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Beta" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pwe-x2-FN5">
+                                        <rect key="frame" x="174.5" y="131.5" width="65" height="38.5"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="32"/>
+                                        <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -43,7 +49,9 @@
                                 <constraints>
                                     <constraint firstItem="HuE-4Y-n3b" firstAttribute="centerX" secondItem="4Ll-UG-zPS" secondAttribute="centerX" id="EUZ-Ne-1YY"/>
                                     <constraint firstAttribute="height" constant="200" id="KkE-vy-azk"/>
+                                    <constraint firstItem="pwe-x2-FN5" firstAttribute="top" secondItem="HuE-4Y-n3b" secondAttribute="bottom" id="hXT-ht-6c7"/>
                                     <constraint firstItem="HuE-4Y-n3b" firstAttribute="centerY" secondItem="4Ll-UG-zPS" secondAttribute="centerY" id="y8E-KE-KW7"/>
+                                    <constraint firstItem="pwe-x2-FN5" firstAttribute="centerX" secondItem="4Ll-UG-zPS" secondAttribute="centerX" id="yxz-VP-0Ti"/>
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="9QO-jE-TVR">
@@ -74,7 +82,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <state key="normal" title="Sign Up">
-                                    <color key="titleColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
                                     <segue destination="2cR-Nq-o7M" kind="show" id="8Yr-Tb-dT5"/>

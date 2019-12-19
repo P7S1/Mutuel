@@ -166,7 +166,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
         
         if type == "newMessage"{
             if let id1 = User.shared.uid, let id2 = results[indexPath.row].uid{
-                let id = getChannelID(id1: id1, id2: id2)
+                let id = FollowersHelper().getChannelID(id1: id1, id2: id2)
                 let docRef = db.collection("channels").document(id)
             
                 let metaData = NSMutableDictionary()
@@ -210,14 +210,6 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
         let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
         vc.user = results[indexPath.row]
         navigationController?.pushViewController(vc, animated: true)
-        }
-    }
-    
-    func getChannelID(id1 : String, id2 : String) -> String{
-        if id1 > id2{
-            return id1+id2
-        }else{
-            return id2+id1
         }
     }
     

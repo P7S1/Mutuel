@@ -20,9 +20,19 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        isHeroEnabled = true
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         extendedLayoutIncludesOpaqueBars = true
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+/*
+        self.navigationController?.navigationBar.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        self.navigationController?.navigationBar.layer.shadowRadius = 4.0
+        self.navigationController?.navigationBar.layer.shadowOpacity = 1.0
+        self.navigationController?.navigationBar.layer.masksToBounds = false */
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -120,6 +130,7 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         
 
         self.navigationItem.title = name
+        
         navigationController?.navigationBar.prefersLargeTitles = true
 
         let resultsTableController = storyboard?.instantiateViewController(withIdentifier: "ResultsTableViewController") as! ResultsTableViewController
@@ -129,10 +140,9 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         search.searchBar.autocapitalizationType = .none
         search.searchBar.placeholder = "Search users"
         search.searchBar.tintColor = .systemPink
-        search.searchBar.addDoneButtonOnKeyboard()
         
         navigationItem.searchController = search
-        
+
         navigationItem.searchController?.view.bounds = UIScreen.main.bounds
         
        /* let profile = UIButton.init(type: .custom)
@@ -187,14 +197,20 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         self.view.addSubview(blurEffectView)
        UIView.animate(withDuration: 0.2) {
         self.blurEffectView.effect = UIBlurEffect(style: UIBlurEffect.Style.regular)
-        self.tabBarController?.tabBar.isHidden = true
+       // self.tabBarController?.tabBar.isHidden = true
        }
+    }
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        removeBlurView()
     }
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         showImage(true)
-        UIView.animate(withDuration: 0.2) {
+    }
+    
+    func removeBlurView(){
+      UIView.animate(withDuration: 0.2) {
             self.blurEffectView.effect = nil
-            self.tabBarController?.tabBar.isHidden = false
+            //self.tabBarController?.tabBar.isHidden = false
             self.blurEffectView.removeFromSuperview()
         }
     }
