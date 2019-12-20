@@ -11,6 +11,9 @@ import AVFoundation
 import AVKit
 import Photos
 import FirebaseAuth
+import GiphyUISDK
+import GiphyCoreSDK
+import Kingfisher
 public var switchCam = Bool()
 
 public protocol PhotoEditorDelegate {
@@ -114,7 +117,8 @@ public final class PhotoEditorViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
+        isHeroEnabled = true
+        self.hero.modalAnimationType = .selectBy(presenting:.fade, dismissing:.fade)
         deleteView.layer.addButtonShadows()
         doneButton.layer.addButtonShadows()
         drawButton.layer.addButtonShadows()
@@ -266,8 +270,6 @@ public final class PhotoEditorViewController: UIViewController {
     @IBAction func saveButtonTapped(_ sender: AnyObject) {
         
         ProgressHUD.show()
-    
-        saveButton.isEnabled = false
         
         if checkVideoOrIamge {
             UIImageWriteToSavedPhotosAlbum(canvasView.toImage(),self, #selector(PhotoEditorViewController.image(_:withPotentialError:contextInfo:)), nil)
@@ -415,7 +417,23 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
     @IBAction func stickersButtonTapped(_ sender: Any) {
-        addBottomSheetView()
+        print("Send gif pressed")
+        let giphy = GiphyViewController()
+        
+        giphy.layout = .waterfall
+        giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
+        giphy.showConfirmationScreen = true
+        if self.traitCollection.userInterfaceStyle == .dark {
+            // User Interface is Dark
+            giphy.theme = .dark
+        } else {
+            giphy.theme = .light
+            // User Interface is Light
+        }
+        giphy.delegate = self
+        
+        self.present(giphy, animated: true, completion: nil)
+       // addBottomSheetView()
     }
     
     @IBAction func textButtonTapped(_ sender: Any) {
@@ -524,9 +542,8 @@ public final class PhotoEditorViewController: UIViewController {
             filteringRequest.finish(with: watermarkFilter.outputImage!, context: nil)
         }
         
-        guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset640x480) else {
+        guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else {
             handler(nil)
-            
             return
         }
         
@@ -593,7 +610,7 @@ public final class PhotoEditorViewController: UIViewController {
             }
         }
         
-        exportSession = AVAssetExportSession(asset: videoAsset, presetName: AVAssetExportPresetMediumQuality)
+        exportSession = AVAssetExportSession(asset: videoAsset, presetName: AVAssetExportPresetHighestQuality)
         
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         let myDocumentPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("temp.mp4").absoluteString
@@ -773,6 +790,9 @@ public final class PhotoEditorViewController: UIViewController {
         parentlayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
         videoLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
         watermarkLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
+        
+        
+        
 
         parentlayer.addSublayer(videoLayer)
         parentlayer.addSublayer(watermarkLayer)
@@ -980,5 +1000,27 @@ extension PhotoEditorViewController {
             return
         }
     }
+}
+
+extension PhotoEditorViewController: GiphyDelegate {
+    public func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
+        
+        let imageView = GPHMediaView(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
+        imageView.setMedia(media)
+            imageView.contentMode = .scaleAspectFit
+            imageView.center = self.tempImageView.center
+            
+            self.tempImageView.addSubview(imageView)
+            //Gestures
+            self.addGestures(view: imageView)
+            giphyViewController.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    public func didDismiss(controller: GiphyViewController?) {
+        print("did dismiss")
+    }
+    
+    
 }
 

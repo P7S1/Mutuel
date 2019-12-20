@@ -59,7 +59,6 @@ class ChatViewController: MessagesViewController {
     //self.navigationController?.navigationBar.topItem?.title = " "
     //messagesCollectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
     refreshControl.beginRefreshing()
-     GiphyUISDK.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
     NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name:NSNotification.Name(rawValue: "reloadData"), object: nil)
     NotificationCenter.default.addObserver(self,
     selector: #selector(applicationWillEnterForeground),

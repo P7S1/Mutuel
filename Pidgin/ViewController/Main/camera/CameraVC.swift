@@ -27,6 +27,9 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        
+        
         videoGravity = .resizeAspectFill
         captureButton.delegate = self
         shouldPrompToAppSettings = true
@@ -49,9 +52,9 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         let zoom = UIPanGestureRecognizer(target: self, action: #selector(zoomGesture))
         captureButton.addGestureRecognizer(zoom)
         captureButton.buttonEnabled = false
-        videoGravity = .resize
-        
-        presentARButton.isHidden = !ARFaceTrackingConfiguration.isSupported
+        if !ARFaceTrackingConfiguration.isSupported{
+            presentARButton.removeFromSuperview()
+        }
         
     }
     
@@ -121,7 +124,7 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
             vc.stickers.append(UIImage(named: i.description )!)
         }
         
-        present(vc, animated: false, completion: nil)
+        present(vc, animated: true, completion: nil)
     }
     
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didBeginRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
@@ -141,14 +144,13 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
         vc.videoURL = url
         vc.checkVideoOrIamge = false
-        
         vc.modalPresentationStyle = .fullScreen
         
         for i in 100...110 {
             vc.stickers.append(UIImage(named: i.description )!)
         }
         
-        present(vc, animated: false, completion: nil)
+        present(vc, animated: true, completion: nil)
     }
     
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFocusAtPoint point: CGPoint) {
@@ -232,9 +234,9 @@ extension CameraVC {
     
     fileprivate func toggleFlashAnimation() {
         if flashEnabled == true {
-            flashButton.setImage(#imageLiteral(resourceName: "flash"), for: UIControl.State())
+            flashButton.setImage(UIImage(systemName: "bolt.fill"), for: UIControl.State())
         } else {
-            flashButton.setImage(#imageLiteral(resourceName: "flashOutline"), for: UIControl.State())
+            flashButton.setImage(UIImage(systemName: "bolt.slash.fill"), for: UIControl.State())
         }
     }
 }

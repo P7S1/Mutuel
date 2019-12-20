@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,7 +14,7 @@
         <!--Photo Editor View Controller-->
         <scene sceneID="iM7-4s-MQn">
             <objects>
-                <viewController storyboardIdentifier="PhotoEditorViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="qal-IL-P5A" customClass="PhotoEditorViewController" customModule="Pidgin" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoEditorViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="qal-IL-P5A" customClass="PhotoEditorViewController" customModule="Mutuel" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vqJ-jn-7QA"/>
                         <viewControllerLayoutGuide type="bottom" id="W1p-5a-v0n"/>
@@ -55,7 +54,7 @@
                                     <constraint firstItem="Xjm-vk-hyr" firstAttribute="width" secondItem="7rk-o3-koM" secondAttribute="width" id="zxI-dl-YJ6"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hU8-Ej-Qjx" customClass="GradientView" customModule="Pidgin" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hU8-Ej-Qjx" customClass="GradientView" customModule="Mutuel" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -63,54 +62,58 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eiH-5R-h9P">
-                                <rect key="frame" x="0.0" y="31" width="375" height="60"/>
+                                <rect key="frame" x="0.0" y="32" width="375" height="60"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mPI-JK-Yqm">
-                                        <rect key="frame" x="12" y="14" width="30" height="32"/>
-                                        <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="20"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mPI-JK-Yqm">
+                                        <rect key="frame" x="16" y="17.333333333333336" width="25.666666666666671" height="25.333333333333336"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <size key="titleShadowOffset" width="1" height="0.0"/>
-                                        <state key="normal" title="">
+                                        <state key="normal" image="xmark" catalog="system">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
                                         </state>
                                         <connections>
                                             <action selector="cancelButtonTapped:" destination="qal-IL-P5A" eventType="touchUpInside" id="caT-MR-Dnx"/>
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="yUw-6S-RSl">
-                                        <rect key="frame" x="225" y="0.0" width="120" height="60"/>
+                                        <rect key="frame" x="214" y="0.0" width="131" height="60"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dQs-tt-W1k">
-                                                <rect key="frame" x="0.0" y="0.0" width="30" height="60"/>
-                                                <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="25"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dQs-tt-W1k">
+                                                <rect key="frame" x="0.0" y="0.0" width="33.666666666666664" height="60"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <size key="titleShadowOffset" width="1" height="0.0"/>
-                                                <state key="normal" title="">
+                                                <state key="normal" image="smiley" catalog="system">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="stickersButtonTapped:" destination="qal-IL-P5A" eventType="touchUpInside" id="Y1M-Yn-QuH"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cIa-FY-gdx">
-                                                <rect key="frame" x="45" y="0.0" width="30" height="60"/>
-                                                <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="25"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cIa-FY-gdx">
+                                                <rect key="frame" x="48.666666666666686" y="0.0" width="33.666666666666657" height="60"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <size key="titleShadowOffset" width="1" height="0.0"/>
-                                                <state key="normal" title="">
+                                                <state key="normal" image="scribble" catalog="system">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="pencilButtonTapped:" destination="qal-IL-P5A" eventType="touchUpInside" id="bu9-ev-m6F"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q1e-6L-kot">
-                                                <rect key="frame" x="90" y="0.0" width="30" height="60"/>
-                                                <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="25"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q1e-6L-kot">
+                                                <rect key="frame" x="97.333333333333314" y="0.0" width="33.666666666666657" height="60"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <size key="titleShadowOffset" width="1" height="0.0"/>
-                                                <state key="normal" title="">
+                                                <state key="normal" image="textformat" catalog="system">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="textButtonTapped:" destination="qal-IL-P5A" eventType="touchUpInside" id="XP6-CH-Loj"/>
@@ -126,10 +129,10 @@
                                     <constraint firstItem="yUw-6S-RSl" firstAttribute="top" secondItem="eiH-5R-h9P" secondAttribute="top" id="9kt-JF-JOJ"/>
                                     <constraint firstAttribute="bottom" secondItem="yUw-6S-RSl" secondAttribute="bottom" id="JKU-3I-zby"/>
                                     <constraint firstAttribute="trailing" secondItem="yUw-6S-RSl" secondAttribute="trailing" constant="30" id="SqD-am-zKZ"/>
-                                    <constraint firstItem="mPI-JK-Yqm" firstAttribute="leading" secondItem="eiH-5R-h9P" secondAttribute="leading" constant="12" id="t6b-D3-S8M"/>
+                                    <constraint firstItem="mPI-JK-Yqm" firstAttribute="leading" secondItem="eiH-5R-h9P" secondAttribute="leading" constant="16" id="t6b-D3-S8M"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ROZ-Lq-g2o" customClass="GradientView" customModule="Pidgin" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ROZ-Lq-g2o" customClass="GradientView" customModule="Mutuel" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="698" width="375" height="80"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -143,18 +146,19 @@
                                 <rect key="frame" x="0.0" y="730" width="375" height="60"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="sZ3-Ps-Lir">
-                                        <rect key="frame" x="12" y="0.0" width="72" height="52"/>
+                                        <rect key="frame" x="12" y="0.0" width="70.666666666666671" height="52"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="sKM-GF-MFZ">
-                                                <rect key="frame" x="0.0" y="0.0" width="30" height="52"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="29.333333333333332" height="52"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rav-xj-PL3">
-                                                        <rect key="frame" x="0.0" y="0.0" width="30" height="52"/>
-                                                        <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="25"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rav-xj-PL3">
+                                                        <rect key="frame" x="0.0" y="0.0" width="29.333333333333332" height="52"/>
+                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <size key="titleShadowOffset" width="1" height="0.0"/>
-                                                        <state key="normal" title="">
+                                                        <state key="normal" image="square.and.arrow.down" catalog="system">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
+                                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
                                                         </state>
                                                         <connections>
                                                             <action selector="saveButtonTapped:" destination="qal-IL-P5A" eventType="touchUpInside" id="Lrk-wB-0RF"/>
@@ -163,15 +167,17 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="oD4-Tb-PTO">
-                                                <rect key="frame" x="42" y="0.0" width="30" height="52"/>
+                                                <rect key="frame" x="41.333333333333336" y="0.0" width="29.333333333333336" height="52"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9L-NS-gAb">
-                                                        <rect key="frame" x="0.0" y="0.0" width="30" height="52"/>
-                                                        <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="25"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9L-NS-gAb">
+                                                        <rect key="frame" x="0.0" y="0.0" width="29.333333333333332" height="52"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <size key="titleShadowOffset" width="1" height="0.0"/>
-                                                        <state key="normal" title="">
+                                                        <state key="normal" image="arrow.uturn.left" catalog="system">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
+                                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
                                                         </state>
                                                         <connections>
                                                             <action selector="clearButtonTapped:" destination="qal-IL-P5A" eventType="touchUpInside" id="Um0-kv-o9k"/>
@@ -181,13 +187,14 @@
                                             </stackView>
                                         </subviews>
                                     </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2sC-op-bgJ">
-                                        <rect key="frame" x="313" y="-14" width="50" height="62"/>
-                                        <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="50"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2sC-op-bgJ">
+                                        <rect key="frame" x="310" y="-3" width="53" height="51"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <size key="titleShadowOffset" width="1" height="0.0"/>
-                                        <state key="normal" title="">
+                                        <state key="normal" image="arrow.right.circle.fill" catalog="system">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="45"/>
                                         </state>
                                         <connections>
                                             <action selector="continueButtonPressed:" destination="qal-IL-P5A" eventType="touchUpInside" id="rif-eJ-6ZI"/>
@@ -204,9 +211,9 @@
                                     <constraint firstAttribute="bottom" secondItem="sZ3-Ps-Lir" secondAttribute="bottom" constant="8" id="y1g-sZ-EgC"/>
                                 </constraints>
                             </view>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NZX-b4-TnS">
-                                <rect key="frame" x="311" y="44" width="43" height="36"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NZX-b4-TnS">
+                                <rect key="frame" x="308" y="60" width="43" height="33"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <size key="titleShadowOffset" width="1" height="0.0"/>
                                 <state key="normal" title="Done">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -219,8 +226,13 @@
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7vr-iI-SJ5">
                                 <rect key="frame" x="162.66666666666666" y="716" width="50" height="50"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oex-z8-XxI">
-                                        <rect key="frame" x="9.3333333333333428" y="10" width="31" height="30"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="trash.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="XzF-tj-O2x">
+                                        <rect key="frame" x="7.3333333333333428" y="8" width="35.333333333333336" height="34"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oex-z8-XxI">
+                                        <rect key="frame" x="25" y="25" width="0.0" height="0.0"/>
                                         <fontDescription key="fontDescription" name="Eventtus-Icons" family="Eventtus-Icons" pointSize="30"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -230,10 +242,12 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="XzF-tj-O2x" firstAttribute="centerY" secondItem="7vr-iI-SJ5" secondAttribute="centerY" id="Ty5-XE-niX"/>
                                     <constraint firstAttribute="width" constant="50" id="cQc-33-xaG"/>
                                     <constraint firstItem="oex-z8-XxI" firstAttribute="centerX" secondItem="7vr-iI-SJ5" secondAttribute="centerX" id="dJz-5P-Z8e"/>
                                     <constraint firstAttribute="height" constant="50" id="et2-gw-ukc"/>
                                     <constraint firstItem="oex-z8-XxI" firstAttribute="centerY" secondItem="7vr-iI-SJ5" secondAttribute="centerY" id="lhj-dF-xJ3"/>
+                                    <constraint firstItem="XzF-tj-O2x" firstAttribute="centerX" secondItem="7vr-iI-SJ5" secondAttribute="centerX" id="tXy-GS-idU"/>
                                 </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EaT-1a-2IO" userLabel="Color Picker">
@@ -267,24 +281,21 @@
                             <constraint firstItem="zOl-HT-5yt" firstAttribute="leading" secondItem="f8P-U5-3iU" secondAttribute="leading" id="5lg-PW-EOl"/>
                             <constraint firstItem="hU8-Ej-Qjx" firstAttribute="top" secondItem="f8P-U5-3iU" secondAttribute="top" id="85r-AB-06k"/>
                             <constraint firstItem="7rk-o3-koM" firstAttribute="centerX" secondItem="f8P-U5-3iU" secondAttribute="centerX" id="9HO-P5-Gfm"/>
-                            <constraint firstItem="eiH-5R-h9P" firstAttribute="top" secondItem="f8P-U5-3iU" secondAttribute="top" constant="31" id="Ao5-LE-LLY"/>
+                            <constraint firstItem="eiH-5R-h9P" firstAttribute="top" secondItem="f8P-U5-3iU" secondAttribute="top" constant="32" id="Ao5-LE-LLY"/>
                             <constraint firstItem="EaT-1a-2IO" firstAttribute="centerX" secondItem="f8P-U5-3iU" secondAttribute="centerX" id="B14-p1-Leu"/>
                             <constraint firstItem="7rk-o3-koM" firstAttribute="width" secondItem="f8P-U5-3iU" secondAttribute="width" id="EBL-cl-SOn"/>
-                            <constraint firstItem="NZX-b4-TnS" firstAttribute="top" secondItem="f8P-U5-3iU" secondAttribute="top" constant="44" id="ESE-XE-bVx"/>
-                            <constraint firstAttribute="trailing" secondItem="NZX-b4-TnS" secondAttribute="trailing" constant="21" id="GME-Yo-xcC"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="NZX-b4-TnS" secondAttribute="trailing" constant="8" id="G77-6p-rwK"/>
                             <constraint firstItem="7vr-iI-SJ5" firstAttribute="centerX" secondItem="f8P-U5-3iU" secondAttribute="centerX" id="J6P-mN-1wq"/>
                             <constraint firstAttribute="trailing" secondItem="eiH-5R-h9P" secondAttribute="trailing" id="KQ4-YY-fZy"/>
                             <constraint firstAttribute="trailing" secondItem="zOl-HT-5yt" secondAttribute="trailing" id="LWc-93-r4S"/>
                             <constraint firstItem="W1p-5a-v0n" firstAttribute="top" secondItem="7vr-iI-SJ5" secondAttribute="bottom" constant="12" id="MUf-N2-ANd"/>
                             <constraint firstAttribute="trailing" secondItem="hU8-Ej-Qjx" secondAttribute="trailing" id="QTk-Bk-Y7s"/>
-                            <constraint firstItem="NZX-b4-TnS" firstAttribute="top" secondItem="vqJ-jn-7QA" secondAttribute="bottom" id="c2D-zq-4Ml"/>
-                            <constraint firstAttribute="trailing" secondItem="NZX-b4-TnS" secondAttribute="trailing" constant="21" id="dQE-02-mvy"/>
                             <constraint firstAttribute="trailing" secondItem="EaT-1a-2IO" secondAttribute="trailing" id="fec-Dv-BQH"/>
                             <constraint firstItem="eiH-5R-h9P" firstAttribute="leading" secondItem="f8P-U5-3iU" secondAttribute="leading" id="fol-Ps-aVJ"/>
                             <constraint firstItem="W1p-5a-v0n" firstAttribute="top" secondItem="EaT-1a-2IO" secondAttribute="bottom" constant="18" id="i1M-eR-HDU"/>
                             <constraint firstItem="W1p-5a-v0n" firstAttribute="top" secondItem="ROZ-Lq-g2o" secondAttribute="bottom" id="jdH-PJ-0bu"/>
-                            <constraint firstItem="eiH-5R-h9P" firstAttribute="top" secondItem="vqJ-jn-7QA" secondAttribute="bottom" constant="-13" id="nVO-b1-Ewv"/>
                             <constraint firstAttribute="trailing" secondItem="ROZ-Lq-g2o" secondAttribute="trailing" id="t0O-ta-A3D"/>
+                            <constraint firstItem="NZX-b4-TnS" firstAttribute="top" secondItem="f8P-U5-3iU" secondAttribute="topMargin" constant="16" id="t3O-zw-Y9n"/>
                             <constraint firstItem="hU8-Ej-Qjx" firstAttribute="leading" secondItem="f8P-U5-3iU" secondAttribute="leading" id="ttR-7Z-Row"/>
                             <constraint firstItem="EaT-1a-2IO" firstAttribute="leading" secondItem="f8P-U5-3iU" secondAttribute="leading" id="vo3-58-MY0"/>
                             <constraint firstItem="ROZ-Lq-g2o" firstAttribute="leading" secondItem="f8P-U5-3iU" secondAttribute="leading" id="xDl-w2-sdU"/>
@@ -320,4 +331,14 @@
             <point key="canvasLocation" x="-538.39999999999998" y="35.467980295566505"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="arrow.right.circle.fill" catalog="system" width="64" height="60"/>
+        <image name="arrow.uturn.left" catalog="system" width="64" height="56"/>
+        <image name="scribble" catalog="system" width="64" height="54"/>
+        <image name="smiley" catalog="system" width="64" height="60"/>
+        <image name="square.and.arrow.down" catalog="system" width="60" height="64"/>
+        <image name="textformat" catalog="system" width="64" height="40"/>
+        <image name="trash.circle.fill" catalog="system" width="64" height="60"/>
+        <image name="xmark" catalog="system" width="64" height="56"/>
+    </resources>
 </document>

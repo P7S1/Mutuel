@@ -10,6 +10,7 @@ import UIKit
 import SvrfSDK 
 import Firebase
 import FirebaseFirestore
+import GiphyUISDK
 let db = Firestore.firestore()
 
 var userListener: ListenerRegistration?
@@ -34,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           print("Could not authenticate with the Svrf API: \(err)")
         })
         FirebaseApp.configure()
+        GiphyUISDK.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
         if #available(iOS 13.0, *) {
             configureNavBariOS13()
         }

@@ -19,18 +19,25 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         self.tabBar.backgroundColor = .none
         self.tabBar.barTintColor = .none
         self.tabBar.itemPositioning = .centered
-        
+        let config = UIImage.SymbolConfiguration(pointSize: 17, weight: .bold)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let discoverVC = storyboard.instantiateViewController(withIdentifier: "DiscoverViewController") as! DiscoverViewController
         let homeViewController = UINavigationController(rootViewController: discoverVC)
-        homeViewController.tabBarItem = UITabBarItem(title: " ", image: UIImage(systemName: "house.fill"), tag: 1)
+        let discoverTab = UITabBarItem(title: " ", image: UIImage(systemName: "house.fill", withConfiguration: config), tag: 1)
+        discoverTab.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+        homeViewController.tabBarItem = discoverTab
         
         let messagesVC = storyboard.instantiateViewController(withIdentifier: "ChannelsViewController") as! ChannelsViewController
         let secondViewController = UINavigationController(rootViewController: messagesVC)
-        secondViewController.tabBarItem = UITabBarItem(title: " ", image: UIImage(systemName: "message.fill"), tag: 2)
+        let messagesTab = UITabBarItem(title: " ", image: UIImage(systemName: "ellipses.bubble.fill", withConfiguration: config), tag: 2)
+        messagesTab.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+        secondViewController.tabBarItem = messagesTab
+        
+        
         let actionViewController = storyboard.instantiateViewController(withIdentifier: "CameraVC") as! CameraVC
-
-        actionViewController.tabBarItem = UITabBarItem(title: " ", image: UIImage(systemName: "plus.circle.fill"), tag: 3)
+        let cameraTab = UITabBarItem(title: " ", image: UIImage(systemName: "circle", withConfiguration: config), tag: 3)
+        cameraTab.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+        actionViewController.tabBarItem = cameraTab
         
         viewControllers = [homeViewController, actionViewController, secondViewController]
         super.viewDidLoad()
