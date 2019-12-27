@@ -45,7 +45,9 @@ class ChatInfoViewController: UIViewController {
         addMemberButton.roundCorners()
         if #available(iOS 13.0, *) {
             leaveGroupButton.backgroundColor = .systemGray6
+            leaveGroupButton.setTitleColor(.systemPink, for: .normal)
             addMemberButton.backgroundColor = .systemGray6
+            addMemberButton.setTitleColor(.systemPink, for: .normal)
         }
         
         if channel.groupChat ?? false{
@@ -164,7 +166,7 @@ extension ChatInfoViewController : UITableViewDelegate, UITableViewDataSource{
         
         
         cell.displayName.text = channel.metaData?[channel.members[indexPath.row]] as? String
-        cell.username.text = ""
+        cell.username.removeFromSuperview()
         
         if let url = channel.profilePics?.value(forKey: channel.members[indexPath.row]) as? String{
             cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())

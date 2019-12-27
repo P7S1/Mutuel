@@ -29,6 +29,8 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
         navigationItem.largeTitleDisplayMode = .never
         formatForType()
         navigationItem.title = viewTitle
+        createGroupButton.backgroundColor = .systemGray6
+        createGroupButton.setTitleColor(.systemPink, for: .normal)
     }
     
     override func viewDidAppear(_ animated: Bool) {

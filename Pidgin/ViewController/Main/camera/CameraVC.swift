@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import ARKit
 import FirebaseAuth
+import SDRecordButton
 class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     
     @IBOutlet weak var captureButton    : SwiftyRecordButton!
@@ -70,12 +71,10 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
             print("user is not signed in")
             returnToLoginScreen() 
         }
-        //ProgressHUD.show()
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         session.stopRunning()
-        ProgressHUD.dismiss()
     }
     
     @IBAction func dismissPressed(_ sender: Any) {
@@ -119,10 +118,6 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         vc.checkVideoOrIamge = true
         
         vc.modalPresentationStyle = .fullScreen
-        
-        for i in 100...110 {
-            vc.stickers.append(UIImage(named: i.description )!)
-        }
         
         present(vc, animated: true, completion: nil)
     }

@@ -62,6 +62,8 @@
 		DF4F7A18234C23A3001D6CE8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF4F7A16234C23A3001D6CE8 /* LaunchScreen.storyboard */; };
 		DF5CCF3B2360D21B005439BB /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CCF3A2360D21B005439BB /* Login.storyboard */; };
 		DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661A3B238B12880042B7AD /* WebViewController.swift */; };
+		DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AD23B1EF0400949CED /* VideoHelper.swift */; };
+		DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */; };
 		DF9510122360D945006B3B44 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9510112360D945006B3B44 /* Account.swift */; };
 		DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9510152360DAB4006B3B44 /* LoginViewController.swift */; };
 		DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */; };
@@ -87,6 +89,7 @@
 		DFEB2929236DAF7C006FC6BB /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */; };
 		DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */; };
 		DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */; };
+		DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */; };
 		DFF346262367A3FF006AA467 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346232367A3FC006AA467 /* Channel.swift */; };
 		DFF346292367AE0D006AA467 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346282367AE0D006AA467 /* Message.swift */; };
 		DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */; };
@@ -154,6 +157,8 @@
 		DF4F7A19234C23A3001D6CE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DF5CCF3A2360D21B005439BB /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		DF661A3B238B12880042B7AD /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		DF6A20AD23B1EF0400949CED /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
+		DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIF2MP4.swift; sourceTree = "<group>"; };
 		DF9510112360D945006B3B44 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		DF9510152360DAB4006B3B44 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
@@ -182,6 +187,7 @@
 		DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		DFEE6F43239BA9020097EA52 /* Pidgin-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Pidgin-Bridging-Header.h"; sourceTree = "<group>"; };
+		DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToUserViewController.swift; sourceTree = "<group>"; };
 		DFF346232367A3FC006AA467 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		DFF346282367AE0D006AA467 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTableViewCell.swift; sourceTree = "<group>"; };
@@ -235,6 +241,8 @@
 			children = (
 				DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */,
 				DF469B7F2379FAD300CDB540 /* FollowersHelper.swift */,
+				DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */,
+				DF6A20AD23B1EF0400949CED /* VideoHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -298,6 +306,7 @@
 				DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */,
 				DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */,
 				DF215B002356673700EE67D3 /* SwiftyRecordButton.swift */,
+				DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */,
 			);
 			path = camera;
 			sourceTree = "<group>";
@@ -580,6 +589,7 @@
 				DF215AF9235563D900EE67D3 /* NextLevel.swift in Sources */,
 				DF215AF8235563D900EE67D3 /* NextLevelBufferRenderer.swift in Sources */,
 				DF215B0B2356673700EE67D3 /* Orientation.swift in Sources */,
+				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
 				DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */,
 				DF951033236100EC006B3B44 /* EmailViewController.swift in Sources */,
 				DF215AFB235563D900EE67D3 /* NextLevelClip.swift in Sources */,
@@ -602,6 +612,7 @@
 				DF4BC428234D8267001AD00D /* GradientView.swift in Sources */,
 				DF4BC40E234D8267001AD00D /* ViewGestures.swift in Sources */,
 				DFDD9ED0234FDD5D007A3177 /* VirtualContentUpdater.swift in Sources */,
+				DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */,
 				DF4BC42A234D8267001AD00D /* WatermarkCompositionInstruction.swift in Sources */,
 				DF4BC429234D8267001AD00D /* UIImageViewExtensions.swift in Sources */,
 				DFDE0815234D248E0017BFDA /* ChannelsViewController.swift in Sources */,
@@ -619,6 +630,7 @@
 				DF469B84237B47B600CDB540 /* FollowersTableViewController.swift in Sources */,
 				DF215B092356673700EE67D3 /* SwiftyCamViewController.swift in Sources */,
 				DF215AF6235563D900EE67D3 /* NextLevel+CIContext.swift in Sources */,
+				DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */,
 				DF4BC415234D8267001AD00D /* ARCameraVC.swift in Sources */,
 				DF215AF3235563D900EE67D3 /* NextLevel+Foundation.swift in Sources */,
 				DF215AFA235563D900EE67D3 /* NextLevelProtocols.swift in Sources */,

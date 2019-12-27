@@ -332,6 +332,7 @@ PODS:
     - SnapKit (~> 5.0.0)
   - PINCache (2.3)
   - Protobuf (3.11.1)
+  - SDRecordButton (1.0.3)
   - SnapKit (5.0.1)
   - SvrfGLTFSceneKit (1.5.1)
   - SvrfSDK (3.1.1):
@@ -355,6 +356,7 @@ DEPENDENCIES:
   - MessageKit (from `https://github.com/P7S1/MessageKit`)
   - NextLevel
   - NotificationBannerSwift (~> 3.0.0)
+  - SDRecordButton
   - SvrfSDK
 
 SPEC REPOS:
@@ -401,6 +403,7 @@ SPEC REPOS:
     - NotificationBannerSwift
     - PINCache
     - Protobuf
+    - SDRecordButton
     - SnapKit
     - SvrfGLTFSceneKit
     - SvrfSDK
@@ -458,10 +461,11 @@ SPEC CHECKSUMS:
   NotificationBannerSwift: 713e20f21b6105f4a36a00e5d9fa414a930d3d8e
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   Protobuf: 20d79da7f20b5928b80043b05080b816e802659e
+  SDRecordButton: 2533ae9e0e731c1540fa50b6fc43cdc3f15d20f4
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SvrfGLTFSceneKit: 6572849d8b42e779c2e816e666def4e344d4f081
   SvrfSDK: 3ab4891a6fde8a73b831b2c96477eb9839817272
 
-PODFILE CHECKSUM: 8b724a5c81dd80593cccf3bbb59f527ed05fd37f
+PODFILE CHECKSUM: 7737200005483130ba6e5ce2d57d71a5a9406c15
 
 COCOAPODS: 1.8.4

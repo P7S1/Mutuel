@@ -14,17 +14,18 @@ import FirebaseAuth
 import GiphyUISDK
 import GiphyCoreSDK
 import Kingfisher
+import Lightbox
 public var switchCam = Bool()
 
 public protocol PhotoEditorDelegate {
     func imageEdited(image: UIImage)
     func editorCanceled()
+    func videoEdited(video: URL)
 }
 
 public final class PhotoEditorViewController: UIViewController {
     
-    
-   
+
    
     
     @IBOutlet weak var saveButton: UIButton!
@@ -43,7 +44,7 @@ public final class PhotoEditorViewController: UIViewController {
     public var output = AVPlayerItemVideoOutput()
     
     public var checkVideoOrIamge = Bool()
-    
+     var users : [Account] = [Account]()
     
     
     //To hold the drawings and stickers
@@ -127,7 +128,7 @@ public final class PhotoEditorViewController: UIViewController {
         deleteChanges.layer.addButtonShadows()
         editTextButton.layer.addButtonShadows()
         sendButton.layer.addButtonShadows()
-        
+        saveButton.layer.addButtonShadows()
         
         topGradient.isHidden = true
         bottomGradient.isHidden = true
@@ -143,6 +144,7 @@ public final class PhotoEditorViewController: UIViewController {
         
   
         if checkVideoOrIamge {
+
             videoViewContainer.isHidden = true
             imageView.contentMode = UIView.ContentMode.scaleAspectFit
           // tempImageView.contentMode = UIViewContentMode.scaleAspectFit
@@ -151,6 +153,8 @@ public final class PhotoEditorViewController: UIViewController {
             
             imageView.isHidden = false
             imageView.image = photo
+            
+            
 
            // canvasView.layer.cornerRadius = 10
           //  self.canvasView.layer.masksToBounds = true
@@ -268,35 +272,7 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
     @IBAction func saveButtonTapped(_ sender: AnyObject) {
-        
-        ProgressHUD.show()
-        
-        if checkVideoOrIamge {
-            UIImageWriteToSavedPhotosAlbum(canvasView.toImage(),self, #selector(PhotoEditorViewController.image(_:withPotentialError:contextInfo:)), nil)
-        } else {
-            // Call function to convert and save video
-            
-            
-          //  let CIfilterName = "CIPhotoEffectInstant"
-          //  convertVideoToMP4(videoURL!, filterName: CIfilterName)
-         //   print("FILTER FOR VIDEO: \(CIfilterName)")
-            
-           convertVideoAndSaveTophotoLibrary(videoURL: videoURL!)
-            
-             // convertVideoAndSaveTophotoLibrary(videoURL: videoURL!)
-            
-//            addWatermark(outputURL: videoURL!) { exportSession in
-//
-//            }
-          
-        }
-        
-       
-       
-        ///To Share
-        //let activity = UIActivityViewController(activityItems: [self.imageView.toImage()], applicationActivities: nil)
-        //present(activity, animated: true, completion: nil)
-        
+       renderCanvas(saveToPhotoLibrary: true)
     }
     
 
@@ -422,7 +398,7 @@ public final class PhotoEditorViewController: UIViewController {
         
         giphy.layout = .waterfall
         giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
-        giphy.showConfirmationScreen = true
+        giphy.showConfirmationScreen = false
         if self.traitCollection.userInterfaceStyle == .dark {
             // User Interface is Dark
             giphy.theme = .dark
@@ -513,71 +489,6 @@ public final class PhotoEditorViewController: UIViewController {
      
     }
     
-
-    
-    
-    func addWatermark(outputURL: URL, handler:@escaping (_ exportSession: AVAssetExportSession?)-> Void) {
-        let mixComposition = AVMutableComposition()
-        print("hi")
-        let asset = AVAsset(url: outputURL)
-        let videoTrack = asset.tracks(withMediaType: AVMediaType.video)[0]
-        let timerange = CMTimeRangeMake(start: CMTime.zero, duration: asset.duration)
-        
-        let compositionVideoTrack:AVMutableCompositionTrack = mixComposition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))!
-        
-        do {
-            try compositionVideoTrack.insertTimeRange(timerange, of: videoTrack, at: CMTime.zero)
-            compositionVideoTrack.preferredTransform = videoTrack.preferredTransform
-        } catch {
-            print(error)
-        }
-        
-        let watermarkFilter = CIFilter(name: "CISourceOverCompositing")!
-        let watermarkImage = CIImage(image:self.tempImageView.toImage())
-        let videoComposition = AVVideoComposition(asset: asset) { (filteringRequest) in
-            let source = filteringRequest.sourceImage.clampedToExtent()
-            watermarkFilter.setValue(source, forKey: "inputBackgroundImage")
-            let transform = CGAffineTransform(translationX: filteringRequest.sourceImage.extent.width - (watermarkImage?.extent.width)! - 2, y: 0)
-            watermarkFilter.setValue(watermarkImage?.transformed(by: transform), forKey: "inputImage")
-            filteringRequest.finish(with: watermarkFilter.outputImage!, context: nil)
-        }
-        
-        guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else {
-            handler(nil)
-            return
-        }
-        
-        exportSession.outputURL = outputURL
-        exportSession.outputFileType = AVFileType.mp4
-        exportSession.shouldOptimizeForNetworkUse = true
-        exportSession.videoComposition = videoComposition
-        exportSession.exportAsynchronously { () -> Void in
-            handler(exportSession)
-            if exportSession.status == .completed {
-                let outputURL: URL? = exportSession.outputURL
-                PHPhotoLibrary.shared().performChanges({
-                    PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputURL!)
-                }) { saved, error in
-                    if saved {
-                        let fetchOptions = PHFetchOptions()
-                        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-                        let fetchResult = PHAsset.fetchAssets(with: .video, options: fetchOptions).lastObject
-                        PHImageManager().requestAVAsset(forVideo: fetchResult!, options: nil, resultHandler: { (avurlAsset, audioMix, dict) in
-                            let newObj = avurlAsset as! AVURLAsset
-                            print(newObj.url)
-                            DispatchQueue.main.async(execute: {
-                                print(newObj.url.absoluteString)
-                            })
-                        })
-                        print (fetchResult!)
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    
     private func getImageLayer(height: CGFloat) -> CALayer {
         let imglogo = UIImage(named: "bird_1.png")
         
@@ -591,92 +502,10 @@ public final class PhotoEditorViewController: UIViewController {
         return imglayer
     }
     
-    
-    var exportSession:AVAssetExportSession!
-    func convertVideoToMP4(_ vURL:URL, filterName:String)  {
-        let videoAsset = AVURLAsset(url: videoURL!)
-        
-        // Apply Filter to Video
-        var videoComposition = AVMutableVideoComposition()
-        if filterName != "None" {
-            let filter = CIFilter(name: filterName)!
-            videoComposition = AVMutableVideoComposition(asset: videoAsset) { (request) in
-                let source = request.sourceImage.clampedToExtent()
-                filter.setValue(source, forKey: kCIInputImageKey)
-                _ = CMTimeGetSeconds(request.compositionTime)
-                let output = filter.outputImage!.cropped(to: request.sourceImage.extent)
-                request.finish(with: output, context: nil)
-                print("OUTPUT CIIMAGE FILTERED: \(output.description)")
-            }
-        }
-        
-        exportSession = AVAssetExportSession(asset: videoAsset, presetName: AVAssetExportPresetHighestQuality)
-        
-        let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        let myDocumentPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("temp.mp4").absoluteString
-        _ = NSURL(fileURLWithPath: myDocumentPath)
-        let documentsDirectory2 = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0] as URL
-        let filePath = documentsDirectory2.appendingPathComponent("video.mp4")
-        deleteFile(filePath: filePath as NSURL)
-        
-        // Check if the file already exists then remove the previous file
-        if FileManager.default.fileExists(atPath: myDocumentPath) {
-            do { try FileManager.default.removeItem(atPath: myDocumentPath)
-            } catch let error { print(error) }
-        }
-        
-        exportSession!.outputURL = filePath
-        
-        if filterName != "None" { exportSession.videoComposition = videoComposition }
-        
-        exportSession!.outputFileType = .mp4
-        exportSession!.shouldOptimizeForNetworkUse = true
-        let start = CMTimeMakeWithSeconds(0, preferredTimescale: 0)
-        let range = CMTimeRangeMake(start: start, duration: videoAsset.duration)
-        exportSession?.timeRange = range
-        
-        
-        exportSession!.exportAsynchronously(completionHandler: {() -> Void in
-            switch self.exportSession!.status {
-            case .failed:
-                print("ERROR ON CONVERSION TO MP4: \(self.exportSession!.error!.localizedDescription)")
-            case .cancelled:
-                print("Export canceled")
-            case .completed:
-            
-                DispatchQueue.main.async {
-                    if self.exportSession.status == .completed {
-                        let outputURL: URL? = self.exportSession.outputURL
-                        PHPhotoLibrary.shared().performChanges({
-                            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputURL!)
-                        }) { saved, error in
-                            if saved {
-                                let fetchOptions = PHFetchOptions()
-                                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-                                let fetchResult = PHAsset.fetchAssets(with: .video, options: fetchOptions).lastObject
-                                PHImageManager().requestAVAsset(forVideo: fetchResult!, options: nil, resultHandler: { (avurlAsset, audioMix, dict) in
-                                    let newObj = avurlAsset as! AVURLAsset
-                                    print(newObj.url)
-                                    DispatchQueue.main.async(execute: {
-                                        print(newObj.url.absoluteString)
-                                    })
-                                })
-                                print (fetchResult!)
-                                ProgressHUD.showSuccess("Video Saved")
-                            }
-                        }
-                    }
-                }
-                
-            default: break
-            }
-        })
-    }
-    
 
 //
 //    // Mark :- save a video photoLibrary
-    func convertVideoAndSaveTophotoLibrary(videoURL: URL) {
+    func convertVideoAndSaveTophotoLibrary(videoURL: URL, saveToPhotoLibray : Bool) {
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         let myDocumentPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("temp.mp4").absoluteString
         _ = NSURL(fileURLWithPath: myDocumentPath)
@@ -692,15 +521,64 @@ public final class PhotoEditorViewController: UIViewController {
 
         // File to composit
         let asset = AVURLAsset(url: videoURL as URL)
+        var assets = [asset]
         let composition = AVMutableComposition.init()
-        composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
-
+        let track = composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        var tracks = [track]
+        
+        do{
+            try track?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: asset.duration), of: asset.tracks(withMediaType: AVMediaType.video)[0], at: CMTime.zero)
+        }
+        catch{
+            print("failed to add third track")
+        }
+        var gifs = [GPHMediaView]()
+            for subview in self.tempImageView.subviews{
+                if subview is GPHMediaView{
+                let gifView = subview as! GPHMediaView
+                    gifs.append(gifView)
+                    /*
+                let gifURL = URL(string: (gifView.media?.url(rendition: .original, fileType: .gif))!)!
+            //    let image = LightboxImage(image: UIImage(named: "group")!, text: "test", videoURL: gifURL)
+             //   self.presentLightBoxController(images: [image], goToIndex: nil)
+                let tempUrl = URL(fileURLWithPath:NSTemporaryDirectory()).appendingPathComponent("gif.mp4")
+                
+                let data = try! Data(contentsOf: gifURL)
+                    let dispatchGroup = DispatchGroup()
+                        dispatchGroup.enter()
+                    DispatchQueue.global().async{
+                GIF2MP4(data: data )?.convertAndExport(to: tempUrl, completion: {
+                    let gifAsset = AVURLAsset(url: tempUrl)
+                    let gifTrack = composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
+                    var failed = false
+                   do{
+                        try gifTrack?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: gifAsset.duration), of: gifAsset.tracks(withMediaType: AVMediaType.video)[0], at: CMTime.zero)
+                    }
+                    catch{
+                        failed = true
+                        print("failed to add third track dick")
+                    }
+                    if !failed{
+                        print("succeeded to add tracks dick")
+                        tracks.append(gifTrack)
+                        assets.append(gifAsset)
+                        gifs.append(gifView)
+        
+                    }
+                    dispatchGroup.leave()
+                })
+                    }
+                    dispatchGroup.wait() */
+                   // let item = LightboxImage(image: UIImage(named: "group")!, text: "bitch", videoURL: tempUrl)
+                   // self.presentLightBoxController(images: [item], goToIndex: nil)
+            }
+        }
+        print("dispatch group dick")
         let clipVideoTrack = asset.tracks(withMediaType: AVMediaType.video)[0]
 
 
         // Rotate to potrait
        let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
-
        
         let videoTransform:CGAffineTransform = clipVideoTrack.preferredTransform
 
@@ -753,8 +631,6 @@ public final class PhotoEditorViewController: UIViewController {
         print("VIdeo Asset Oreintation: \(text)")
        transformer.setOpacity(0.0, at: asset.duration)
         
-        
-        
 
         //adjust the render size if neccessary
        var naturalSize: CGSize
@@ -766,9 +642,21 @@ public final class PhotoEditorViewController: UIViewController {
     
         var renderWidth: CGFloat!
         var renderHeight: CGFloat!
-
         renderWidth = naturalSize.width
         renderHeight = naturalSize.height
+        let renderSize =  CGSize(width: renderWidth, height: renderHeight)
+        
+        var instructions = [AVVideoCompositionLayerInstruction]()
+        for currentAsset in assets{
+            if currentAsset != asset{
+                guard let index = assets.firstIndex(of: currentAsset) else{
+                    return
+                }
+                print("found track of index \(index)")
+                let instruction = VideoHelper.videoCompositionInstruction(tracks[index]!, asset: currentAsset, mediaView: gifs[index-1], renderSize: renderSize, imageView: tempImageView)
+                instructions.append(instruction)
+            }
+        }
 
 
         let parentlayer = CALayer()
@@ -777,61 +665,73 @@ public final class PhotoEditorViewController: UIViewController {
 
 
         let videoComposition = AVMutableVideoComposition()
-        videoComposition.renderSize = CGSize(width: renderWidth, height: renderHeight)
+        videoComposition.renderSize = renderSize
         videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
         videoComposition.renderScale = 1.0
         
         
-        
         watermarkLayer.contents = tempImageView.asImage().cgImage
-        
-
-       
         parentlayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
         videoLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
-        watermarkLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
         
-        
-        
-
         parentlayer.addSublayer(videoLayer)
+        watermarkLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
+        let gifLayer = CALayer()
         parentlayer.addSublayer(watermarkLayer)
-
+        gifLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: tempImageView.frame.size)
+        for gif in gifs{
+        let miniGifLayer = CALayer()
+        let animation = VideoHelper.createGIFAnimation(url: URL(string: (gif.media?.url(rendition: .original, fileType: .gif))!)!)
+    miniGifLayer.add(animation!, forKey: "test")
+      /*     let ratio = gif.media?.aspectRatio
+            let goalFrame = CGRect(origin: gif.frame.origin, size: CGSize(width: 150, height: 150))
+            let size = VideoHelper.getSuitableSize(goalFrame: goalFrame.size, ratio: ratio!)
+            miniGifLayer.frame = CGRect(origin: CGPoint(x: gif.frame.origin.x, y:(tempImageView.frame.height-size.height)-(gif.frame.origin.y)), size: size)
+            miniGifLayer.setAffineTransform(gif.transform)
+            print("before y origin\(gif.frame.origin.y)")
+            print("after y origin \(tempImageView.frame.height-(gif.frame.origin.y))")
+            //miniGifLayer.center = gif.center */
+            
+            let frame = CGRect(x: gif.frame.origin.x, y: (tempImageView.frame.height-gif.frame.height)-(gif.frame.origin.y), width: gif.frame.width, height: gif.frame.height)
+            miniGifLayer.frame = frame
+            miniGifLayer.anchorPoint = .zero
+            let angle = atan2f(Float(gif.transform.b), Float(gif.transform.a))
+            let degrees = Double(angle) * (180 / M_PI)
+          //  let transformation = miniGifLayer.affineTransform().rotated(by: CGFloat(degrees))
+          //  miniGifLayer.setAffineTransform(transformation)
+            print("angle(radians) : \(angle)")
+            print("angel (degrees) : \(degrees)")
+            gifLayer.addSublayer(miniGifLayer)
+        }
+        let rectangle = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
+        let transform = VideoHelper.transformFromRect(from: gifLayer.frame, toRect: rectangle)
+        gifLayer.setAffineTransform(transform)
+        parentlayer.addSublayer(gifLayer)
         // Add watermark to video
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayers: [videoLayer], in: parentlayer)
 
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRangeMake(start: CMTime.zero, duration: CMTimeMakeWithSeconds(60, preferredTimescale: 30))
-
-
-        instruction.layerInstructions = [transformer]
+        instructions.append(transformer)
+        instruction.layerInstructions = instructions
+        instruction.backgroundColor = .none
+        
         videoComposition.instructions = [instruction]
-
-        let exporter = AVAssetExportSession.init(asset: asset, presetName: AVAssetExportPresetHighestQuality)
+        let exporter = AVAssetExportSession.init(asset: composition, presetName: AVAssetExportPresetHighestQuality)
         exporter?.outputFileType = AVFileType.mov
         exporter?.outputURL = filePath
         exporter?.videoComposition = videoComposition
 
         exporter!.exportAsynchronously(completionHandler: {() -> Void in
             if exporter?.status == .completed {
-                let outputURL: URL? = exporter?.outputURL
-                PHPhotoLibrary.shared().performChanges({
-                    PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputURL!)
-                }) { saved, error in
-                    if saved {
-                        ProgressHUD.showSuccess("Video Saved")
-                        let fetchOptions = PHFetchOptions()
-                        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-                        let fetchResult = PHAsset.fetchAssets(with: .video, options: fetchOptions).lastObject
-                        PHImageManager().requestAVAsset(forVideo: fetchResult!, options: nil, resultHandler: { (avurlAsset, audioMix, dict) in
-                            let newObj = avurlAsset as! AVURLAsset
-                            print(newObj.url)
-                            DispatchQueue.main.async(execute: {
-                                print(newObj.url.absoluteString)
-                            })
-                        })
-                        print (fetchResult!)
+                if ((exporter?.outputURL) != nil) && saveToPhotoLibray{
+                    self.saveToPhotoLibrary(outputURL: exporter!.outputURL!)
+                }else if ((exporter?.outputURL) != nil) && !saveToPhotoLibray{
+                    ProgressHUD.dismiss()
+                    DispatchQueue.main.async{
+                    self.presentSendToUserViewController(image: nil, video: exporter!.outputURL!)
                     }
+                    self.photoEditorDelegate?.videoEdited(video: exporter!.outputURL!)
                 }
             }
         })
@@ -839,6 +739,26 @@ public final class PhotoEditorViewController: UIViewController {
 
     }
     
+    func saveToPhotoLibrary(outputURL : URL){
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputURL)
+        }) { saved, error in
+            if saved {
+                ProgressHUD.showSuccess("Video Saved")
+                let fetchOptions = PHFetchOptions()
+                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+                let fetchResult = PHAsset.fetchAssets(with: .video, options: fetchOptions).lastObject
+                PHImageManager().requestAVAsset(forVideo: fetchResult!, options: nil, resultHandler: { (avurlAsset, audioMix, dict) in
+                    let newObj = avurlAsset as! AVURLAsset
+                    print(newObj.url)
+                    DispatchQueue.main.async(execute: {
+                        print(newObj.url.absoluteString)
+                    })
+                })
+                print (fetchResult!)
+            }
+        }
+    }
    
     
     
@@ -854,20 +774,39 @@ public final class PhotoEditorViewController: UIViewController {
     }
     
     
-
+    func renderCanvas(saveToPhotoLibrary : Bool){
+        ProgressHUD.show()
+                if checkVideoOrIamge {
+                    var isGifImage = false
+                    var duration : TimeInterval = 0.0
+                    for subview in tempImageView.subviews{
+                        if subview is GPHMediaView{
+                            let gif = subview as! GPHMediaView
+                            if gif.animationDuration > duration{
+                                duration = gif.animationDuration
+                            }
+                            isGifImage = true
+                        }
+                    }
+                    if isGifImage{
+                        
+                    }else{
+                        if saveToPhotoLibrary{
+                    UIImageWriteToSavedPhotosAlbum(canvasView.toImage(),self, #selector(PhotoEditorViewController.image(_:withPotentialError:contextInfo:)), nil)
+                        }else{
+                            ProgressHUD.dismiss()
+                            presentSendToUserViewController(image: canvasView.toImage(), video: nil)
+                            photoEditorDelegate?.imageEdited(image: canvasView.toImage())
+                        }
+                    }
+                } else {
+                    convertVideoAndSaveTophotoLibrary(videoURL: videoURL!, saveToPhotoLibray: saveToPhotoLibrary)
+                }
+    }
     
    @IBAction func continueButtonPressed(_ sender: Any) {
-        
-        if checkVideoOrIamge {
-            
-         print("Image")
-            
-        } else {
-           print("Video")
-      
-            
-        }
-        
+    print("continue button pressed")
+        renderCanvas(saveToPhotoLibrary: false)
     }
     
     
@@ -1000,19 +939,36 @@ extension PhotoEditorViewController {
             return
         }
     }
+    
+    func presentSendToUserViewController(image : UIImage?, video : URL?){
+       let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
+        vc.selectedUsers = users
+        vc.video = video
+        if let img = image{
+            vc.image = img
+        }
+        present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+    }
 }
 
 extension PhotoEditorViewController: GiphyDelegate {
     public func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
         
-        let imageView = GPHMediaView(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
+        let imageView = GPHMediaView()
         imageView.setMedia(media)
+        let ratio = media.aspectRatio
             imageView.contentMode = .scaleAspectFit
+        
+        let goalFrame = CGRect(x: 0, y: 0, width: 150, height: 150)
+        
+        let size = VideoHelper.getSuitableSize(goalFrame: goalFrame.size, ratio: ratio)
+        imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: size)
             imageView.center = self.tempImageView.center
-            
             self.tempImageView.addSubview(imageView)
             //Gestures
             self.addGestures(view: imageView)
+        imageView.layer.anchorPoint = .zero
             giphyViewController.dismiss(animated: true, completion: nil)
         
     }
@@ -1020,6 +976,7 @@ extension PhotoEditorViewController: GiphyDelegate {
     public func didDismiss(controller: GiphyViewController?) {
         print("did dismiss")
     }
+
     
     
 }

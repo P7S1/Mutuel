@@ -139,7 +139,7 @@ class CreateGroupViewController: UIViewController{
             createGroupButton.isEnabled = false
             createGroupButton.alpha = 0.5
             if #available(iOS 13.0, *) {
-                createGroupButton.backgroundColor = UIColor.secondaryLabel
+                createGroupButton.backgroundColor = .systemGray6
             } else {
                 createGroupButton.backgroundColor = .lightGray
             }

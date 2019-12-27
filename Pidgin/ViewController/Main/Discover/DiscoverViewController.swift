@@ -22,6 +22,7 @@ class DiscoverViewController: HomeViewController, UICollectionViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        isHeroEnabled = true
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         setupUI()
         collectionView.delegate = self
@@ -123,9 +124,9 @@ extension UIViewController{
          
 
          let label = UILabel()
-         label.frame = CGRect.init(x: 5, y: 16, width: headerView.frame.width-10, height: headerView.frame.height-10)
+         label.frame = CGRect.init(x: 5, y: 8, width: headerView.frame.width-10, height: headerView.frame.height-10)
         label.text = title
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 23 , weight: .bold)
          if #available(iOS 13.0, *) {
             label.textColor = .label
          } else {
@@ -186,10 +187,10 @@ extension UIViewController{
         }else{
             print("notificaiton failed")
         }
+
         
         
     }
-    
     func presentLightBoxController(images : [LightboxImage], goToIndex : Int?){
       LightboxConfig.CloseButton.text = "Done"
       

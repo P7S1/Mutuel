@@ -16,13 +16,14 @@ target 'Pidgin' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Messaging'
   pod 'Firebase/Storage'
-  pod 'MessageKit', :git => 'https://github.com/P7S1/MessageKit'
+  pod 'MessageKit'
   pod 'Eureka'
-  pod 'NotificationBannerSwift', '~> 3.0.0'
+  pod 'NotificationBannerSwift'
   pod 'ImageRow'
   pod 'Kingfisher'
   pod 'Lightbox'
   pod 'Giphy'
   pod 'CropViewController'
   pod 'Hero'
+  pod "SDRecordButton"
 end
