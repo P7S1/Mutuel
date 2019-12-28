@@ -22,7 +22,7 @@ class ColorCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         colorView.layer.cornerRadius = colorView.frame.width / 2
-
+        colorView.layer.addButtonShadows()
     }
     
     
@@ -34,7 +34,6 @@ class ColorCollectionViewCell: UICollectionViewCell {
             if newValue {
                 super.isSelected = true
                 self.colorView.alpha = 0.5
-                
                 let previouTransform =  colorView.transform
                 UIView.animate(withDuration: 0.5,
                                animations: {

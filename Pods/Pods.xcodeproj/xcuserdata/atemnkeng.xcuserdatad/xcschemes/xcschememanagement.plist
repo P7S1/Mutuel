@@ -204,11 +204,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>SDRecordButton.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>SnapKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>

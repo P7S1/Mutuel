@@ -20,7 +20,6 @@ ${BUILT_PRODUCTS_DIR}/NextLevel/NextLevel.framework
 ${BUILT_PRODUCTS_DIR}/NotificationBannerSwift/NotificationBannerSwift.framework
 ${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework
 ${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework
-${BUILT_PRODUCTS_DIR}/SDRecordButton/SDRecordButton.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfGLTFSceneKit/SvrfGLTFSceneKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfSDK/SvrfSDK.framework

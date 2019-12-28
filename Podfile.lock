@@ -332,7 +332,6 @@ PODS:
     - SnapKit (~> 5.0.0)
   - PINCache (2.3)
   - Protobuf (3.11.1)
-  - SDRecordButton (1.0.3)
   - SnapKit (5.0.1)
   - SvrfGLTFSceneKit (1.5.1)
   - SvrfSDK (3.1.1):
@@ -353,10 +352,9 @@ DEPENDENCIES:
   - ImageRow
   - Kingfisher
   - Lightbox
-  - MessageKit (from `https://github.com/P7S1/MessageKit`)
+  - MessageKit
   - NextLevel
-  - NotificationBannerSwift (~> 3.0.0)
-  - SDRecordButton
+  - NotificationBannerSwift
   - SvrfSDK
 
 SPEC REPOS:
@@ -398,24 +396,15 @@ SPEC REPOS:
     - libwebp
     - Lightbox
     - MarqueeLabel
+    - MessageKit
     - nanopb
     - NextLevel
     - NotificationBannerSwift
     - PINCache
     - Protobuf
-    - SDRecordButton
     - SnapKit
     - SvrfGLTFSceneKit
     - SvrfSDK
-
-EXTERNAL SOURCES:
-  MessageKit:
-    :git: https://github.com/P7S1/MessageKit
-
-CHECKOUT OPTIONS:
-  MessageKit:
-    :commit: 93d74cdfd52ec918cfaf873b01bf780fb9738d54
-    :git: https://github.com/P7S1/MessageKit
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
@@ -455,17 +444,16 @@ SPEC CHECKSUMS:
   libwebp: 057912d6d0abfb6357d8bb05c0ea470301f5d61e
   Lightbox: d317750e4132bfb871a5307cfe0a2c7d6a583c65
   MarqueeLabel: b55b26e690b6ad41faedd95cbf5eae6f1d1735b4
-  MessageKit: 727f80d121b859855ad9fba3d032d23705147c78
+  MessageKit: e892a9ca49ebe6d82684d3a93ad84021fa23e2c6
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   NextLevel: 38f7771c35b66f0caccdc2a3e130d8fb20652ede
   NotificationBannerSwift: 713e20f21b6105f4a36a00e5d9fa414a930d3d8e
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   Protobuf: 20d79da7f20b5928b80043b05080b816e802659e
-  SDRecordButton: 2533ae9e0e731c1540fa50b6fc43cdc3f15d20f4
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SvrfGLTFSceneKit: 6572849d8b42e779c2e816e666def4e344d4f081
   SvrfSDK: 3ab4891a6fde8a73b831b2c96477eb9839817272
 
-PODFILE CHECKSUM: 7737200005483130ba6e5ce2d57d71a5a9406c15
+PODFILE CHECKSUM: 57164d4a57abb88f807c12c085b93a584aac49e5
 
 COCOAPODS: 1.8.4

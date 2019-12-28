@@ -10,6 +10,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import GiphyUISDK
 import GiphyCoreSDK
+import DeepDiff
 var channels = [Channel]()
 var channelListener: ListenerRegistration?
 class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableViewDataSource {
@@ -71,7 +72,6 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    tableView.reloadData()
   }
   
   // MARK: - Actions
@@ -87,13 +87,14 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
       return
     }
     
-    channels.append(channel)
-    channels.sort()
-    
-    guard let index = channels.firstIndex(of: channel) else {
-      return
-    }
-    tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+    let old = channels
+        var newItems = channels
+    newItems.append(channel)
+        newItems.sort()
+    let changes = diff(old: old, new: newItems)
+    tableView.reload(changes: changes, section: 0, updateData: {
+      channels = newItems
+    })
 
   }
   
@@ -118,12 +119,14 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "presentNotification"), object: nil, userInfo: userInfo as? [AnyHashable : Any])
             print("sending notificaiton")
         }
-        
-    channels[index] = channel
-    channels.sort()
-        tableView.beginUpdates()
-        tableView.reloadData()
-        tableView.endUpdates()
+    let old = channels
+        var newItems = channels
+        newItems[index] = channel
+        newItems.sort()
+    let changes = diff(old: old, new: newItems)
+        tableView.reload(changes: changes, section: 0, updateData: {
+          channels = newItems
+        })
      NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
   }
     
@@ -132,8 +135,14 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     guard let index = channels.firstIndex(of: channel) else {
       return
     }
-    channels.remove(at: index)
-    tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+    let old = channels
+        var newItems = channels
+    newItems.remove(at: index)
+        newItems.sort()
+    let changes = diff(old: old, new: newItems)
+        tableView.reload(changes: changes, section: 0, updateData: {
+          channels = newItems
+        })
   }
   
   private func handleDocumentChange(_ change: DocumentChange) {

@@ -23,12 +23,10 @@
 		DF215AFD235563D900EE67D3 /* NextLevel+AVFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215AEF235563D900EE67D3 /* NextLevel+AVFoundation.swift */; };
 		DF215AFE235563D900EE67D3 /* NextLevel+CMSampleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215AF0235563D900EE67D3 /* NextLevel+CMSampleBuffer.swift */; };
 		DF215AFF235563D900EE67D3 /* NextLevel+UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215AF1235563D900EE67D3 /* NextLevel+UIImage.swift */; };
-		DF215B072356673700EE67D3 /* SwiftyRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B002356673700EE67D3 /* SwiftyRecordButton.swift */; };
 		DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */; };
 		DF215B092356673700EE67D3 /* SwiftyCamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */; };
 		DF215B0B2356673700EE67D3 /* Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B042356673700EE67D3 /* Orientation.swift */; };
 		DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B052356673700EE67D3 /* PreviewView.swift */; };
-		DF215B0D2356673700EE67D3 /* SwiftyCamButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B062356673700EE67D3 /* SwiftyCamButton.swift */; };
 		DF21A36D2365597E00E39A55 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A36C2365597E00E39A55 /* ChatViewController.swift */; };
 		DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */; };
 		DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */; };
@@ -57,7 +55,6 @@
 		DF4BC427234D8267001AD00D /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4BC406234D8266001AD00D /* ColorCollectionViewCell.swift */; };
 		DF4BC428234D8267001AD00D /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4BC407234D8266001AD00D /* GradientView.swift */; };
 		DF4BC429234D8267001AD00D /* UIImageViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4BC408234D8266001AD00D /* UIImageViewExtensions.swift */; };
-		DF4BC42A234D8267001AD00D /* WatermarkCompositionInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4BC409234D8266001AD00D /* WatermarkCompositionInstruction.swift */; };
 		DF4BC42C234D8267001AD00D /* PhotoEditor.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF4BC40B234D8266001AD00D /* PhotoEditor.storyboard */; };
 		DF4F7A18234C23A3001D6CE8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF4F7A16234C23A3001D6CE8 /* LaunchScreen.storyboard */; };
 		DF5CCF3B2360D21B005439BB /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CCF3A2360D21B005439BB /* Login.storyboard */; };
@@ -86,6 +83,7 @@
 		DFDE080E234D23880017BFDA /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE080D234D23880017BFDA /* DiscoverViewController.swift */; };
 		DFDE0815234D248E0017BFDA /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0814234D248E0017BFDA /* ChannelsViewController.swift */; };
 		DFDE0817234D292D0017BFDA /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0816234D292D0017BFDA /* TabBarController.swift */; };
+		DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE792C123B650FF003F2456 /* RecordingButton.swift */; };
 		DFEB2929236DAF7C006FC6BB /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */; };
 		DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */; };
 		DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */; };
@@ -116,12 +114,10 @@
 		DF215AF0235563D900EE67D3 /* NextLevel+CMSampleBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NextLevel+CMSampleBuffer.swift"; sourceTree = "<group>"; };
 		DF215AF1235563D900EE67D3 /* NextLevel+UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NextLevel+UIImage.swift"; sourceTree = "<group>"; };
 		DF215AF2235563D900EE67D3 /* NextLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NextLevel.h; sourceTree = "<group>"; };
-		DF215B002356673700EE67D3 /* SwiftyRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyRecordButton.swift; sourceTree = "<group>"; };
 		DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyCamViewControllerDelegate.swift; sourceTree = "<group>"; };
 		DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyCamViewController.swift; sourceTree = "<group>"; };
 		DF215B042356673700EE67D3 /* Orientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orientation.swift; sourceTree = "<group>"; };
 		DF215B052356673700EE67D3 /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
-		DF215B062356673700EE67D3 /* SwiftyCamButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyCamButton.swift; sourceTree = "<group>"; };
 		DF21A36C2365597E00E39A55 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsTableViewController.swift; sourceTree = "<group>"; };
 		DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserTableViewCell.swift; sourceTree = "<group>"; };
@@ -150,7 +146,6 @@
 		DF4BC406234D8266001AD00D /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
 		DF4BC407234D8266001AD00D /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		DF4BC408234D8266001AD00D /* UIImageViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageViewExtensions.swift; sourceTree = "<group>"; };
-		DF4BC409234D8266001AD00D /* WatermarkCompositionInstruction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatermarkCompositionInstruction.swift; sourceTree = "<group>"; };
 		DF4BC40B234D8266001AD00D /* PhotoEditor.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PhotoEditor.storyboard; sourceTree = "<group>"; };
 		DF4F7A08234C239A001D6CE8 /* Mutuel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mutuel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF4F7A17234C23A3001D6CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -181,6 +176,7 @@
 		DFDE080D234D23880017BFDA /* DiscoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
 		DFDE0814234D248E0017BFDA /* ChannelsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		DFDE0816234D292D0017BFDA /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		DFE792C123B650FF003F2456 /* RecordingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingButton.swift; sourceTree = "<group>"; };
 		DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		DFEB292A236DB082006FC6BB /* Pidgin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pidgin.entitlements; sourceTree = "<group>"; };
 		DFEE6F40239BA8FA0097EA52 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
@@ -289,7 +285,6 @@
 				DF4BC406234D8266001AD00D /* ColorCollectionViewCell.swift */,
 				DF4BC407234D8266001AD00D /* GradientView.swift */,
 				DF4BC408234D8266001AD00D /* UIImageViewExtensions.swift */,
-				DF4BC409234D8266001AD00D /* WatermarkCompositionInstruction.swift */,
 				DF4BC40B234D8266001AD00D /* PhotoEditor.storyboard */,
 			);
 			path = PhotoVideoEditor;
@@ -302,10 +297,9 @@
 				DFADF6FB2357F23F00383627 /* CameraVC.swift */,
 				DF215B042356673700EE67D3 /* Orientation.swift */,
 				DF215B052356673700EE67D3 /* PreviewView.swift */,
-				DF215B062356673700EE67D3 /* SwiftyCamButton.swift */,
 				DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */,
+				DFE792C123B650FF003F2456 /* RecordingButton.swift */,
 				DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */,
-				DF215B002356673700EE67D3 /* SwiftyRecordButton.swift */,
 				DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */,
 			);
 			path = camera;
@@ -613,7 +607,6 @@
 				DF4BC40E234D8267001AD00D /* ViewGestures.swift in Sources */,
 				DFDD9ED0234FDD5D007A3177 /* VirtualContentUpdater.swift in Sources */,
 				DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */,
-				DF4BC42A234D8267001AD00D /* WatermarkCompositionInstruction.swift in Sources */,
 				DF4BC429234D8267001AD00D /* UIImageViewExtensions.swift in Sources */,
 				DFDE0815234D248E0017BFDA /* ChannelsViewController.swift in Sources */,
 				DF3C1A0E2398138000106964 /* HomeViewController.swift in Sources */,
@@ -639,12 +632,11 @@
 				DFF346262367A3FF006AA467 /* Channel.swift in Sources */,
 				DF95102D23610088006B3B44 /* NameViewController.swift in Sources */,
 				DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */,
-				DF215B0D2356673700EE67D3 /* SwiftyCamButton.swift in Sources */,
 				DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */,
 				DF215AFC235563D900EE67D3 /* NextLevelConfiguration.swift in Sources */,
 				DFDD9ECF234FDD5D007A3177 /* RemoteFaceFilter.swift in Sources */,
+				DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */,
 				DF951031236100D4006B3B44 /* UsernameViewController.swift in Sources */,
-				DF215B072356673700EE67D3 /* SwiftyRecordButton.swift in Sources */,
 				DF215AFE235563D900EE67D3 /* NextLevel+CMSampleBuffer.swift in Sources */,
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
 				DF3C1A102399AF3D00106964 /* NotificationService.swift in Sources */,

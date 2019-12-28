@@ -151,7 +151,7 @@ class SendToUserViewController: UIViewController {
     }
     
     func setUpSendButton(){
-        sendButton.setTitle("Save", for: .normal)
+        sendButton.setTitle("Done", for: .normal)
         sendButton.setTitleColor(.systemPink, for: .normal)
         sendButton.setTitleColor(UIColor.placeholderText, for: .disabled)
         sendButton.addTarget(self, action:#selector(sendPressed), for:.touchUpInside)

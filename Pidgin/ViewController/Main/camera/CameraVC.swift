@@ -10,10 +10,10 @@ import UIKit
 import AVFoundation
 import ARKit
 import FirebaseAuth
-import SDRecordButton
 class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     
-    @IBOutlet weak var captureButton    : SwiftyRecordButton!
+    @IBOutlet weak var captureButton: RecordingButton!
+    
     @IBOutlet weak var flipCameraButton : UIButton!
     @IBOutlet weak var flashButton      : UIButton!
     @IBOutlet weak var presentARButton: UIButton!
@@ -27,11 +27,8 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-    
-        
-        
         videoGravity = .resizeAspectFill
+        super.viewDidLoad()
         captureButton.delegate = self
         shouldPrompToAppSettings = true
         cameraDelegate = self
@@ -40,8 +37,6 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         allowAutoRotate = true
         audioEnabled = true
         allowBackgroundAudio = true
-        
-        
         captureButton.layer.addButtonShadows()
         flipCameraButton.layer.addButtonShadows()
         flashButton.layer.addButtonShadows()
@@ -49,14 +44,19 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         dismissButton.layer.addButtonShadows()
         galleryButton.layer.addButtonShadows()
         
+        let captureTap = UITapGestureRecognizer(target: self, action: #selector(takeAPhoto))
+        captureButton.addGestureRecognizer(captureTap)
+        
+        let videoPress = UILongPressGestureRecognizer(target: self, action: #selector(startRecording))
+        captureButton.addGestureRecognizer(videoPress)
+        
         // disable capture button until session starts
         let zoom = UIPanGestureRecognizer(target: self, action: #selector(zoomGesture))
         captureButton.addGestureRecognizer(zoom)
-        captureButton.buttonEnabled = false
+        captureButton.isEnabled = false
         if !ARFaceTrackingConfiguration.isSupported{
             presentARButton.removeFromSuperview()
         }
-        
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -76,6 +76,13 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         super.viewWillDisappear(animated)
         session.stopRunning()
     }
+    override func viewWillAppear(_ animated : Bool){
+        super.viewWillAppear(animated)
+        showButtons()
+        UIView.animate(withDuration : 0.2){
+            self.captureButton.alpha = 1
+        }
+    }
     
     @IBAction func dismissPressed(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -92,18 +99,43 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     }
     
     @IBAction func presentGallery(_ sender: Any) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.mediaTypes = ["public.image", "public.movie"]
+        picker.sourceType = .photoLibrary
+
+        self.present(picker, animated: true, completion: nil)
+    }
+    
+    @objc func takeAPhoto(){
+        takePhoto()
+        UIView.animate(withDuration : 0.2){
+            self.captureButton.alpha = 0
+        }
+        hideButtons()
+    }
+    
+    @objc func startRecording(sender : UILongPressGestureRecognizer){
+       switch sender.state {
+        case .began:
+            startVideoRecording()
+        case .ended,.failed:
+            stopVideoRecording()
+        default:
+            break
+        }
     }
     
     
     func swiftyCamSessionDidStartRunning(_ swiftyCam: SwiftyCamViewController) {
         print("Session did start running")
         //ProgressHUD.dismiss()
-        captureButton.buttonEnabled = true
+        captureButton.isEnabled = true
     }
     
     func swiftyCamSessionDidStopRunning(_ swiftyCam: SwiftyCamViewController) {
         print("Session did stop running")
-        captureButton.buttonEnabled = false
+        captureButton.isEnabled = false
     }
     
     
@@ -118,19 +150,18 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         vc.checkVideoOrIamge = true
         
         vc.modalPresentationStyle = .fullScreen
-        
         present(vc, animated: true, completion: nil)
     }
     
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didBeginRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
         print("Did Begin Recording")
-        captureButton.growButton()
+        captureButton.record()
         hideButtons()
     }
     
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFinishRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
         print("Did finish Recording")
-        captureButton.shrinkButton()
+        captureButton.stopRecord()
         showButtons()
     }
     
@@ -307,6 +338,54 @@ extension CameraVC{
     }
 }
 
+extension CameraVC : RecordingButtonDelegate{
+    func didStartCapture() {
+        print("did start capture")
+    }
+    
+    func didEndCapture() {
+        print("did end capture")
+    }
+    
+    
+}
+
+extension CameraVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+      picker.dismiss(animated: true, completion: nil)
+        
+        let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
+        
+        vc.modalPresentationStyle = .fullScreen
+        
+        if let mediaType = info[UIImagePickerController.InfoKey.mediaType] as? String {
+
+            if mediaType  == "public.image" {
+                // 1
+                if let newImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
+                    vc.photo = newImage
+                    vc.checkVideoOrIamge = true
+                }
+                  
+            }
+            if mediaType == "public.movie" {
+                print("Video Selected")
+                if let url = info[UIImagePickerController.InfoKey.mediaURL] as? URL{
+                    vc.videoURL = url
+                    vc.checkVideoOrIamge = false
+                }
+            }
+            present(vc, animated: true, completion: nil)
+        }
+      print("uploading image")
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+      picker.dismiss(animated: true, completion: nil)
+    }
+}
 
 extension CALayer{
     func addButtonShadows(){

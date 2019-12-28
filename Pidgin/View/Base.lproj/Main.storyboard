@@ -178,7 +178,7 @@
                                                             </constraints>
                                                         </imageView>
                                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EEC-Sn-jAP">
-                                                            <rect key="frame" x="98.5" y="8" width="244.5" height="101"/>
+                                                            <rect key="frame" x="98.5" y="8" width="260.5" height="101"/>
                                                             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                                             <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -192,7 +192,7 @@
                                                         <constraint firstItem="yhY-Po-jCm" firstAttribute="top" secondItem="KXr-Xl-Opn" secondAttribute="top" constant="8" id="HUA-Zk-rvD"/>
                                                         <constraint firstItem="EEC-Sn-jAP" firstAttribute="top" secondItem="KXr-Xl-Opn" secondAttribute="top" constant="8" id="J4c-vv-lAU"/>
                                                         <constraint firstItem="yhY-Po-jCm" firstAttribute="leading" secondItem="KXr-Xl-Opn" secondAttribute="leading" constant="16" id="NXH-p3-LDE"/>
-                                                        <constraint firstAttribute="trailing" secondItem="EEC-Sn-jAP" secondAttribute="trailing" constant="32" id="Tvi-xT-Lkr"/>
+                                                        <constraint firstAttribute="trailing" secondItem="EEC-Sn-jAP" secondAttribute="trailing" constant="16" id="Tvi-xT-Lkr"/>
                                                         <constraint firstAttribute="height" constant="75" id="hJF-sj-uHe"/>
                                                     </constraints>
                                                 </view>
@@ -749,30 +749,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lr6-ve-mHV" customClass="SwiftyRecordButton" customModule="Mutuel" customModuleProvider="target">
-                                <rect key="frame" x="149" y="571" width="75" height="75"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6V-1F-MwY" customClass="RecordingButton" customModule="Mutuel">
+                                <rect key="frame" x="145" y="550" width="85" height="85"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="75" id="O1A-Gu-8Zw"/>
-                                    <constraint firstAttribute="width" constant="75" id="oDq-Ok-T4A"/>
+                                    <constraint firstAttribute="height" constant="85" id="Qsu-D3-Qa9"/>
+                                    <constraint firstAttribute="width" constant="85" id="T0B-WL-gce"/>
                                 </constraints>
-                            </view>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eS-3c-tmy">
-                                <rect key="frame" x="64" y="595" width="35" height="27.5"/>
+                                <rect key="frame" x="71.5" y="576.5" width="41.5" height="32"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="camera.rotate.fill" catalog="system">
-                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
                                 </state>
                                 <connections>
                                     <action selector="cameraSwitchTapped:" destination="CKX-xS-AZr" eventType="touchUpInside" id="Xcj-7E-i2T"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eSa-x0-cs0">
-                                <rect key="frame" x="16" y="8" width="25" height="25.5"/>
+                                <rect key="frame" x="16" y="8" width="29.5" height="29"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="contentEdgeInsets" minX="-1" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <state key="normal" image="xmark" catalog="system">
-                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabled" value="YES"/>
@@ -782,35 +781,25 @@
                                     <action selector="dismissPressed:" destination="CKX-xS-AZr" eventType="touchUpInside" id="Pmq-e9-84x"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0wZ-iS-gty">
-                                <rect key="frame" x="274" y="595.5" width="35" height="26.5"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" image="photo.fill" catalog="system">
-                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
-                                </state>
-                                <connections>
-                                    <action selector="presentGallery:" destination="CKX-xS-AZr" eventType="touchUpInside" id="8DO-qz-wFt"/>
-                                </connections>
-                            </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="PWX-2X-hrj">
-                                <rect key="frame" x="328" y="8" width="31" height="70"/>
+                                <rect key="frame" x="322" y="8" width="37" height="83"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qly-z0-J6w">
-                                        <rect key="frame" x="0.0" y="0.0" width="31" height="31.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="37" height="38"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" image="bolt.slash.fill" catalog="system">
-                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
                                         </state>
                                         <connections>
                                             <action selector="toggleFlashTapped:" destination="CKX-xS-AZr" eventType="touchUpInside" id="iJ4-uy-ClY"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eFS-qe-UD3">
-                                        <rect key="frame" x="0.0" y="39.5" width="31" height="30.5"/>
+                                        <rect key="frame" x="0.0" y="46" width="37" height="37"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <size key="titleShadowOffset" width="10" height="10"/>
                                         <state key="normal" image="arkit" catalog="system">
-                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
                                         </state>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabled" value="YES"/>
@@ -822,26 +811,36 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0wZ-iS-gty">
+                                <rect key="frame" x="262" y="577" width="42" height="31"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" image="photo.fill" catalog="system">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
+                                </state>
+                                <connections>
+                                    <action selector="presentGallery:" destination="CKX-xS-AZr" eventType="touchUpInside" id="8DO-qz-wFt"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="W6V-1F-MwY" firstAttribute="centerX" secondItem="EdI-cW-xFn" secondAttribute="centerX" id="0FF-0a-GKB"/>
                             <constraint firstItem="PWX-2X-hrj" firstAttribute="top" secondItem="bQG-Vw-jGN" secondAttribute="bottom" constant="8" id="1rE-oC-mPG"/>
-                            <constraint firstItem="lr6-ve-mHV" firstAttribute="centerX" secondItem="EdI-cW-xFn" secondAttribute="centerX" constant="-1" id="22F-zc-yS5"/>
-                            <constraint firstItem="JxF-2V-R1T" firstAttribute="bottom" secondItem="lr6-ve-mHV" secondAttribute="bottom" constant="21" id="2cr-9p-icC"/>
-                            <constraint firstItem="lr6-ve-mHV" firstAttribute="leading" secondItem="8eS-3c-tmy" secondAttribute="trailing" constant="50" id="4xM-OD-RCQ"/>
-                            <constraint firstItem="0wZ-iS-gty" firstAttribute="centerY" secondItem="lr6-ve-mHV" secondAttribute="centerY" id="54c-UQ-Vie"/>
                             <constraint firstItem="JxF-2V-R1T" firstAttribute="trailing" secondItem="PWX-2X-hrj" secondAttribute="trailing" constant="16" id="7Wq-x9-hjN"/>
-                            <constraint firstItem="8eS-3c-tmy" firstAttribute="centerY" secondItem="lr6-ve-mHV" secondAttribute="centerY" id="8VA-sk-kDt"/>
+                            <constraint firstItem="JxF-2V-R1T" firstAttribute="bottom" secondItem="W6V-1F-MwY" secondAttribute="bottom" constant="32" id="A5P-3v-HHb"/>
+                            <constraint firstItem="W6V-1F-MwY" firstAttribute="leading" secondItem="8eS-3c-tmy" secondAttribute="trailing" constant="32" id="ABJ-dl-rGV"/>
                             <constraint firstItem="eSa-x0-cs0" firstAttribute="leading" secondItem="JxF-2V-R1T" secondAttribute="leading" constant="16" id="IGS-q0-MTe"/>
                             <constraint firstItem="eSa-x0-cs0" firstAttribute="top" secondItem="bQG-Vw-jGN" secondAttribute="bottom" constant="8" id="Ibe-cM-7gI"/>
-                            <constraint firstItem="0wZ-iS-gty" firstAttribute="leading" secondItem="lr6-ve-mHV" secondAttribute="trailing" constant="50" id="xzY-aH-lfz"/>
+                            <constraint firstItem="8eS-3c-tmy" firstAttribute="centerY" secondItem="W6V-1F-MwY" secondAttribute="centerY" id="QR0-EC-suD"/>
+                            <constraint firstItem="0wZ-iS-gty" firstAttribute="leading" secondItem="W6V-1F-MwY" secondAttribute="trailing" constant="32" id="dOJ-Q8-bvh"/>
+                            <constraint firstItem="0wZ-iS-gty" firstAttribute="centerY" secondItem="W6V-1F-MwY" secondAttribute="centerY" id="u9P-z1-FKv"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JxF-2V-R1T"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="JSO-z0-8oB"/>
                     <navigationItem key="navigationItem" id="52F-ba-DI2"/>
                     <connections>
-                        <outlet property="captureButton" destination="lr6-ve-mHV" id="KN5-mg-DMb"/>
+                        <outlet property="captureButton" destination="W6V-1F-MwY" id="sKF-cM-5km"/>
                         <outlet property="dismissButton" destination="eSa-x0-cs0" id="aJP-qW-Pex"/>
                         <outlet property="flashButton" destination="Qly-z0-J6w" id="JuW-Vs-CQs"/>
                         <outlet property="flipCameraButton" destination="8eS-3c-tmy" id="tuN-mS-t25"/>

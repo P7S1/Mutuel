@@ -1,7 +1,11 @@
 import Firebase
-
-struct Channel {
-  
+import DeepDiff
+struct Channel : DiffAware {
+    var diffId: UUID?
+    
+    static func compareContent(_ a: Channel, _ b: Channel) -> Bool {
+        return a.id == b.id
+    }
   var id: String?
   var name: String?
     var members : [String] = [String]()

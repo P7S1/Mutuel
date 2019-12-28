@@ -141,7 +141,8 @@ public final class PhotoEditorViewController: UIViewController {
         
         */
         
-        
+        canvasView.layer.cornerRadius = 20
+        canvasView.clipsToBounds = true
   
         if checkVideoOrIamge {
 
@@ -419,7 +420,7 @@ public final class PhotoEditorViewController: UIViewController {
         
         //Text Attributes
         textView.textAlignment = .center
-        textView.font = UIFont(name: "Helvetica", size: 40)
+        textView.font = UIFont.systemFont(ofSize: 40, weight: .bold)
         textView.textColor = textColor
         textView.layer.shadowColor = UIColor.black.cgColor
         textView.layer.shadowOffset = CGSize(width: 1.0, height: 0.0)
@@ -694,13 +695,6 @@ public final class PhotoEditorViewController: UIViewController {
             
             let frame = CGRect(x: gif.frame.origin.x, y: (tempImageView.frame.height-gif.frame.height)-(gif.frame.origin.y), width: gif.frame.width, height: gif.frame.height)
             miniGifLayer.frame = frame
-            miniGifLayer.anchorPoint = .zero
-            let angle = atan2f(Float(gif.transform.b), Float(gif.transform.a))
-            let degrees = Double(angle) * (180 / M_PI)
-          //  let transformation = miniGifLayer.affineTransform().rotated(by: CGFloat(degrees))
-          //  miniGifLayer.setAffineTransform(transformation)
-            print("angle(radians) : \(angle)")
-            print("angel (degrees) : \(degrees)")
             gifLayer.addSublayer(miniGifLayer)
         }
         let rectangle = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
@@ -841,7 +835,7 @@ extension PhotoEditorViewController: UITextViewDelegate {
         lastTextViewFont = textView.font!
         activeTextView = textView
         textView.superview?.bringSubviewToFront(textView)
-        textView.font = UIFont(name: "Helvetica", size: 40)
+        textView.font = UIFont.systemFont(ofSize: 40, weight: .bold)
         UIView.animate(withDuration: 0.3,
                        animations: {
                         textView.transform = CGAffineTransform.identity
@@ -968,7 +962,6 @@ extension PhotoEditorViewController: GiphyDelegate {
             self.tempImageView.addSubview(imageView)
             //Gestures
             self.addGestures(view: imageView)
-        imageView.layer.anchorPoint = .zero
             giphyViewController.dismiss(animated: true, completion: nil)
         
     }

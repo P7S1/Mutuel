@@ -1021,7 +1021,7 @@ open class SwiftyCamViewController: UIViewController {
     }
 }
 
-extension SwiftyCamViewController : SwiftyCamButtonDelegate {
+extension SwiftyCamViewController {
 
 	/// Sets the maximum duration of the SwiftyCamButton
 

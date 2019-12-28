@@ -25,5 +25,4 @@ target 'Pidgin' do
   pod 'Giphy'
   pod 'CropViewController'
   pod 'Hero'
-  pod "SDRecordButton"
 end
