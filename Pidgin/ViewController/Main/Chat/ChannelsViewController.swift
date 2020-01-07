@@ -91,10 +91,13 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         var newItems = channels
     newItems.append(channel)
         newItems.sort()
-    let changes = diff(old: old, new: newItems)
-    tableView.reload(changes: changes, section: 0, updateData: {
-      channels = newItems
-    })
+    tableView.performBatchUpdates({
+        let changes = diff(old: old, new: newItems)
+        tableView.reload(changes: changes, section: 0, updateData: {
+          channels = newItems
+        })
+    }, completion: nil)
+  
 
   }
   
@@ -123,10 +126,12 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         var newItems = channels
         newItems[index] = channel
         newItems.sort()
-    let changes = diff(old: old, new: newItems)
-        tableView.reload(changes: changes, section: 0, updateData: {
-          channels = newItems
-        })
+        tableView.performBatchUpdates({
+            let changes = diff(old: old, new: newItems)
+            tableView.reload(changes: changes, section: 0, updateData: {
+              channels = newItems
+            })
+        }, completion: nil)
      NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
   }
     
@@ -139,10 +144,12 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         var newItems = channels
     newItems.remove(at: index)
         newItems.sort()
-    let changes = diff(old: old, new: newItems)
+    tableView.performBatchUpdates({
+        let changes = diff(old: old, new: newItems)
         tableView.reload(changes: changes, section: 0, updateData: {
           channels = newItems
         })
+    }, completion: nil)
   }
   
   private func handleDocumentChange(_ change: DocumentChange) {

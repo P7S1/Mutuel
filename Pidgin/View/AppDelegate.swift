@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(logUserIn), name:NSNotification.Name(rawValue: "logUserIn"), object: nil)
         
-        self.window?.tintColor = .systemPink
+        self.window?.tintColor = .systemPurple
         SvrfSDK.authenticate(onSuccess: {
           print("Successfully authenticated with the Svrf API!")
         }, onFailure: { err in
@@ -61,7 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) {
             ProgressHUD.statusColor(.label)
         }
-        
         // Override point for customization after application launch.
         return true
     }
@@ -102,12 +101,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.navigationController?.navigationBar.layer.masksToBounds = false
         navBarAppearanc */
         navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold)]
-        UINavigationBar.appearance().tintColor = UIColor.systemPink
+        UINavigationBar.appearance().tintColor = UIColor.systemBlue
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
     
-        
+        UITabBar.appearance().tintColor = .label
         UITabBar.appearance().backgroundColor = .systemBackground
     }
     
@@ -133,7 +132,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         self.window?.makeKeyAndVisible()
                     } */
                     let vc = TabBarController()
-
                     UIApplication.shared.windows.first?.rootViewController = vc
                     appDidLoad = true
                 }

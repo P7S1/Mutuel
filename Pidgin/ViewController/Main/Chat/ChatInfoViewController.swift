@@ -45,9 +45,9 @@ class ChatInfoViewController: UIViewController {
         addMemberButton.roundCorners()
         if #available(iOS 13.0, *) {
             leaveGroupButton.backgroundColor = .systemGray6
-            leaveGroupButton.setTitleColor(.systemPink, for: .normal)
+            leaveGroupButton.setTitleColor(.systemBlue, for: .normal)
             addMemberButton.backgroundColor = .systemGray6
-            addMemberButton.setTitleColor(.systemPink, for: .normal)
+            addMemberButton.setTitleColor(.systemBlue, for: .normal)
         }
         
         if channel.groupChat ?? false{
@@ -56,12 +56,14 @@ class ChatInfoViewController: UIViewController {
             addMemberButton.setTitle("Edit Group", for: .normal)
             if let url = channel.profilePics?.value(forKey: channel.id ?? "") as? String{
                 image.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
+                image.heroID = url
             }else{
                 image.image = FollowersHelper().getGroupProfilePicture()
             }
         }else{
             if let url = channel.profilePics?.value(forKey: channel.members[0]) as? String{
                 image.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
+                image.heroID = url
             }else{
                 image.image = FollowersHelper().getUserProfilePicture()
             }
@@ -115,7 +117,7 @@ class ChatInfoViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 print("user cancelled")
             }))
-            alert.view.tintColor = .systemPink
+            alert.view.tintColor = .systemBlue
             self.present(alert, animated: true, completion: nil)
         }else{
             let alert = UIAlertController(title: "Block \(self.displayname)", message: "Are you sure you want to block \(self.displayname)? This will make you both unfollow each other.", preferredStyle: .alert)
@@ -127,7 +129,7 @@ class ChatInfoViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 print("user cancelled")
             }))
-            alert.view.tintColor = .systemPink
+            alert.view.tintColor = .systemBlue
             self.present(alert, animated: true, completion: nil)
             
         }

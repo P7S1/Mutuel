@@ -129,10 +129,12 @@ class User : Account{
         birthday = nil
     }
     
-    func invalidateToken(){
+    func invalidateToken(completion: @escaping (Bool) -> Void){
         userListener?.remove()
         channelListener?.remove()
         channels.removeAll()
+        
+
         if let token = Messaging.messaging().fcmToken{
             let query = db.collection("channels").whereField("fcmToken", arrayContains: token).whereField("active", isEqualTo: true)
             query.getDocuments { (snapshot, error) in
@@ -155,18 +157,20 @@ class User : Account{
                 }else{
                     print("therew as an error: \(error!)")
                 }
-            }
-            let docRef = db.collection("users").document(User.shared.uid ?? "")
-            docRef.updateData([
-                "fcmToken": FieldValue.arrayRemove([token]),
-            ]) { err in
-                if let err = err {
-                    print("Error updating document: \(err)")
-
-                } else {
-                    print("Document successfully updated")
-        
-                }
+                
+                let docRef = db.collection("users").document(User.shared.uid ?? "")
+                    docRef.updateData([
+                        "fcmToken": FieldValue.arrayRemove([token]),
+                    ]) { err in
+                        if let err = err {
+                            print("Error updating document: \(err)")
+                                completion(false)
+                        } else {
+                            print("Document successfully updated")
+                            completion(true)
+                
+                        }
+                    }
             }
             
         }

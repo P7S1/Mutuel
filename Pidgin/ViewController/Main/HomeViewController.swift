@@ -20,8 +20,8 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         isHeroEnabled = true
+        navigationController?.hero.navigationAnimationType = .selectBy(presenting: .fade, dismissing:.fade)
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
@@ -73,6 +73,7 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         imageView.addTarget(self, action:#selector(profileBarButtonPressed), for:.touchUpInside)
         guard let navigationBar = self.navigationController?.navigationBar else { return }
         imageView.imageView?.contentMode = .scaleAspectFill
+        
         navigationBar.addSubview(imageView)
         imageView.layer.cornerRadius = Const.ImageSizeForLargeState / 2
         imageView.clipsToBounds = true
@@ -166,7 +167,8 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         // let chat = UIButton.init(type: .custom)
         // chat.setImage(UIImage(systemName: "square.and.pencil"), for: UIControl.State.normal)
          //chat.addTarget(self, action:#selector(chatButtonPressed), for:.touchUpInside)
-            let chatButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), style: .plain, target: self, action: #selector(chatButtonPressed))
+            let medium = UIImage.SymbolConfiguration(weight: .medium)
+            let chatButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil", withConfiguration: medium), style: .plain, target: self, action: #selector(chatButtonPressed))
             
         navigationItem.leftBarButtonItems = [chatButton]
         }

@@ -18,7 +18,7 @@ class EditProfileViewController: FormViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         saveChangesButton()
             navigationItem.title = "Account Settings"
-        self.view.tintColor = .systemPink
+        self.view.tintColor = .systemBlue
             form +++ Section("")
                 <<< ImageRow() {
                     $0.title = "Profile picture"

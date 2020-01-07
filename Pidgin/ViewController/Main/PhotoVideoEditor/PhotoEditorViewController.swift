@@ -723,7 +723,7 @@ public final class PhotoEditorViewController: UIViewController {
                 }else if ((exporter?.outputURL) != nil) && !saveToPhotoLibray{
                     ProgressHUD.dismiss()
                     DispatchQueue.main.async{
-                    self.presentSendToUserViewController(image: nil, video: exporter!.outputURL!)
+                        self.presentSendToUserViewController(image: nil, video: exporter!.outputURL!, size: clipVideoTrack.naturalSize)
                     }
                     self.photoEditorDelegate?.videoEdited(video: exporter!.outputURL!)
                 }
@@ -785,12 +785,14 @@ public final class PhotoEditorViewController: UIViewController {
                     if isGifImage{
                         
                     }else{
+                        let imageFrame = VideoHelper.calculateRectOfImageInImageView(imageView: imageView)
+                        let exportedImage = canvasView.toImage().croppedImage(withFrame: imageFrame, angle: 0, circularClip: false)
                         if saveToPhotoLibrary{
-                    UIImageWriteToSavedPhotosAlbum(canvasView.toImage(),self, #selector(PhotoEditorViewController.image(_:withPotentialError:contextInfo:)), nil)
+                    UIImageWriteToSavedPhotosAlbum(exportedImage,self, #selector(PhotoEditorViewController.image(_:withPotentialError:contextInfo:)), nil)
                         }else{
                             ProgressHUD.dismiss()
-                            presentSendToUserViewController(image: canvasView.toImage(), video: nil)
-                            photoEditorDelegate?.imageEdited(image: canvasView.toImage())
+                            presentSendToUserViewController(image: exportedImage, video: nil, size : imageFrame.size)
+                            photoEditorDelegate?.imageEdited(image: exportedImage)
                         }
                     }
                 } else {
@@ -934,11 +936,12 @@ extension PhotoEditorViewController {
         }
     }
     
-    func presentSendToUserViewController(image : UIImage?, video : URL?){
+    func presentSendToUserViewController(image : UIImage?, video : URL?, size : CGSize){
        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
         vc.selectedUsers = users
         vc.video = video
+        vc.size = size
         if let img = image{
             vc.image = img
         }

@@ -223,7 +223,9 @@ extension CameraVC {
         UIView.animate(withDuration: 0.25) {
             self.flashButton.alpha = 0.0
             self.flipCameraButton.alpha = 0.0
-            self.presentARButton.alpha = 0.00
+            if ARFaceTrackingConfiguration.isSupported{
+                self.presentARButton.alpha = 0.00
+            }
             self.galleryButton.alpha = 0.0
             self.dismissButton.alpha = 0.0
         }
@@ -233,7 +235,9 @@ extension CameraVC {
         UIView.animate(withDuration: 0.25) {
             self.flashButton.alpha = 1.0
             self.flipCameraButton.alpha = 1.0
-            self.presentARButton.alpha = 1.0
+            if ARFaceTrackingConfiguration.isSupported{
+                self.presentARButton.alpha = 1.00
+            }
             self.galleryButton.alpha = 1.0
             self.dismissButton.alpha = 1.0
         }

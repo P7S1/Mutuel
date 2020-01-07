@@ -25,4 +25,6 @@ target 'Pidgin' do
   pod 'Giphy'
   pod 'CropViewController'
   pod 'Hero'
+  pod 'WLEmptyState'
+  pod 'CHTCollectionViewWaterfallLayout'
 end

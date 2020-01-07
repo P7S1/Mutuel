@@ -167,6 +167,9 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.3)
   - BoringSSL-GRPC/Interface (0.0.3)
   - Cache (5.2.0)
+  - CHTCollectionViewWaterfallLayout (0.9.7):
+    - CHTCollectionViewWaterfallLayout/ObjC (= 0.9.7)
+  - CHTCollectionViewWaterfallLayout/ObjC (0.9.7)
   - CropViewController (2.5.2)
   - DeepDiff (2.3.1)
   - Eureka (5.1.0)
@@ -338,8 +341,11 @@ PODS:
     - Alamofire (~> 4.8.2)
     - Analytics (~> 3.0)
     - SvrfGLTFSceneKit (~> 1.3)
+  - WaterfallLayout (0.2)
+  - WLEmptyState (3.1.0)
 
 DEPENDENCIES:
+  - CHTCollectionViewWaterfallLayout
   - CropViewController
   - Eureka
   - Firebase/Analytics
@@ -356,6 +362,8 @@ DEPENDENCIES:
   - NextLevel
   - NotificationBannerSwift
   - SvrfSDK
+  - WaterfallLayout
+  - WLEmptyState
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -364,6 +372,7 @@ SPEC REPOS:
     - Analytics
     - BoringSSL-GRPC
     - Cache
+    - CHTCollectionViewWaterfallLayout
     - CropViewController
     - DeepDiff
     - Eureka
@@ -405,6 +414,8 @@ SPEC REPOS:
     - SnapKit
     - SvrfGLTFSceneKit
     - SvrfSDK
+    - WaterfallLayout
+    - WLEmptyState
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
@@ -412,6 +423,7 @@ SPEC CHECKSUMS:
   Analytics: 77fd5fb102a4a5eedafa2c2b0245ceb7b7c15e45
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   Cache: 807c5d86d01a177f06ede9865add3aea269bbfd4
+  CHTCollectionViewWaterfallLayout: 9d11068fafecac106695bb5a5d6d0f738483b598
   CropViewController: 1aac40093c5739e60d992b04724a55d12a689a4c
   DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
   Eureka: 18a5076dcf0c41f9cd9748aa1c42f4d11434bdae
@@ -453,7 +465,9 @@ SPEC CHECKSUMS:
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SvrfGLTFSceneKit: 6572849d8b42e779c2e816e666def4e344d4f081
   SvrfSDK: 3ab4891a6fde8a73b831b2c96477eb9839817272
+  WaterfallLayout: 030e04b041e5c6c47ae2c1eaa685c60289fab0b1
+  WLEmptyState: 2bbb3970f62c0b9252029d34a8f74cb3d436eeea
 
-PODFILE CHECKSUM: 57164d4a57abb88f807c12c085b93a584aac49e5
+PODFILE CHECKSUM: 0440940dbad5b44e39bdf5584b579c50e728c446
 
 COCOAPODS: 1.8.4

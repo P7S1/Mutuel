@@ -144,7 +144,7 @@ class RecordingButton: UIButton {
         endProgressValue=0;
         //innerCircleRadious=25;
         isCompleteMode = true;
-        timer.invalidate();
+//        timer.invalidate();
         timer = nil;
         timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.restoreDefaultState), userInfo: nil, repeats: true);
         

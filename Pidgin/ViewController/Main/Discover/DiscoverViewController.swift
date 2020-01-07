@@ -14,18 +14,20 @@ import FirebaseFirestore
 import FirebaseStorage
 import NotificationBannerSwift
 import Lightbox
-class DiscoverViewController: HomeViewController, UICollectionViewDelegate {
-
+class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate {
+    
     var segmentedController: UISegmentedControl!
     
-    @IBOutlet weak var collectionView: UICollectionView!
+    var exploreVC : ExploreViewController!
+    
+    var followingVC : FollowingViewController!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         isHeroEnabled = true
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         setupUI()
-        collectionView.delegate = self
         
         configureNavItem(name: "Discover")
         let items = ["Discover", "Following"]
@@ -34,6 +36,16 @@ class DiscoverViewController: HomeViewController, UICollectionViewDelegate {
         navigationItem.titleView = segmentedController
         segmentedController.addTarget(self, action: #selector(indexChanged(_:)), for: .valueChanged)
         segmentedController.selectedSegmentIndex = 0
+        
+        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+        exploreVC = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as? ExploreViewController
+        exploreVC.exploreDelegate = self
+        followingVC  = storyboard.instantiateViewController(withIdentifier: "FollowingViewController") as? FollowingViewController
+        followingVC.followingDelegate = self
+        addConstraints(view: exploreVC.view)
+        addConstraints(view: followingVC.view)
+        indexChanged(segmentedController)
+        
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
             if response {
@@ -73,20 +85,49 @@ class DiscoverViewController: HomeViewController, UICollectionViewDelegate {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isHeroEnabled = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        //navigationController?.isHeroEnabled = false
+    }
+    
     @objc func indexChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex{
             case 0:
                 navigationItem.title = "Discover"
                 print("Discover")
+                followingVC.removeFromParent()
+                followingVC.view.removeFromSuperview()
+                followingVC.didMove(toParent: nil)
+                self.addChild(exploreVC)
+                self.view.addSubview(exploreVC.view)
+                exploreVC.didMove(toParent: self)
             case 1:
                 print("Following")
                 navigationItem.title = "Following"
+                exploreVC.removeFromParent()
+                exploreVC.view.removeFromSuperview()
+                exploreVC.didMove(toParent: nil)
+                self.addChild(followingVC)
+                self.view.addSubview(followingVC.view)
+                followingVC.didMove(toParent: self)
             default:
                 break
             }
     }
     
-
+     func addConstraints(view : UIView){
+       view.frame = self.view.bounds
+     view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
+    
+    func collectionViewScrolled(_ scrollView: UIScrollView) {
+        super.scrollViewDidScroll(scrollView)
+    }
     /*
     // MARK: - Navigation
 
@@ -101,15 +142,22 @@ class DiscoverViewController: HomeViewController, UICollectionViewDelegate {
 extension UIViewController{
     func returnToLoginScreen(){
         let alert = UIAlertController(title: "Logged Out", message: "You have been logged out, please log back in.", preferredStyle: .alert)
-        User.shared.invalidateToken()
-        User.shared.invalidateUser()
+        User.shared.invalidateToken { (completion) in
+            User.shared.invalidateUser()
+            do{
+                try Auth.auth().signOut()
+            }catch{
+                print("Error signing out: \(error)")
+            }
+            
+        }
+        
         alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: { (action) in
             let storyboard = UIStoryboard(name: "Login", bundle: nil)
                 let vc = storyboard.instantiateViewController(withIdentifier: "WelcomeViewController") as! WelcomeViewController
             vc.modalPresentationStyle = .fullScreen
                 self.present(vc, animated: true, completion: nil)
         }))
-        alert.view.tintColor = .systemPink
         self.present(alert, animated: true, completion: nil)
     }
 }
@@ -205,6 +253,7 @@ extension UIViewController{
           imageView, URL, completion in
             imageView.kf.setImage(with: URL)
             completion?(imageView.image)
+            imageView.heroID = URL.absoluteString
           // Custom image loading
         }
       // Create an instance of LightboxController.
@@ -230,9 +279,9 @@ class CustomBannerColors: BannerColorsProtocol {
     internal func color(for style: BannerStyle) -> UIColor {
         switch style {
             case .info:        // Your custom .info color
-               return .systemPink
+               return .systemBlue
             default:
-            return .systemPink
+            return .systemBlue
         }
     }
 
@@ -285,3 +334,16 @@ extension String {
         return filter{ $0.isEmoji }.flatMap { $0.unicodeScalars }
     }
 }
+
+    class BackGradientView: UIView {
+        override open class var layerClass: AnyClass {
+           return CAGradientLayer.classForCoder()
+        }
+
+        required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+            let gradientLayer = layer as! CAGradientLayer
+            gradientLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
+        }
+    }
+

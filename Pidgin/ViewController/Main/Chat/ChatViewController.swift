@@ -19,7 +19,6 @@ import GiphyUISDK
 import GiphyCoreSDK
 import SafariServices
 import NotificationBannerSwift
-import DeepDiff
 class ChatViewController: MessagesViewController {
     
     var name = ""
@@ -139,6 +138,7 @@ class ChatViewController: MessagesViewController {
   }
     
     @objc func reloadData(){
+        if didViewAppear && didUpdateInset{
         if let chan = channel, let index = channels.firstIndex(of: chan){
             channel?.lastOpened = channels[index].lastOpened
             channel?.lastMessageDate = channels[index].lastMessageDate
@@ -155,6 +155,7 @@ class ChatViewController: MessagesViewController {
                 messagesCollectionView.reloadSections(IndexSet(integer: index))
                 break
             }
+        }
         }
         }
     }
@@ -641,7 +642,7 @@ extension ChatViewController : MessageCellDelegate{
                 
             }))
             
-            alertController.view.tintColor = .systemPink
+            alertController.view.tintColor = .systemBlue
             alertController.modalPresentationStyle = .popover
             self.present(alertController, animated: true, completion: nil)
         }
@@ -1007,6 +1008,7 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
             }
             imageView.kf.indicatorType = .activity
             imageView.kf.setImage(with: URL(string: url))
+            imageView.heroID = url
         }else if channel?.messages[indexPath.section].messageKind == "video"{
           guard let url = channel?.messages[indexPath.section].placeHolderURL else {
                 imageView.kf.indicator?.startAnimatingView()

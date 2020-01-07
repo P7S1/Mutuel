@@ -75,7 +75,7 @@ class CreateGroupViewController: UIViewController{
                
            }))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alertController.view.tintColor = .systemPink
+        alertController.view.tintColor = .systemBlue
            self.present(alertController, animated: true, completion: nil)
     }
     

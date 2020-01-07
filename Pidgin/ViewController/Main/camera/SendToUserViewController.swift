@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import FirebaseStorage
 class SendToUserViewController: UIViewController {
     var selectedChannels : [Channel] = [Channel]()
     var selectedUsers : [Account] = [Account]()
@@ -15,7 +15,7 @@ class SendToUserViewController: UIViewController {
     var allUsers : [Account] = [Account]()
     var video : URL?
     var image = UIImage()
-    
+    var size = CGSize()
     @IBOutlet weak var addToTimelineButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var sendingToLabel: UILabel!
@@ -86,7 +86,7 @@ class SendToUserViewController: UIViewController {
         usersRef.getDocuments { (snapshot, error) in
             if error == nil{
                 for document in snapshot!.documents{
-                    let user = User()
+                    let user = Account()
                     user.convertFromDocument(dictionary: document)
                     self.allUsers.append(user)
             }
@@ -147,7 +147,50 @@ class SendToUserViewController: UIViewController {
     
     @objc func sendPressed(){
         print("send pressed")
+        if addToTimeline{
+            postMedia()
+        }
+        
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    func postMedia(){
+        ProgressHUD.show("Posting")
+        guard let data0 = image.jpegData(compressionQuality: 0.5)
+            else{
+                ProgressHUD.showError("Error")
+                print("error uploading picture")
+                return
+            }
+            
+        let imageRef = Storage.storage().reference().child("posts").child(User.shared.uid ?? "").child("\(UUID().uuidString)+\(Date()).jpg")
+                imageRef.putData(data0, metadata: nil) { (metaData, error) in
+                    imageRef.downloadURL { (url, error) in
+                        if error == nil {
+                            let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
+                            let widthInPixels = self.image.size.width * self.image.scale
+                            let heightInPixels = self.image.size.height * self.image.scale
+                            let imageSize = CGSize(width: widthInPixels, height: heightInPixels)
+                            let post = Post(photoURL: url!.absoluteString,
+                                            caption: self.textView.text,
+                                            publishDate: Date(),
+                                            creatorID: User.shared.uid ?? "",
+                                            isVideo: false, videoURL: nil,
+                                            photoSize: imageSize,
+                                            postID: ref.documentID)
+                            ref.setData(post.representation)
+                            ProgressHUD.showSuccess("Post Successful")
+                        } else{
+                            ProgressHUD.showError("Error")
+                            print("error uploading picture")
+                            
+                        }
+                    }
+                }
+            
+
+        
     }
     
     func setUpSendButton(){

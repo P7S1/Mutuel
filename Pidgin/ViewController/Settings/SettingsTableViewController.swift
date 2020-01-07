@@ -36,11 +36,6 @@ class SettingsTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Log Out", style: .default, handler: { (action) in
-            do{
-                try Auth.auth().signOut()
-            }catch{
-                print("Error signing out: \(error)")
-            }
             self.returnToLoginScreen()
             
         }))

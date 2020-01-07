@@ -2,6 +2,7 @@ ${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
 ${BUILT_PRODUCTS_DIR}/Analytics/Analytics.framework
 ${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework
+${BUILT_PRODUCTS_DIR}/CHTCollectionViewWaterfallLayout/CHTCollectionViewWaterfallLayout.framework
 ${BUILT_PRODUCTS_DIR}/Cache/Cache.framework
 ${BUILT_PRODUCTS_DIR}/CropViewController/CropViewController.framework
 ${BUILT_PRODUCTS_DIR}/DeepDiff/DeepDiff.framework
@@ -23,6 +24,8 @@ ${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfGLTFSceneKit/SvrfGLTFSceneKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfSDK/SvrfSDK.framework
+${BUILT_PRODUCTS_DIR}/WLEmptyState/WLEmptyState.framework
+${BUILT_PRODUCTS_DIR}/WaterfallLayout/WaterfallLayout.framework
 ${BUILT_PRODUCTS_DIR}/abseil/absl.framework
 ${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework
 ${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework

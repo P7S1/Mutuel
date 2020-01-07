@@ -77,6 +77,7 @@ class ProfileViewController: UIViewController{
             DispatchQueue.main.async {
                 if let url = URL(string: string){
                     self.profile.kf.setImage(with: url,placeholder: FollowersHelper().getUserProfilePicture())
+                    self.profile.heroID = url.absoluteString
                 }else{
                     print("error url was nil")
                     self.profile.image = UIImage(named:"icons8-male-user-96")
@@ -148,14 +149,14 @@ class ProfileViewController: UIViewController{
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                     print("user cancelled")
                 }))
-                alert.view.tintColor = .systemPink
+                alert.view.tintColor = .systemBlue
                 self.present(alert, animated: true, completion: nil)
             }))
             
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 print("cancelled")
             }))
-            alertController.view.tintColor = .systemPink
+            alertController.view.tintColor = .systemBlue
             self.present(alertController, animated: true, completion: nil)
     }
     
