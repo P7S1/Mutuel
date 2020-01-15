@@ -29,7 +29,9 @@ class ChatInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         if let index = channel.members.firstIndex(of: User.shared.uid ?? ""){
         channel.members.remove(at: index)
@@ -117,7 +119,6 @@ class ChatInfoViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 print("user cancelled")
             }))
-            alert.view.tintColor = .systemBlue
             self.present(alert, animated: true, completion: nil)
         }else{
             let alert = UIAlertController(title: "Block \(self.displayname)", message: "Are you sure you want to block \(self.displayname)? This will make you both unfollow each other.", preferredStyle: .alert)
@@ -129,7 +130,6 @@ class ChatInfoViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 print("user cancelled")
             }))
-            alert.view.tintColor = .systemBlue
             self.present(alert, animated: true, completion: nil)
             
         }

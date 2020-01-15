@@ -40,6 +40,9 @@ class ProfileViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         navigationItem.largeTitleDisplayMode = .never
         
@@ -63,7 +66,8 @@ class ProfileViewController: UIViewController{
         
         let settings = UIButton.init(type: .system)
         if isCurrentUser{
-            settings.setImage(UIImage.init(named: "icons8-settings-100")?.withRenderingMode(.alwaysTemplate), for: UIControl.State.normal)
+            let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
+            settings.setImage(UIImage(systemName: "gear", withConfiguration: config), for: UIControl.State.normal)
         }else{
             settings.setImage(UIImage(systemName: "square.and.pencil")?.withRenderingMode(.alwaysTemplate), for: .normal)
         }
@@ -119,6 +123,9 @@ class ProfileViewController: UIViewController{
         
         displayName.text = user?.name ?? "Unknown"
         
+        moreButton.backgroundColor = .systemGray6
+        moreButton.tintColor = .systemPink
+        moreButton.roundCorners()
 
         // Do any additional setup after loading the view.
     }
@@ -149,14 +156,13 @@ class ProfileViewController: UIViewController{
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                     print("user cancelled")
                 }))
-                alert.view.tintColor = .systemBlue
                 self.present(alert, animated: true, completion: nil)
             }))
             
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 print("cancelled")
             }))
-            alertController.view.tintColor = .systemBlue
+
             self.present(alertController, animated: true, completion: nil)
     }
     
@@ -202,7 +208,6 @@ class ProfileViewController: UIViewController{
     }
     
     func setNotFollowingState(){
-        followButton.tintColor = .systemPink
         followButton.setTitle("FOLLOW", for: .normal)
         followButton.setTitleColor(.white, for: .normal)
         followButton.backgroundColor = .systemPink

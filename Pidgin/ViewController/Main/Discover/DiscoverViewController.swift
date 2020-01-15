@@ -14,13 +14,73 @@ import FirebaseFirestore
 import FirebaseStorage
 import NotificationBannerSwift
 import Lightbox
-class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate {
+class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate, UIGestureRecognizerDelegate {
     
-    var segmentedController: UISegmentedControl!
+    @IBOutlet weak var containerView: UIView!
     
     var exploreVC : ExploreViewController!
     
     var followingVC : FollowingViewController!
+    
+    
+    private enum Constants {
+        static let segmentedControlHeight: CGFloat = 48
+        static let underlineViewColor: UIColor = .systemPink
+        static let underlineViewHeight: CGFloat = 4
+    }
+    
+    private lazy var segmentedControlContainerView: UIView = {
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height:48 ))
+        containerView.backgroundColor = .systemBackground
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.isUserInteractionEnabled = true
+        return containerView
+    }()
+    
+    private lazy var segmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(frame: CGRect(x: 00, y: 0, width: 48, height: self.view.bounds.height))
+        segmentedControl.isUserInteractionEnabled = true
+        // Remove background and divider color
+        segmentedControl.backgroundColor = .clear
+        segmentedControl.tintColor = .clear
+        segmentedControl.selectedSegmentTintColor  = .clear
+        fixBackgroundSegmentControl(segmentedControl)
+        // Append segments
+        segmentedControl.insertSegment(withTitle: "Discover", at: 0, animated: true)
+        segmentedControl.insertSegment(withTitle: "Following", at: 1, animated: true)
+
+        // Select first segment by default
+        segmentedControl.selectedSegmentIndex = 0
+            
+        // Change text color and the font of the NOT selected (normal) segment
+        segmentedControl.setTitleTextAttributes([
+            NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel,
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)], for: .normal)
+
+        // Change text color and the font of the selected segment
+        segmentedControl.setTitleTextAttributes([
+            NSAttributedString.Key.foregroundColor: UIColor.systemPink,
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)], for: .selected)
+
+        // Set up event handler to get notified when the selected segment changes
+        segmentedControl.addTarget(self, action: #selector(indexChanged(_:)), for: .valueChanged)
+        // Return false because we will set the constraints with Auto Layout
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        return segmentedControl
+    }()
+    
+    // The underline view below the segmented control
+    private lazy var bottomUnderlineView: UIView = {
+        let underlineView = UIView()
+        underlineView.isUserInteractionEnabled = true
+        underlineView.backgroundColor = Constants.underlineViewColor
+        underlineView.translatesAutoresizingMaskIntoConstraints = false
+        return underlineView
+    }()
+
+    private lazy var leadingDistanceConstraint: NSLayoutConstraint = {
+        return bottomUnderlineView.leftAnchor.constraint(equalTo: segmentedControl.leftAnchor)
+    }()
     
     
     override func viewDidLoad() {
@@ -28,24 +88,18 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate 
         isHeroEnabled = true
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         setupUI()
-        
-        configureNavItem(name: "Discover")
-        let items = ["Discover", "Following"]
-        segmentedController = UISegmentedControl(items: items)
-        segmentedController.tintColor = .systemPink
-        navigationItem.titleView = segmentedController
-        segmentedController.addTarget(self, action: #selector(indexChanged(_:)), for: .valueChanged)
-        segmentedController.selectedSegmentIndex = 0
-        
+        self.configureNavItem(name: "Discover")
+        segmentedControlContainerView.addSubview(segmentedControl)
+        segmentedControlContainerView.addSubview(bottomUnderlineView)
+        addSegmentedControlConstraints()
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         exploreVC = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as? ExploreViewController
+        exploreVC.adjustInsets = true
         exploreVC.exploreDelegate = self
         followingVC  = storyboard.instantiateViewController(withIdentifier: "FollowingViewController") as? FollowingViewController
         followingVC.followingDelegate = self
-        addConstraints(view: exploreVC.view)
-        addConstraints(view: followingVC.view)
-        indexChanged(segmentedController)
-        
+        followingVC.adjustInsets = true
+        indexChanged(segmentedControl)
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
             if response {
@@ -75,6 +129,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate 
         // Do any additional setup after loading the view.
     }
     
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if Auth.auth().currentUser != nil {
@@ -92,10 +147,14 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate 
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        //navigationController?.isHeroEnabled = false
+        navigationController?.isHeroEnabled = false
     }
     
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
     @objc func indexChanged(_ sender: UISegmentedControl) {
+        changeSegmentedControlLinePosition()
         switch sender.selectedSegmentIndex{
             case 0:
                 navigationItem.title = "Discover"
@@ -104,7 +163,8 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate 
                 followingVC.view.removeFromSuperview()
                 followingVC.didMove(toParent: nil)
                 self.addChild(exploreVC)
-                self.view.addSubview(exploreVC.view)
+                self.containerView.addSubview(exploreVC.view)
+                addConstraints(view: exploreVC.view)
                 exploreVC.didMove(toParent: self)
             case 1:
                 print("Following")
@@ -113,21 +173,58 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate 
                 exploreVC.view.removeFromSuperview()
                 exploreVC.didMove(toParent: nil)
                 self.addChild(followingVC)
-                self.view.addSubview(followingVC.view)
+                self.containerView.addSubview(followingVC.view)
+                addConstraints(view: followingVC.view)
                 followingVC.didMove(toParent: self)
             default:
                 break
             }
     }
     
+    private func changeSegmentedControlLinePosition() {
+        let segmentIndex = CGFloat(segmentedControl.selectedSegmentIndex)
+        let segmentWidth = segmentedControl.frame.width / CGFloat(segmentedControl.numberOfSegments)
+        let leadingDistance = segmentWidth * segmentIndex
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            self?.leadingDistanceConstraint.constant = leadingDistance
+            self?.view.layoutIfNeeded()
+        })
+    }
+    
      func addConstraints(view : UIView){
-       view.frame = self.view.bounds
+       view.frame = containerView.bounds
      view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     func collectionViewScrolled(_ scrollView: UIScrollView) {
         super.scrollViewDidScroll(scrollView)
     }
+    func addSegmentedControlConstraints(){
+           self.view.addSubview(segmentedControlContainerView)
+       let safeLayoutGuide = self.view.safeAreaLayoutGuide
+        NSLayoutConstraint.activate([
+            segmentedControlContainerView.topAnchor.constraint(equalTo: safeLayoutGuide.topAnchor),
+            segmentedControlContainerView.leadingAnchor.constraint(equalTo: safeLayoutGuide.leadingAnchor),
+            segmentedControlContainerView.widthAnchor.constraint(equalTo: safeLayoutGuide.widthAnchor),
+            segmentedControlContainerView.heightAnchor.constraint(equalToConstant: Constants.segmentedControlHeight)
+            ])
+        
+        // Constrain the segmented control to the container view
+        NSLayoutConstraint.activate([
+            segmentedControl.topAnchor.constraint(equalTo: segmentedControlContainerView.topAnchor),
+            segmentedControl.leadingAnchor.constraint(equalTo: segmentedControlContainerView.leadingAnchor),
+            segmentedControl.centerXAnchor.constraint(equalTo: segmentedControlContainerView.centerXAnchor),
+            segmentedControl.centerYAnchor.constraint(equalTo: segmentedControlContainerView.centerYAnchor)
+            ])
+
+        // Constrain the underline view relative to the segmented control
+        NSLayoutConstraint.activate([
+            bottomUnderlineView.bottomAnchor.constraint(equalTo: segmentedControl.bottomAnchor),
+            bottomUnderlineView.heightAnchor.constraint(equalToConstant: Constants.underlineViewHeight),
+            leadingDistanceConstraint,
+            bottomUnderlineView.widthAnchor.constraint(equalTo: segmentedControl.widthAnchor, multiplier: 1 / CGFloat(segmentedControl.numberOfSegments))
+            ])
+       }
     /*
     // MARK: - Navigation
 
@@ -239,6 +336,18 @@ extension UIViewController{
         
         
     }
+    func fixBackgroundSegmentControl( _ segmentControl: UISegmentedControl){
+        if #available(iOS 13.0, *) {
+            //just to be sure it is full loaded
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                for i in 0...(segmentControl.numberOfSegments-1)  {
+                    let backgroundSegmentView = segmentControl.subviews[i]
+                    //it is not enogh changing the background color. It has some kind of shadow layer
+                    backgroundSegmentView.isHidden = true
+                }
+            }
+        }
+    }
     func presentLightBoxController(images : [LightboxImage], goToIndex : Int?){
       LightboxConfig.CloseButton.text = "Done"
       
@@ -279,9 +388,9 @@ class CustomBannerColors: BannerColorsProtocol {
     internal func color(for style: BannerStyle) -> UIColor {
         switch style {
             case .info:        // Your custom .info color
-               return .systemBlue
+               return .systemPink
             default:
-            return .systemBlue
+            return .systemPink
         }
     }
 
@@ -347,3 +456,8 @@ extension String {
         }
     }
 
+extension String {
+    var isAlphanumeric: Bool {
+        return !isEmpty && range(of: "[^a-zA-Z0-9]", options: .regularExpression) == nil
+    }
+}

@@ -30,6 +30,9 @@ class CreateGroupViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         errorLabel.isHidden = true
         createGroupButton.roundCorners()
@@ -70,12 +73,10 @@ class CreateGroupViewController: UIViewController{
                let myPickerController = UIImagePickerController()
                myPickerController.delegate = self
                myPickerController.sourceType = UIImagePickerController.SourceType.photoLibrary
-            myPickerController.view.tintColor = .systemPink
                self.present(myPickerController, animated: true, completion: nil)
                
            }))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alertController.view.tintColor = .systemBlue
            self.present(alertController, animated: true, completion: nil)
     }
     
@@ -145,7 +146,7 @@ class CreateGroupViewController: UIViewController{
             }
             createGroupButton.setTitle("Add \(3 - members.count) more members", for: .normal)
         }
-        createGroupButton.setTitleColor(UIColor.white, for: .normal)
+        createGroupButton.setTitleColor(UIColor.label, for: .normal)
     }
     
     

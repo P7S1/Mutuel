@@ -40,6 +40,13 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var topView: UIView!
     
+    @IBOutlet weak var playerContainerView: PlayerContainerView!
+    
+    @IBOutlet weak var height: NSLayoutConstraint!
+    
+    @IBOutlet weak var playButton: UIImageView!
+    
+    
     
     var btnTapAction : (()->())?
 
@@ -50,6 +57,14 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     func addButtonShadows(){
         blurView.layer.cornerRadius = blurView.frame.height/2
         blurView.clipsToBounds = true
+    }
+    func setUpPlayer(post : Post){
+        playerContainerView.backgroundColor = .clear
+        if post.isVideo{
+            playerContainerView.initialize(post: post, shouldPlay: true)
+        }else{
+            playerContainerView.isHidden = true
+        }
     }
     
     @objc func btnTapped() {

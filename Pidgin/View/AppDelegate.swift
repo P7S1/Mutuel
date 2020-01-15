@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(logUserIn), name:NSNotification.Name(rawValue: "logUserIn"), object: nil)
         
-        self.window?.tintColor = .systemPurple
+        self.window?.tintColor = .label
         SvrfSDK.authenticate(onSuccess: {
           print("Successfully authenticated with the Svrf API!")
         }, onFailure: { err in
@@ -61,6 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) {
             ProgressHUD.statusColor(.label)
         }
+        application.applicationIconBadgeNumber = 0
         // Override point for customization after application launch.
         return true
     }
@@ -101,11 +102,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.navigationController?.navigationBar.layer.masksToBounds = false
         navBarAppearanc */
         navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold)]
-        UINavigationBar.appearance().tintColor = UIColor.systemBlue
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
-    
+        UINavigationBar.appearance().tintColor = .label
         UITabBar.appearance().tintColor = .label
         UITabBar.appearance().backgroundColor = .systemBackground
     }
@@ -117,6 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ref.addSnapshotListener { (snapshot, error) in
             if error == nil{
                 User.shared.convertFromDocument(dictionary: snapshot!)
+                if User.shared.username != nil{
                 if !appDidLoad{
                     // this line is important
                     //elf.window = UIWindow(frame: UIScreen.main.bounds)
@@ -135,12 +136,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     UIApplication.shared.windows.first?.rootViewController = vc
                     appDidLoad = true
                 }
-                if let tokens = snapshot?.get("fcmToken") as? [String]
-                                ,let token = Messaging.messaging().fcmToken {
-                    if !tokens.contains(token){
+                    let tokens = snapshot?.get("fcmToken") as? [String]
+                    if let token = Messaging.messaging().fcmToken {
+                        if !(tokens?.contains(token) ?? false){
                         let pushManager = PushNotificationManager(userID: id)
                         pushManager.registerForPushNotifications()
                     }
+                }
+                }else{
+                    print("User has invalid username")
+                    self.presentUsernameVC()
                 }
             }else{
                 print("error logging user in \(error!)")
@@ -151,7 +156,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 }
     
-    
+    func presentUsernameVC(){
+        let storyboard = UIStoryboard.init(name: "Login", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "UsernameViewController") as! UsernameViewController
+        let navBar = UINavigationController(rootViewController: vc)
+        UIApplication.shared.windows.first?.rootViewController = navBar
+    }
 
 }
 

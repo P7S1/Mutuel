@@ -15,10 +15,12 @@ class EditProfileViewController: FormViewController {
 
     override func viewDidLoad() {
             super.viewDidLoad()
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         saveChangesButton()
             navigationItem.title = "Account Settings"
-        self.view.tintColor = .systemBlue
             form +++ Section("")
                 <<< ImageRow() {
                     $0.title = "Profile picture"
@@ -66,9 +68,7 @@ class EditProfileViewController: FormViewController {
              form +++ Section("")
                 <<< SwitchRow("privateAccount"){
                         $0.title = "Private Account"
-                }.cellSetup({ (cell, row) in
-                    cell.switchControl.onTintColor = UIColor.systemPink
-                })
+                }
                 <<< ButtonRow(){
                     $0.title = "Blocked List"
                 }
@@ -77,7 +77,7 @@ class EditProfileViewController: FormViewController {
     func saveChangesButton(){
         let settings = UIButton.init(type: .custom)
         settings.setTitle("Save", for: .normal)
-        settings.setTitleColor(.systemPink, for: .normal)
+        settings.setTitleColor(.systemBlue, for: .normal)
         settings.addTarget(self, action:#selector(handleSaveButton), for:.touchUpInside)
         let settingsButton = UIBarButtonItem.init(customView: settings)
         navigationItem.rightBarButtonItems = [settingsButton]

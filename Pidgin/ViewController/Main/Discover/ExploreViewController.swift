@@ -9,6 +9,7 @@
 import UIKit
 import CHTCollectionViewWaterfallLayout
 import DeepDiff
+import AVKit
 public protocol ExploreViewControllerDelegate {
    func collectionViewScrolled(_ scrollView: UIScrollView)
 }
@@ -20,14 +21,36 @@ class ExploreViewController: UIViewController {
     
     var exploreDelegate : ExploreViewControllerDelegate?
     
+     var adjustInsets = false
+    
+    var activityIndicator : UIActivityIndicatorView!
+    
+    var willPresentAView = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.isHeroEnabled = true
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        self.activityIndicator = UIActivityIndicatorView(style: .medium)
+        self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
+        self.activityIndicator.hidesWhenStopped = true
+        
+        collectionView.addSubview(activityIndicator)
+        
+        activityIndicator.startAnimating()
+        
         setUpCollectionView()
-        let docRef = db.collectionGroup("posts")
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        if adjustInsets{
+            
+        collectionView.contentInset = UIEdgeInsets(top: 56, left: 0, bottom: 0, right: 0)
+        }
+        let docRef = db.collectionGroup("posts").order(by: "publishDate", descending: true)
         
 
         
@@ -37,16 +60,21 @@ class ExploreViewController: UIViewController {
                 var newItems = self.posts
                 for document in snapshot!.documents{
                     let post = Post(document: document)
+
                     newItems.append(post)
+                    
+                    
                     print("append a post")
                 }
-                newItems.shuffle()
+                self.activityIndicator.stopAnimating()
                 self.collectionView.performBatchUpdates({
                     let changes = diff(old: old, new: newItems)
                     self.collectionView.reload(changes: changes, section: 0, updateData: {
-                        self.posts = newItems.shuffled()
+                        self.posts = newItems
                     })
                 }, completion: nil)
+            }else{
+                print("there was an error \(error!)")
             }
         }
         
@@ -110,8 +138,11 @@ extension ExploreViewController: UICollectionViewDataSource{
         cell.contentView.backgroundColor = .clear
         cell.imageView.heroID = posts[indexPath.row].postID
         cell.imageView.kf.setImage(with: URL(string: posts[indexPath.row].photoURL), placeholder: UIImage(named: "group"))
+        cell.playButton.isHidden = !(posts[indexPath.row].isVideo)
+        cell.playButton.heroID = "\(posts[indexPath.row].postID).playButton"
         return cell
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
@@ -120,6 +151,7 @@ extension ExploreViewController: UICollectionViewDataSource{
          vc.posts = posts
         vc.indexPath = indexPath
         vc.postDelegate = self
+        willPresentAView = true
          navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -25,9 +25,9 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-        extendedLayoutIncludesOpaqueBars = true
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    
 /*
         self.navigationController?.navigationBar.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         self.navigationController?.navigationBar.layer.shadowRadius = 4.0
@@ -65,11 +65,10 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
      func setupUI() {
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        if let url = User.shared.profileURL{
             DispatchQueue.main.async {
-                self.imageView.kf.setImage(with: URL(string: url), for: .normal, placeholder: FollowersHelper().getUserProfilePicture())
+                self.imageView.kf.setImage(with: URL(string: User.shared.profileURL ?? ""), for: .normal, placeholder: FollowersHelper().getUserProfilePicture())
             }
-        }
+        
         imageView.addTarget(self, action:#selector(profileBarButtonPressed), for:.touchUpInside)
         guard let navigationBar = self.navigationController?.navigationBar else { return }
         imageView.imageView?.contentMode = .scaleAspectFill
@@ -80,7 +79,8 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
         imageView.rightAnchor.constraint(equalTo: navigationBar.rightAnchor, constant: -Const.ImageRightMargin),
-        imageView.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor, constant: -Const.ImageBottomMarginForLargeState),
+        imageView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor,
+        constant: -Const.ImageBottomMarginForLargeState),
         imageView.heightAnchor.constraint(equalToConstant: Const.ImageSizeForLargeState),
         imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor)
         ])
@@ -131,48 +131,20 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         
 
         self.navigationItem.title = name
-        
+        let rect = CGRect(x: 0, y: 0, width: 10000, height: 10000)
+        self.navigationItem.titleView = UIView(frame: rect)
         navigationController?.navigationBar.prefersLargeTitles = true
 
-        let resultsTableController = storyboard?.instantiateViewController(withIdentifier: "ResultsTableViewController") as! ResultsTableViewController
-        let search = UISearchController(searchResultsController: resultsTableController)
-        search.searchBar.delegate = self
-        search.searchResultsUpdater = resultsTableController
-        search.searchBar.autocapitalizationType = .none
-        search.searchBar.placeholder = "Search users"
-        search.searchBar.tintColor = .systemPink
-        
-        navigationItem.searchController = search
-
-        navigationItem.searchController?.view.bounds = UIScreen.main.bounds
-        
-       /* let profile = UIButton.init(type: .custom)
-        //profile.setImage(UIImage.init(named: "icons8-male-user-96"), for: UIControl.State.normal)
-        if let url = User.shared.profileURL{
-            DispatchQueue.main.async {
-                profile.kf.setImage(with: URL(string: url), for: .normal)
-                profile.layer.cornerRadius = profile.bounds.height / 2
-            }
-        }else{
-            profile.setImage(UIImage(named:"icons8-male-user-96"), for: .normal)
-        }
-        //profile.addTarget(self, action:#selector(profileBarButtonPressed), for:.touchUpInside)
-        profile.widthAnchor.constraint(equalToConstant: 28).isActive = true
-        profile.heightAnchor.constraint(equalToConstant: 28).isActive = true
-        profile.roundCorners()
-        profile.imageView?.contentMode = .scaleAspectFill
-        let profileButton = UIBarButtonItem.init(customView: profile) */
-        if name == "Chats"{
-        print("name equals chat")
-        // let chat = UIButton.init(type: .custom)
-        // chat.setImage(UIImage(systemName: "square.and.pencil"), for: UIControl.State.normal)
-         //chat.addTarget(self, action:#selector(chatButtonPressed), for:.touchUpInside)
+    
             let medium = UIImage.SymbolConfiguration(weight: .medium)
-            let chatButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil", withConfiguration: medium), style: .plain, target: self, action: #selector(chatButtonPressed))
+            let chatButton = UIBarButtonItem(image: UIImage(systemName: "plus.bubble", withConfiguration: medium), style: .plain, target: self, action: #selector(chatButtonPressed))
+        
+            let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass", withConfiguration: medium), style: .plain, target: self, action: #selector(searchButtonPressed))
+        
+        let challengeButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil", withConfiguration: medium), style: .plain, target: self, action: #selector(challengesButtonPressed))
             
-        navigationItem.leftBarButtonItems = [chatButton]
-        }
-        //navigationItem.rightBarButtonItems = [profileButton]
+        navigationItem.leftBarButtonItems = [searchButton,chatButton,challengeButton]
+
     }
     
     @objc func chatButtonPressed(){
@@ -183,6 +155,26 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         vc.type = "newMessage"
         
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func searchButtonPressed(){
+        let resultsTableController = storyboard?.instantiateViewController(withIdentifier: "ResultsTableViewController") as! ResultsTableViewController
+        let search = UISearchController(searchResultsController: resultsTableController)
+        search.searchBar.delegate = self
+        search.searchResultsUpdater = resultsTableController
+        search.searchBar.autocapitalizationType = .none
+        search.searchBar.placeholder = "Search users"
+        search.searchBar.tintColor = .systemPink
+        self.present(search, animated: true, completion: nil)
+    }
+    
+    @objc func challengesButtonPressed(){
+        let alertcontroller = UIAlertController(title: "Coming soon...", message: "This feature is not yet finished, and is coming soon", preferredStyle: .alert)
+        
+        alertcontroller.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        
+        self.present(alertcontroller, animated: true, completion: nil)
+        
     }
     @objc func profileBarButtonPressed(){
         print("profile bar button item pressed")

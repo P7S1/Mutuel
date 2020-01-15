@@ -189,3 +189,17 @@ class User : Account{
         return output
     }
 }
+
+extension User : DatabaseRepresentation{
+    
+    var representation : [String : Any]{
+        let rep : [String : Any] = [
+            "username":username as Any,
+            "email":email as Any,
+            "profileURL":profileURL as Any,
+            "birthday":Timestamp(date: birthday ?? Date()),
+            "name": name as Any]
+        return rep
+    }
+    
+}

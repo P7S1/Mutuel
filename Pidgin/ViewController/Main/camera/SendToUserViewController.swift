@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseStorage
+import AVFoundation
 class SendToUserViewController: UIViewController {
     var selectedChannels : [Channel] = [Channel]()
     var selectedUsers : [Account] = [Account]()
@@ -39,11 +40,8 @@ class SendToUserViewController: UIViewController {
         setDismissButton()
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
-        if video != nil{
-            //do stuff if it's a video
-        }else{
-            imageView.image = image
-        }
+        imageView.image = image
+        
         // Do any additional setup after loading the view.
 
         textView.addDoneButtonOnKeyboard()
@@ -147,40 +145,45 @@ class SendToUserViewController: UIViewController {
     
     @objc func sendPressed(){
         print("send pressed")
+        ProgressHUD.show("Posting")
         if addToTimeline{
-            postMedia()
+            postMedia(isVideo: false) { (photoURL) in
+                if self.video != nil{
+                    self.postMedia(isVideo: true) { (videoURL) in
+                        self.saveToDatabase(photoURL: photoURL, videoURL: videoURL, isVideo: true)
+                    }
+                }else{
+                    self.saveToDatabase(photoURL: photoURL, videoURL: nil, isVideo: false)
+                }
+            }
         }
         
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     
-    func postMedia(){
-        ProgressHUD.show("Posting")
-        guard let data0 = image.jpegData(compressionQuality: 0.5)
-            else{
-                ProgressHUD.showError("Error")
-                print("error uploading picture")
-                return
+    func postMedia(isVideo : Bool, completion: @escaping (URL) -> Void){
+        var data0 = Data()
+        var dataExtension = ".jpg"
+        if !(isVideo){
+            data0 = image.jpegData(compressionQuality: 0.6) ?? Data()
+        }else{
+            do {
+                try data0 = NSData(contentsOf: video!) as Data
+            } catch {
+                ProgressHUD.showError("error")
+                print(error)
             }
+            dataExtension = ".mp4"
+        }
             
-        let imageRef = Storage.storage().reference().child("posts").child(User.shared.uid ?? "").child("\(UUID().uuidString)+\(Date()).jpg")
+        let imageRef = Storage.storage().reference().child("posts").child(User.shared.uid ?? "").child("\(UUID().uuidString)+\(Date())\(dataExtension)")
                 imageRef.putData(data0, metadata: nil) { (metaData, error) in
                     imageRef.downloadURL { (url, error) in
                         if error == nil {
-                            let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
-                            let widthInPixels = self.image.size.width * self.image.scale
-                            let heightInPixels = self.image.size.height * self.image.scale
-                            let imageSize = CGSize(width: widthInPixels, height: heightInPixels)
-                            let post = Post(photoURL: url!.absoluteString,
-                                            caption: self.textView.text,
-                                            publishDate: Date(),
-                                            creatorID: User.shared.uid ?? "",
-                                            isVideo: false, videoURL: nil,
-                                            photoSize: imageSize,
-                                            postID: ref.documentID)
-                            ref.setData(post.representation)
-                            ProgressHUD.showSuccess("Post Successful")
+                            if let downloadURL = url{
+                            completion(downloadURL)
+                            }
                         } else{
                             ProgressHUD.showError("Error")
                             print("error uploading picture")
@@ -191,6 +194,12 @@ class SendToUserViewController: UIViewController {
             
 
         
+    }
+    
+    private func resolutionForLocalVideo(url: URL) -> CGSize? {
+        guard let track = AVURLAsset(url: url).tracks(withMediaType: AVMediaType.video).first else { return nil }
+       let size = track.naturalSize.applying(track.preferredTransform)
+        return CGSize(width: abs(size.width), height: abs(size.height))
     }
     
     func setUpSendButton(){
@@ -326,4 +335,43 @@ extension SendToUserViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 50
     }
+    
+    func saveToDatabase(photoURL : URL, videoURL : URL?, isVideo : Bool){
+        let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
+        
+        let widthInPixels = self.image.size.width * self.image.scale
+        let heightInPixels = self.image.size.height * self.image.scale
+        var imageSize = CGSize(width: widthInPixels, height: heightInPixels)
+        if isVideo{
+            imageSize = self.resolutionForLocalVideo(url: self.video!) ?? imageSize
+        }
+        let post = Post(photoURL: photoURL.absoluteString,
+                        caption: self.textView.text,
+                        publishDate: Date(),
+                        creatorID: User.shared.uid ?? "",
+                        isVideo: isVideo, videoURL: videoURL?.absoluteString,
+                        photoSize: imageSize,
+                        postID: ref.documentID)
+        ref.setData(post.representation)
+        ProgressHUD.showSuccess("Post Successful")
+    }
 }
+/*
+ let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
+ 
+ let widthInPixels = self.image.size.width * self.image.scale
+ let heightInPixels = self.image.size.height * self.image.scale
+ var imageSize = CGSize(width: widthInPixels, height: heightInPixels)
+ if isVideo{
+     imageSize = self.resolutionForLocalVideo(url: self.video!) ?? imageSize
+ }
+ let post = Post(photoURL: "",
+                 caption: self.textView.text,
+                 publishDate: Date(),
+                 creatorID: User.shared.uid ?? "",
+                 isVideo: isVideo, videoURL: url!.absoluteString,
+                 photoSize: imageSize,
+                 postID: ref.documentID)
+ ref.setData(post.representation)
+ ProgressHUD.showSuccess("Post Successful")
+ */

@@ -23,6 +23,9 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         tableView.delegate = self
         tableView.dataSource = self
@@ -30,7 +33,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
         formatForType()
         navigationItem.title = viewTitle
         createGroupButton.backgroundColor = .systemGray6
-        createGroupButton.setTitleColor(.systemPink, for: .normal)
+        createGroupButton.setTitleColor(.label, for: .normal)
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -16,7 +16,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
     
     override func loadView() {
         let webConfiguration = WKWebViewConfiguration()
-        
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.uiDelegate = self
         webView.navigationDelegate = self

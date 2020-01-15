@@ -12,6 +12,9 @@ class SettingsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         self.navigationItem.title = "Settings"
         navigationItem.largeTitleDisplayMode = .never
@@ -42,7 +45,6 @@ class SettingsTableViewController: UITableViewController {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
             print("user cancelled sign out")
         }))
-        alert.view.tintColor = .systemPink
         self.present(alert, animated: true, completion: nil)
     }
     

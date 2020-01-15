@@ -9,6 +9,7 @@
 import Foundation
 import FirebaseFirestore
 import DeepDiff
+import AVKit
 struct Post{
     
     var photoURL : String
@@ -50,8 +51,8 @@ struct Post{
         repostsCount = data?["repostsCount"] as? Int ?? 0
         commentsCount = data?["commentsCount"] as? Int ?? 0
         
-        var width = data?["width"] as? Int ?? 200
-        var height = data?["height"] as? Int ?? 200
+        let width = data?["width"] as? Int ?? 200
+        let height = data?["height"] as? Int ?? 200
         
         naturalSize = CGSize(width: width, height: height)
 

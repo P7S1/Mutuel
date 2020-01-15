@@ -53,7 +53,8 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
         print("did receive")
     }
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        updateFirestorePushTokenIfNeeded()
+        print("did receive registration token")
+       // updateFirestorePushTokenIfNeeded()
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         print(response)

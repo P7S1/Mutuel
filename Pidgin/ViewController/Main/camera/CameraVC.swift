@@ -32,7 +32,7 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         captureButton.delegate = self
         shouldPrompToAppSettings = true
         cameraDelegate = self
-        maximumVideoDuration = 10.0
+        maximumVideoDuration = 60.0
         shouldUseDeviceOrientation = false
         allowAutoRotate = true
         audioEnabled = true

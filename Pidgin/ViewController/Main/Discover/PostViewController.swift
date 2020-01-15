@@ -8,6 +8,8 @@
 
 import UIKit
 import Hero
+import AVKit
+import Lightbox
 class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var contentView: UIView!
@@ -33,12 +35,34 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     var post : Post!
     
+    var panGR: UIPanGestureRecognizer!
+    
+    
+    @IBOutlet weak var playerContainerView: PlayerContainerView!
+    
+    var shouldContinuePlaying = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         scrollView.delegate = self
         self.isHeroEnabled = true
         navigationItem.largeTitleDisplayMode = .never
-        navigationItem.title = "Post"
+        self.view.isHeroEnabled = true
+        self.view.heroID = "\(post.postID).view"
+        HeroAutolayoutFixPlugin.enable()
+        self.playerContainerView.heroModifiers = [.useNoSnapshot, .autolayout]
+        self.imageView.heroModifiers = [.useNoSnapshot, .autolayout]
+        let titleView = UIImageView(frame: CGRect(x: 0, y: 0, width: 38, height: 38))
+        let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
+        titleView.image = UIImage(systemName: "chevron.down", withConfiguration: config)
+        titleView.contentMode = .scaleAspectFit
+        titleView.tintColor = .secondaryLabel
+        navigationItem.titleView? = titleView
+        
+        self.setDismissButton()
 
         imageView.kf.setImage(with: URL(string: post.photoURL))
         imageView.heroID = post.postID
@@ -46,17 +70,31 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         caption.heroID = "\(post.postID).caption"
         
         scrollView.alwaysBounceVertical = true
-        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         
         let scale = UIScreen.main.bounds.width / post.photoSize.width
         imageViewHeightConstraint.constant = post.photoSize.height * scale
         
         caption.text = post.caption
-        commentsLabel.text = "\(post.commentsCount) comments"
-        repostsLabel.text = "\(post.repostsCount) reposts"
+        commentsLabel.text = "\(post.commentsCount)"
+        repostsLabel.text = "\(post.repostsCount)"
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(engagementTapped))
         engagementStackView.addGestureRecognizer(tap)
+        playerContainerView.heroID = "\(post.postID).player"
+        
+        if post.isVideo{
+            playerContainerView.initialize(post: post, shouldPlay: true)
+        }else{
+            playerContainerView.isHidden = true
+            playerContainerView.pause()
+        }
+        
+        panGR = UIPanGestureRecognizer(target: self,
+                  action: #selector(handlePan(gestureRecognizer:)))
+        panGR.delegate = self
+        scrollView.addGestureRecognizer(panGR)
+        
         self.view.layoutIfNeeded()
         // Do any additional setup after loading the view.
     }
@@ -69,15 +107,19 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.isHeroEnabled = true
+        playerContainerView.initialize(post: post, shouldPlay: true)
+     /*   if player != nil{
+        self.player!.play()
+        } */
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        if !shouldContinuePlaying
+        {
+            playerContainerView.pause()
+        }
         navigationController?.isHeroEnabled = false
-    }
-    
-    override func viewDidLayoutSubviews() {
-        scrollView.contentSize = contentView.frame.size
     }
     
     @objc func engagementTapped(){
@@ -89,6 +131,23 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     }
 
     
+    override func handleDismissButton() {
+        super.handleDismissButton()
+        shouldContinuePlaying = true
+    }
+    
+    @objc func handlePan(gestureRecognizer:UIPanGestureRecognizer) {
+        print(gestureRecognizer.velocity(in: self.view).y )
+        if gestureRecognizer.velocity(in: self.view).y > 1600{
+            self.handleDismissButton()
+        }
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+
     
 
     /*

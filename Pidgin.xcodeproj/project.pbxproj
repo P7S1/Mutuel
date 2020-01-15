@@ -63,6 +63,8 @@
 		DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661A3B238B12880042B7AD /* WebViewController.swift */; };
 		DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AD23B1EF0400949CED /* VideoHelper.swift */; };
 		DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */; };
+		DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721523C68D3400F00DF0 /* SignUpViewController.swift */; };
+		DF70721823C695A500F00DF0 /* UsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721723C695A500F00DF0 /* UsernameViewController.swift */; };
 		DF73728823C18282003ED359 /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF73728723C18282003ED359 /* Like.swift */; };
 		DF73728A23C1899D003ED359 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF73728923C1899D003ED359 /* CommentsViewController.swift */; };
 		DF7D0ABB23B7083600B33E40 /* Discover.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF7D0ABA23B7083500B33E40 /* Discover.storyboard */; };
@@ -78,15 +80,13 @@
 		DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */; };
 		DF95101C2360DBC1006B3B44 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DF95101B2360DBC1006B3B44 /* GoogleService-Info.plist */; };
 		DF95102A2360E06E006B3B44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF9510292360E06E006B3B44 /* Assets.xcassets */; };
-		DF95102D23610088006B3B44 /* NameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF95102C23610088006B3B44 /* NameViewController.swift */; };
-		DF95102F236100BC006B3B44 /* BirthdayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF95102E236100BC006B3B44 /* BirthdayViewController.swift */; };
-		DF951031236100D4006B3B44 /* UsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF951030236100D4006B3B44 /* UsernameViewController.swift */; };
-		DF951033236100EC006B3B44 /* EmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF951032236100EC006B3B44 /* EmailViewController.swift */; };
-		DF95103523610102006B3B44 /* PasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF95103423610102006B3B44 /* PasswordViewController.swift */; };
 		DF95103C23624402006B3B44 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF95103B23624402006B3B44 /* Settings.storyboard */; };
 		DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */; };
 		DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFADF6FB2357F23F00383627 /* CameraVC.swift */; };
+		DFB0053F23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB0053E23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift */; };
+		DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC30E0223C7F104000704EC /* PlayerContainerView.swift */; };
 		DFD10ED6234EE72C002616B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD10ED5234EE72C002616B4 /* AppDelegate.swift */; };
+		DFDCA0A523C93D7700240CE7 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDCA0A423C93D7700240CE7 /* VideoManager.swift */; };
 		DFDCA760237FB53D0045A351 /* CreateGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDCA75F237FB53D0045A351 /* CreateGroupViewController.swift */; };
 		DFDD9EB5234FBC03007A3177 /* SearchCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDD9EB4234FBC03007A3177 /* SearchCollectionViewCell.swift */; };
 		DFDD9ECE234FDD5D007A3177 /* VirtualFaceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDD9ECB234FDD5D007A3177 /* VirtualFaceContent.swift */; };
@@ -167,6 +167,8 @@
 		DF661A3B238B12880042B7AD /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		DF6A20AD23B1EF0400949CED /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
 		DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIF2MP4.swift; sourceTree = "<group>"; };
+		DF70721523C68D3400F00DF0 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		DF70721723C695A500F00DF0 /* UsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameViewController.swift; sourceTree = "<group>"; };
 		DF73728723C18282003ED359 /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
 		DF73728923C1899D003ED359 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		DF7D0ABA23B7083500B33E40 /* Discover.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Discover.storyboard; sourceTree = "<group>"; };
@@ -182,15 +184,13 @@
 		DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		DF95101B2360DBC1006B3B44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DF9510292360E06E006B3B44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		DF95102C23610088006B3B44 /* NameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
-		DF95102E236100BC006B3B44 /* BirthdayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayViewController.swift; sourceTree = "<group>"; };
-		DF951030236100D4006B3B44 /* UsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameViewController.swift; sourceTree = "<group>"; };
-		DF951032236100EC006B3B44 /* EmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailViewController.swift; sourceTree = "<group>"; };
-		DF95103423610102006B3B44 /* PasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewController.swift; sourceTree = "<group>"; };
 		DF95103B23624402006B3B44 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		DFADF6FB2357F23F00383627 /* CameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
+		DFB0053E23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroAutolayoutFixPlugin.swift; sourceTree = "<group>"; };
+		DFC30E0223C7F104000704EC /* PlayerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerContainerView.swift; sourceTree = "<group>"; };
 		DFD10ED5234EE72C002616B4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DFDCA0A423C93D7700240CE7 /* VideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoManager.swift; sourceTree = "<group>"; };
 		DFDCA75F237FB53D0045A351 /* CreateGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupViewController.swift; sourceTree = "<group>"; };
 		DFDD9EB4234FBC03007A3177 /* SearchCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCollectionViewCell.swift; sourceTree = "<group>"; };
 		DFDD9ECB234FDD5D007A3177 /* VirtualFaceContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualFaceContent.swift; sourceTree = "<group>"; };
@@ -270,6 +270,9 @@
 				DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */,
 				DF6A20AD23B1EF0400949CED /* VideoHelper.swift */,
 				DF7D0AC423B83D9A00B33E40 /* DatabaseRepresentation.swift */,
+				DFC30E0223C7F104000704EC /* PlayerContainerView.swift */,
+				DFDCA0A423C93D7700240CE7 /* VideoManager.swift */,
+				DFB0053E23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -394,23 +397,12 @@
 		DF9510142360DA89006B3B44 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				DF95102B2360F0E7006B3B44 /* Create Account wizard */,
 				DF9510152360DAB4006B3B44 /* LoginViewController.swift */,
 				DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */,
+				DF70721523C68D3400F00DF0 /* SignUpViewController.swift */,
+				DF70721723C695A500F00DF0 /* UsernameViewController.swift */,
 			);
 			path = Login;
-			sourceTree = "<group>";
-		};
-		DF95102B2360F0E7006B3B44 /* Create Account wizard */ = {
-			isa = PBXGroup;
-			children = (
-				DF95102C23610088006B3B44 /* NameViewController.swift */,
-				DF95102E236100BC006B3B44 /* BirthdayViewController.swift */,
-				DF951030236100D4006B3B44 /* UsernameViewController.swift */,
-				DF951032236100EC006B3B44 /* EmailViewController.swift */,
-				DF95103423610102006B3B44 /* PasswordViewController.swift */,
-			);
-			path = "Create Account wizard";
 			sourceTree = "<group>";
 		};
 		DF951038236243E6006B3B44 /* Settings */ = {
@@ -628,7 +620,6 @@
 				DF215B0B2356673700EE67D3 /* Orientation.swift in Sources */,
 				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
 				DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */,
-				DF951033236100EC006B3B44 /* EmailViewController.swift in Sources */,
 				DF215AFB235563D900EE67D3 /* NextLevelClip.swift in Sources */,
 				DF9510122360D945006B3B44 /* Account.swift in Sources */,
 				DF7D0AC323B83ABE00B33E40 /* Post.swift in Sources */,
@@ -642,7 +633,6 @@
 				DFDD9ECE234FDD5D007A3177 /* VirtualFaceContent.swift in Sources */,
 				DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */,
 				DF4BC427234D8267001AD00D /* ColorCollectionViewCell.swift in Sources */,
-				DF95102F236100BC006B3B44 /* BirthdayViewController.swift in Sources */,
 				DF0002DF2385E0CD00654EAC /* EditProfileViewController.swift in Sources */,
 				DF215AF7235563D900EE67D3 /* NextLevelGIFCreator.swift in Sources */,
 				DF4BC426234D8267001AD00D /* StickerCollectionViewCell.swift in Sources */,
@@ -650,6 +640,7 @@
 				DF4BC428234D8267001AD00D /* GradientView.swift in Sources */,
 				DF4BC40E234D8267001AD00D /* ViewGestures.swift in Sources */,
 				DFDD9ED0234FDD5D007A3177 /* VirtualContentUpdater.swift in Sources */,
+				DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */,
 				DF73728A23C1899D003ED359 /* CommentsViewController.swift in Sources */,
 				DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */,
 				DF4BC429234D8267001AD00D /* UIImageViewExtensions.swift in Sources */,
@@ -666,8 +657,10 @@
 				DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */,
 				DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */,
 				DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */,
+				DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */,
 				DF73728823C18282003ED359 /* Like.swift in Sources */,
 				DF469B84237B47B600CDB540 /* FollowersTableViewController.swift in Sources */,
+				DFDCA0A523C93D7700240CE7 /* VideoManager.swift in Sources */,
 				DF215B092356673700EE67D3 /* SwiftyCamViewController.swift in Sources */,
 				DF215AF6235563D900EE67D3 /* NextLevel+CIContext.swift in Sources */,
 				DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */,
@@ -679,18 +672,17 @@
 				DF215AF4235563D900EE67D3 /* NextLevel+Metadata.swift in Sources */,
 				DF7D0ABF23B711F500B33E40 /* FollowingViewController.swift in Sources */,
 				DFF346262367A3FF006AA467 /* Channel.swift in Sources */,
-				DF95102D23610088006B3B44 /* NameViewController.swift in Sources */,
 				DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */,
 				DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */,
 				DF215AFC235563D900EE67D3 /* NextLevelConfiguration.swift in Sources */,
 				DFDD9ECF234FDD5D007A3177 /* RemoteFaceFilter.swift in Sources */,
 				DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */,
-				DF951031236100D4006B3B44 /* UsernameViewController.swift in Sources */,
 				DF215AFE235563D900EE67D3 /* NextLevel+CMSampleBuffer.swift in Sources */,
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
+				DF70721823C695A500F00DF0 /* UsernameViewController.swift in Sources */,
 				DF3C1A102399AF3D00106964 /* NotificationService.swift in Sources */,
+				DFB0053F23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift in Sources */,
 				DF7D0ACB23BA3AAF00B33E40 /* PostViewController.swift in Sources */,
-				DF95103523610102006B3B44 /* PasswordViewController.swift in Sources */,
 				DFD10ED6234EE72C002616B4 /* AppDelegate.swift in Sources */,
 				DF4BC422234D8267001AD00D /* EmojisCollectionViewDelegate.swift in Sources */,
 				DF4BC423234D8267001AD00D /* PhotoEditorViewController.swift in Sources */,

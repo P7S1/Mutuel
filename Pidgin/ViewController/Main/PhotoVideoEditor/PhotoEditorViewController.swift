@@ -522,17 +522,6 @@ public final class PhotoEditorViewController: UIViewController {
 
         // File to composit
         let asset = AVURLAsset(url: videoURL as URL)
-        var assets = [asset]
-        let composition = AVMutableComposition.init()
-        let track = composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
-        var tracks = [track]
-        
-        do{
-            try track?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: asset.duration), of: asset.tracks(withMediaType: AVMediaType.video)[0], at: CMTime.zero)
-        }
-        catch{
-            print("failed to add third track")
-        }
         var gifs = [GPHMediaView]()
             for subview in self.tempImageView.subviews{
                 if subview is GPHMediaView{
@@ -646,18 +635,6 @@ public final class PhotoEditorViewController: UIViewController {
         renderWidth = naturalSize.width
         renderHeight = naturalSize.height
         let renderSize =  CGSize(width: renderWidth, height: renderHeight)
-        
-        var instructions = [AVVideoCompositionLayerInstruction]()
-        for currentAsset in assets{
-            if currentAsset != asset{
-                guard let index = assets.firstIndex(of: currentAsset) else{
-                    return
-                }
-                print("found track of index \(index)")
-                let instruction = VideoHelper.videoCompositionInstruction(tracks[index]!, asset: currentAsset, mediaView: gifs[index-1], renderSize: renderSize, imageView: tempImageView)
-                instructions.append(instruction)
-            }
-        }
 
 
         let parentlayer = CALayer()
@@ -680,6 +657,7 @@ public final class PhotoEditorViewController: UIViewController {
         let gifLayer = CALayer()
         parentlayer.addSublayer(watermarkLayer)
         gifLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: tempImageView.frame.size)
+        
         for gif in gifs{
         let miniGifLayer = CALayer()
         let animation = VideoHelper.createGIFAnimation(url: URL(string: (gif.media?.url(rendition: .original, fileType: .gif))!)!)
@@ -692,9 +670,10 @@ public final class PhotoEditorViewController: UIViewController {
             print("before y origin\(gif.frame.origin.y)")
             print("after y origin \(tempImageView.frame.height-(gif.frame.origin.y))")
             //miniGifLayer.center = gif.center */
-            
             let frame = CGRect(x: gif.frame.origin.x, y: (tempImageView.frame.height-gif.frame.height)-(gif.frame.origin.y), width: gif.frame.width, height: gif.frame.height)
-            miniGifLayer.frame = frame
+            miniGifLayer.frame = gif.frame
+            miniGifLayer.frame.origin = gif.frame.origin
+            miniGifLayer.transform = gif.layer.transform
             gifLayer.addSublayer(miniGifLayer)
         }
         let rectangle = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
@@ -706,12 +685,11 @@ public final class PhotoEditorViewController: UIViewController {
 
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRangeMake(start: CMTime.zero, duration: CMTimeMakeWithSeconds(60, preferredTimescale: 30))
-        instructions.append(transformer)
-        instruction.layerInstructions = instructions
         instruction.backgroundColor = .none
+        instruction.layerInstructions = [transformer]
         
         videoComposition.instructions = [instruction]
-        let exporter = AVAssetExportSession.init(asset: composition, presetName: AVAssetExportPresetHighestQuality)
+        let exporter = AVAssetExportSession.init(asset: asset, presetName: AVAssetExportPresetMediumQuality)
         exporter?.outputFileType = AVFileType.mov
         exporter?.outputURL = filePath
         exporter?.videoComposition = videoComposition
@@ -723,7 +701,8 @@ public final class PhotoEditorViewController: UIViewController {
                 }else if ((exporter?.outputURL) != nil) && !saveToPhotoLibray{
                     ProgressHUD.dismiss()
                     DispatchQueue.main.async{
-                        self.presentSendToUserViewController(image: nil, video: exporter!.outputURL!, size: clipVideoTrack.naturalSize)
+                        let image = FollowersHelper().generateThumbnail(path: exporter!.outputURL!)
+                        self.presentSendToUserViewController(image: image, video: exporter!.outputURL!, size: clipVideoTrack.naturalSize)
                     }
                     self.photoEditorDelegate?.videoEdited(video: exporter!.outputURL!)
                 }

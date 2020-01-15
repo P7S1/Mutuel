@@ -292,8 +292,6 @@ class ChatViewController: MessagesViewController {
         }))
         
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            
-        alertController.view.tintColor = .systemPink
         self.present(alertController, animated: true, completion: nil)
     }
     
@@ -809,7 +807,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let outputurl = documentsURL.appendingPathComponent(name)
         var ur = outputurl
-        self.convertVideo(toMPEG4FormatForVideo: url as URL, outputURL: outputurl) { (session) in
+        VideoHelper.convertVideo(toMPEG4FormatForVideo: url as URL, outputURL: outputurl) { (session) in
 
             ur = session.outputURL!
             dispatchgroup.leave()
@@ -823,7 +821,6 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
             try data?.write(to: URL(fileURLWithPath: path), options: .atomic)
 
         } catch {
-
             print(error)
         }
 
@@ -858,18 +855,6 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
                     }
             })
         }
-    }
-    
-    func convertVideo(toMPEG4FormatForVideo inputURL: URL, outputURL: URL, handler: @escaping (AVAssetExportSession) -> Void) {
-        //try! FileManager.default.removeItem(at: outputURL)
-        let asset = AVURLAsset(url: inputURL as URL, options: nil)
-
-        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset1280x720)!
-        exportSession.outputURL = outputURL
-        exportSession.outputFileType = .mp4
-        exportSession.exportAsynchronously(completionHandler: {
-            handler(exportSession)
-        })
     }
 }
 extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{

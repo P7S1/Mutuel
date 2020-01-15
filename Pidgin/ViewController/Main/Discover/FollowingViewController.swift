@@ -9,6 +9,7 @@
 import UIKit
 import DeepDiff
 import FirebaseFirestore
+import AVKit
  protocol PostViewDelegate {
     func preparePostsFor(indexPath: IndexPath, posts : [Post])
 }
@@ -31,18 +32,39 @@ class FollowingViewController: UIViewController, ExploreViewControllerDelegate {
     
     let cache = NSCache<NSString, User>()
     
+    var activityIndicator : UIActivityIndicatorView!
+    
+    var adjustInsets = false
+    
+   var shouldContinuePlaying = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         self.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.isHeroEnabled = true
+        self.activityIndicator = UIActivityIndicatorView(style: .medium)
+        self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
+        
+        
+        
+        self.activityIndicator.hidesWhenStopped = true
+        
+        collectionView.addSubview(activityIndicator)
+        
+        activityIndicator.startAnimating()
    
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        if shouldQuery{
-
-        let docRef = db.collectionGroup("posts")
+        if adjustInsets{
+        collectionView.contentInset = UIEdgeInsets(top: 62, left: 0, bottom: 0, right: 0)
+        }else{
+         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
+        if shouldQuery && User.shared.following.count > 0{
+        let docRef = db.collectionGroup("posts").order(by: "publishDate", descending: true).whereField("creatorID", in: User.shared.following)
         
         docRef.getDocuments { (snapshot, error) in
             if error == nil{
@@ -50,19 +72,24 @@ class FollowingViewController: UIViewController, ExploreViewControllerDelegate {
                 var newItems = self.posts
                 for document in snapshot!.documents{
                     let post = Post(document: document)
+
                     newItems.append(post)
+                    
                     print("append a post")
                 }
-                newItems.shuffle()
+                self.activityIndicator.stopAnimating()
                 self.collectionView.performBatchUpdates({
                     let changes = diff(old: old, new: newItems)
                     self.collectionView.reload(changes: changes, section: 0, updateData: {
                         self.posts = newItems
                     })
                 }, completion: nil)
+            }else{
+                print("there was an error : \(error!)")
             }
         }
         }else{
+            activityIndicator.stopAnimating()
             navigationItem.largeTitleDisplayMode = .never
             navigationItem.title = "Discover"
         }
@@ -77,21 +104,48 @@ class FollowingViewController: UIViewController, ExploreViewControllerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.indexPath = nil
+        self.scrollViewDidEndDecelerating(collectionView)
+        self.shouldContinuePlaying = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         postDelegate?.preparePostsFor(indexPath: collectionView.indexPathsForVisibleItems[0], posts: posts)
         navigationController?.isHeroEnabled = false
+        
+        if self.isMovingFromParent{
+            print("is moving from parenr")
+            self.stopAllVideoCells()
+        }else{
+            if !shouldContinuePlaying{
+                self.stopAllVideoCells()
+            }
+        }
+        
+        
+
     }
+    
+    func stopAllVideoCells(){
+        print("stopping all video cells")
+               for cell in collectionView.visibleCells{
+                   if let newCell = cell as? FollowingCollectionViewCell, let player = newCell.playerContainerView  {
+                       player.pause()
+                   }
+               }
+        VideoManager().destroyVideos()
+           }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        collectionView.collectionViewLayout.invalidateLayout()
         if let path = indexPath{
-            self.collectionView.scrollToItem(at: path, at: [.top], animated: true)
+            self.collectionView.scrollToItem(at: path, at: [.centeredVertically], animated: true)
         }
         
     }
+    
+    
     
     
     
@@ -132,18 +186,42 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         cell.engagementStackView.heroID = "\(posts[indexPath.row].postID).engagementStackView"
         cell.caption.heroID = "\(post.postID).caption"
         cell.blurView.heroID = "\(post.postID).engagementStackView"
- 
         
+        
+        cell.playButton.isHidden = !(posts[indexPath.row].isVideo)
+        
+        
+        cell.playButton.heroID = "\(posts[indexPath.row].postID).playButton"
+        
+        self.view.isHeroEnabled = true
+        self.view.heroID = "\(post.postID).view"
+        
+        
+        cell.playerContainerView.heroModifiers = [.useNoSnapshot, .autolayout]
+        cell.imageView.heroModifiers = [.useNoSnapshot, .autolayout]
         cell.containerView.layer.masksToBounds = true
         cell.containerView.layer.cornerRadius = 20.0
+    
         
+        let ratio = (collectionView.bounds.width) / post.photoSize.width
+        var height = post.photoSize.height * ratio
+        if height < collectionView.bounds.width{
+            height = collectionView.bounds.width
+        }
+        if height > collectionView.bounds.height-56{
+            height = collectionView.bounds.height-56
+        }
+        cell.height.constant = height
+        
+      //  cell.backgroundColor = UIColor.random
+
 
         if let user = cache.object(forKey: post.creatorID as NSString) {
             // use the cached version
             cell.usernameLabel.text = "@\(user.username ?? "")"
             cell.nameLabel.text = user.name ?? ""
             cell.profilePictureView.kf.setImage(with: URL(string: user.profileURL ?? ""))
-            cell.btnTapAction = {
+                        cell.btnTapAction = {
                 () in
                 print("Edit tapped in cell", indexPath)
                 // start your edit process here...
@@ -189,22 +267,17 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let ratio = (collectionView.bounds.width) / posts[indexPath.row].photoSize.width
-        let height = posts[indexPath.row].photoSize.height * ratio
-    
-        return CGSize(width: collectionView.bounds.width, height: height)
-        
+        return collectionView.bounds.size
     }
     
     
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 16
+        return 0
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 16
+        return 0
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -216,11 +289,59 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         let vc = storyboard.instantiateViewController(withIdentifier: "PostViewController") as! PostViewController
        // vc.postDelegate = self
         vc.post = posts[indexPath.row]
-        navigationController?.pushViewController(vc, animated: true)
+        self.shouldContinuePlaying = true
+        vc.isHeroEnabled = true
+        let navController = UINavigationController(rootViewController: vc)
+        navController.isHeroEnabled = true
+        navController.modalPresentationStyle = .fullScreen
+        self.present(navController, animated: true, completion: nil)
+        //navigationController?.pushViewController(viewController: navController, animated: true, completion:nil)
     }
     
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard let visibleIndexPath = self.getVisibleCellsIndexPath() else { return }
+        if let cell = collectionView.cellForItem(at: visibleIndexPath) as? FollowingCollectionViewCell{
+            cell.setUpPlayer(post: posts[visibleIndexPath.row])
+   
+        }
+       /* for cell in collectionView.visibleCells{
+            if let newCell = cell as? FollowingCollectionViewCell, let player = newCell.playerContainerView  {
+                if player.post?.isVideo ?? false{
+                    print("will play video count : \(collectionView.visibleCells.count)")
+                    player.play()
+                }else{
+                    player.pause()
+                    player.isHidden = true
+                }
+            }
+        } */
+    }
+    
+    func getVisibleCellsIndexPath() -> IndexPath?{
+        let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        return collectionView.indexPathForItem(at: visiblePoint)
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let newCell = cell as? FollowingCollectionViewCell, let player = newCell.playerContainerView {
+            player.pause()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let newCell = cell as? FollowingCollectionViewCell{
+            newCell.playerContainerView.initialize(post: posts[indexPath.row], shouldPlay: true)
+        }
+    }
+    
+    
+    
+    
     func collectionViewScrolled(_ scrollView: UIScrollView) {
+        
         scrollViewDidScroll(scrollView)
+        
     }
 }
-

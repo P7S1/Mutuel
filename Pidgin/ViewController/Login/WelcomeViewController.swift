@@ -11,17 +11,12 @@ import UIKit
 class WelcomeViewController: UIViewController {
 
     @IBOutlet weak var loginButton: UIButton!
-    @IBOutlet weak var signupButton: UIButton!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loginButton.roundCorners()
-        signupButton.roundCorners()
-        if #available(iOS 13.0, *) {
-            signupButton.backgroundColor = .systemGray6
-        }
 
         // Do any additional setup after loading the view.
     }
@@ -60,7 +55,6 @@ extension UITextField{
     {
         let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
         doneToolbar.barStyle = .default
-        doneToolbar.tintColor = .systemPink
         
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
@@ -92,7 +86,6 @@ extension UITextView{
     {
         let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
         doneToolbar.barStyle = .default
-        doneToolbar.tintColor = .systemPink
         
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))

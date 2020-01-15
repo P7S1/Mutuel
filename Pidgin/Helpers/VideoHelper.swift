@@ -165,4 +165,16 @@ class VideoHelper{
 
         return imageRect
     }
+    
+    static func convertVideo(toMPEG4FormatForVideo inputURL: URL, outputURL: URL, handler: @escaping (AVAssetExportSession) -> Void) {
+        //try! FileManager.default.removeItem(at: outputURL)
+        let asset = AVURLAsset(url: inputURL as URL, options: nil)
+
+        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset1280x720)!
+        exportSession.outputURL = outputURL
+        exportSession.outputFileType = .mp4
+        exportSession.exportAsynchronously(completionHandler: {
+            handler(exportSession)
+        })
+    }
 }

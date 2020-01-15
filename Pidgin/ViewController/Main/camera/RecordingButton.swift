@@ -29,7 +29,7 @@ class RecordingButton: UIButton {
     var innerCircleColor: UIColor = UIColor.white;
     var progessColor: UIColor = .systemRed;
     var isContinue :Bool = false;
-    var recordingDuration: CGFloat = 15;
+    var recordingDuration: CGFloat = 60;
     var delegate: RecordingButtonDelegate?;
     
     var isCompleteMode :Bool = false;
@@ -144,7 +144,7 @@ class RecordingButton: UIButton {
         endProgressValue=0;
         //innerCircleRadious=25;
         isCompleteMode = true;
-//        timer.invalidate();
+        timer.invalidate();
         timer = nil;
         timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.restoreDefaultState), userInfo: nil, repeats: true);
         
