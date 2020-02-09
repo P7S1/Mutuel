@@ -64,23 +64,10 @@
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="yUw-6S-RSl">
-                                        <rect key="frame" x="213" y="0.0" width="132" height="60"/>
+                                        <rect key="frame" x="262" y="0.0" width="83" height="60"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dQs-tt-W1k">
-                                                <rect key="frame" x="0.0" y="0.0" width="34" height="60"/>
-                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <size key="titleShadowOffset" width="1" height="0.0"/>
-                                                <state key="normal" image="smiley" catalog="system">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="0.1532266695" colorSpace="calibratedRGB"/>
-                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="stickersButtonTapped:" destination="qal-IL-P5A" eventType="touchUpInside" id="Y1M-Yn-QuH"/>
-                                                </connections>
-                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cIa-FY-gdx">
-                                                <rect key="frame" x="49" y="0.0" width="34" height="60"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="34" height="60"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <size key="titleShadowOffset" width="1" height="0.0"/>
                                                 <state key="normal" image="scribble" catalog="system">
@@ -93,7 +80,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q1e-6L-kot">
-                                                <rect key="frame" x="98" y="0.0" width="34" height="60"/>
+                                                <rect key="frame" x="49" y="0.0" width="34" height="60"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <size key="titleShadowOffset" width="1" height="0.0"/>
                                                 <state key="normal" image="textformat" catalog="system">
@@ -319,7 +306,6 @@
                         <outlet property="imageView" destination="Xjm-vk-hyr" id="XWe-ej-ldw"/>
                         <outlet property="saveButton" destination="rav-xj-PL3" id="Ovp-Rn-auI"/>
                         <outlet property="sendButton" destination="2sC-op-bgJ" id="Xaj-zs-4C6"/>
-                        <outlet property="stickersButton" destination="dQs-tt-W1k" id="OYb-sM-6J0"/>
                         <outlet property="tempImageView" destination="iEA-yd-3em" id="R9x-0A-vf7"/>
                         <outlet property="topGradient" destination="hU8-Ej-Qjx" id="42t-oe-uiS"/>
                         <outlet property="topToolbar" destination="eiH-5R-h9P" id="vg0-ef-kQ8"/>
@@ -335,7 +321,6 @@
         <image name="arrow.right.circle.fill" catalog="system" width="64" height="60"/>
         <image name="arrow.uturn.left" catalog="system" width="64" height="56"/>
         <image name="scribble" catalog="system" width="64" height="54"/>
-        <image name="smiley" catalog="system" width="64" height="60"/>
         <image name="square.and.arrow.down" catalog="system" width="60" height="64"/>
         <image name="textformat" catalog="system" width="64" height="40"/>
         <image name="trash" catalog="system" width="60" height="64"/>

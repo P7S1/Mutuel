@@ -15,25 +15,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Rectangle" translatesAutoresizingMaskIntoConstraints="NO" id="c1C-Nt-5Dd">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                            </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mutel text" translatesAutoresizingMaskIntoConstraints="NO" id="xaD-Ow-UsZ">
-                                <rect key="frame" x="87" y="384" width="240" height="128"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="240" id="H3T-BG-ifo"/>
-                                    <constraint firstAttribute="width" secondItem="xaD-Ow-UsZ" secondAttribute="height" multiplier="15:8" id="Pie-x6-qhl"/>
-                                </constraints>
-                            </imageView>
+                            <tabBar contentMode="scaleToFill" itemPositioning="centered" translatesAutoresizingMaskIntoConstraints="NO" id="0Ac-hi-g4N">
+                                <rect key="frame" x="0.0" y="813" width="414" height="83"/>
+                                <items/>
+                                <color key="selectedImageTintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                            </tabBar>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="xaD-Ow-UsZ" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="2I3-dc-bcv"/>
-                            <constraint firstAttribute="trailing" secondItem="c1C-Nt-5Dd" secondAttribute="trailing" id="8RV-65-MSM"/>
-                            <constraint firstAttribute="bottom" secondItem="c1C-Nt-5Dd" secondAttribute="bottom" id="LRk-Ta-5Op"/>
-                            <constraint firstItem="xaD-Ow-UsZ" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="g62-Rg-X7V"/>
-                            <constraint firstItem="c1C-Nt-5Dd" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="n8i-uc-rn7"/>
-                            <constraint firstItem="c1C-Nt-5Dd" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="npj-U5-Q6i"/>
+                            <constraint firstItem="0Ac-hi-g4N" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="0zw-Bi-cM5"/>
+                            <constraint firstItem="0Ac-hi-g4N" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="3I3-eU-hx9"/>
+                            <constraint firstAttribute="bottom" secondItem="0Ac-hi-g4N" secondAttribute="bottom" symbolic="YES" id="6o0-Xs-i6g"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -43,8 +35,4 @@
             <point key="canvasLocation" x="52.173913043478265" y="375"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Rectangle" width="1127" height="2438"/>
-        <image name="mutel text" width="250" height="88"/>
-    </resources>
 </document>

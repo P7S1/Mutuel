@@ -17,7 +17,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     @IBOutlet weak var scrollView: UIScrollView!
     
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageView: VideoIcon!
     
     @IBOutlet weak var commentsStackView: UIStackView!
     @IBOutlet weak var commentsImageView: UIImageView!
@@ -26,6 +26,9 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     @IBOutlet weak var repostsStackView: UIStackView!
     @IBOutlet weak var repostsImageView: UIImageView!
     @IBOutlet weak var repostsLabel: UILabel!
+    
+    @IBOutlet weak var timeLabel: UILabel!
+    
     
     @IBOutlet weak var caption: UILabel!
     
@@ -37,7 +40,6 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     var panGR: UIPanGestureRecognizer!
     
-    
     @IBOutlet weak var playerContainerView: PlayerContainerView!
     
     var shouldContinuePlaying = false
@@ -48,29 +50,21 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         scrollView.delegate = self
-        self.isHeroEnabled = true
         navigationItem.largeTitleDisplayMode = .never
-        self.view.isHeroEnabled = true
-        self.view.heroID = "\(post.postID).view"
-        HeroAutolayoutFixPlugin.enable()
-        self.playerContainerView.heroModifiers = [.useNoSnapshot, .autolayout]
-        self.imageView.heroModifiers = [.useNoSnapshot, .autolayout]
-        let titleView = UIImageView(frame: CGRect(x: 0, y: 0, width: 38, height: 38))
-        let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
-        titleView.image = UIImage(systemName: "chevron.down", withConfiguration: config)
-        titleView.contentMode = .scaleAspectFit
-        titleView.tintColor = .secondaryLabel
-        navigationItem.titleView? = titleView
         
-        self.setDismissButton()
-
-        imageView.kf.setImage(with: URL(string: post.photoURL))
+        navigationItem.title = "Post"
+        imageView.kf.indicatorType = .activity
+        DispatchQueue.main.async {
+            self.imageView.kf.setImage(with: URL(string: self.post.photoURL))
+        }
         imageView.heroID = post.postID
         engagementStackView.heroID = "\(post.postID).engagementStackView"
         caption.heroID = "\(post.postID).caption"
-        
+        timeLabel.text = post.publishDate.getElapsedInterval()
         scrollView.alwaysBounceVertical = true
         scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
+        
+        
         
         let scale = UIScreen.main.bounds.width / post.photoSize.width
         imageViewHeightConstraint.constant = post.photoSize.height * scale
@@ -93,7 +87,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         panGR = UIPanGestureRecognizer(target: self,
                   action: #selector(handlePan(gestureRecognizer:)))
         panGR.delegate = self
-        scrollView.addGestureRecognizer(panGR)
+        view.addGestureRecognizer(panGR)
         
         self.view.layoutIfNeeded()
         // Do any additional setup after loading the view.
@@ -106,7 +100,6 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.isHeroEnabled = true
         playerContainerView.initialize(post: post, shouldPlay: true)
      /*   if player != nil{
         self.player!.play()
@@ -115,17 +108,20 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+       
         if !shouldContinuePlaying
         {
+            navigationController?.isHeroEnabled = false
             playerContainerView.pause()
+        }else{
+             navigationController?.isHeroEnabled = true
         }
-        navigationController?.isHeroEnabled = false
     }
     
     @objc func engagementTapped(){
-        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "CommentsViewController") as! CommentsViewController
-        
+        let vc = CommentsSectionViewController()
+        vc.post = self.post
+        navigationController?.isHeroEnabled = false
         navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -137,15 +133,59 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     }
     
     @objc func handlePan(gestureRecognizer:UIPanGestureRecognizer) {
-        print(gestureRecognizer.velocity(in: self.view).y )
-        if gestureRecognizer.velocity(in: self.view).y > 1600{
-            self.handleDismissButton()
+        switch gestureRecognizer.state {
+        case .began:
+            shouldContinuePlaying = true
+            navigationController?.popViewController(animated: true)
+        case .changed:
+            
+            let translation = gestureRecognizer.translation(in: nil)
+            let progress = translation.x / 2.0 / view.bounds.width
+            Hero.shared.update(progress)
+            Hero.shared.apply(modifiers: [.translate(x: translation.x)], to: self.view)
+            break
+        default:
+            let translation = gestureRecognizer.translation(in: nil)
+            let progress = translation.x / 2.0 / view.bounds.width
+            if progress + gestureRecognizer.velocity(in: nil).x / view.bounds.width > 0.3 {
+                 DispatchQueue.main.async {
+                    self.shouldContinuePlaying = true
+                           Hero.shared.finish()
+                       }
+            } else {
+                DispatchQueue.main.async {
+                    self.shouldContinuePlaying = true
+                           Hero.shared.finish()
+                       }
+            }
         }
+        
     }
     
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+           if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
+               changeTabBar(hidden: true, animated: true)
+           }
+           else{
+               changeTabBar(hidden: false, animated: true)
+           }
+       }
+
+       func changeTabBar(hidden:Bool, animated: Bool){
+           guard let tabBar = self.tabBarController?.tabBar else { return; }
+           if tabBar.isHidden == hidden{ return }
+           let frame = tabBar.frame
+           let offset = hidden ? frame.size.height : -frame.size.height
+           let duration:TimeInterval = (animated ? 0.2 : 0.0)
+           tabBar.isHidden = false
+
+           UIView.animate(withDuration: duration, animations: {
+               tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
+           }, completion: { (true) in
+               tabBar.isHidden = hidden
+           })
+       }
+
     
 
     

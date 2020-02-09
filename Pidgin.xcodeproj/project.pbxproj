@@ -59,13 +59,16 @@
 		DF4BC42C234D8267001AD00D /* PhotoEditor.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF4BC40B234D8266001AD00D /* PhotoEditor.storyboard */; };
 		DF4F7A18234C23A3001D6CE8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF4F7A16234C23A3001D6CE8 /* LaunchScreen.storyboard */; };
 		DF562A3323BE3E9F00CC43D3 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF562A3223BE3E9F00CC43D3 /* Comment.swift */; };
+		DF5A223323D5F35D00BA053F /* ReAuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A223223D5F35D00BA053F /* ReAuthenticationViewController.swift */; };
+		DF5A223523D5FAF000BA053F /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A223423D5FAF000BA053F /* ChangePasswordViewController.swift */; };
+		DF5A223723D67F8200BA053F /* ForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A223623D67F8200BA053F /* ForgotPasswordViewController.swift */; };
+		DF5A223923D67FBC00BA053F /* PasswordResetEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A223823D67FBC00BA053F /* PasswordResetEmailViewController.swift */; };
 		DF5CCF3B2360D21B005439BB /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CCF3A2360D21B005439BB /* Login.storyboard */; };
 		DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661A3B238B12880042B7AD /* WebViewController.swift */; };
 		DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AD23B1EF0400949CED /* VideoHelper.swift */; };
 		DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */; };
 		DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721523C68D3400F00DF0 /* SignUpViewController.swift */; };
 		DF70721823C695A500F00DF0 /* UsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721723C695A500F00DF0 /* UsernameViewController.swift */; };
-		DF73728823C18282003ED359 /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF73728723C18282003ED359 /* Like.swift */; };
 		DF73728A23C1899D003ED359 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF73728923C1899D003ED359 /* CommentsViewController.swift */; };
 		DF7D0ABB23B7083600B33E40 /* Discover.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF7D0ABA23B7083500B33E40 /* Discover.storyboard */; };
 		DF7D0ABD23B7104900B33E40 /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7D0ABC23B7104900B33E40 /* ExploreViewController.swift */; };
@@ -82,8 +85,9 @@
 		DF95102A2360E06E006B3B44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF9510292360E06E006B3B44 /* Assets.xcassets */; };
 		DF95103C23624402006B3B44 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF95103B23624402006B3B44 /* Settings.storyboard */; };
 		DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */; };
+		DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */; };
+		DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597F23D14A72004666DD /* VideoIcon.swift */; };
 		DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFADF6FB2357F23F00383627 /* CameraVC.swift */; };
-		DFB0053F23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB0053E23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift */; };
 		DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC30E0223C7F104000704EC /* PlayerContainerView.swift */; };
 		DFD10ED6234EE72C002616B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD10ED5234EE72C002616B4 /* AppDelegate.swift */; };
 		DFDCA0A523C93D7700240CE7 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDCA0A423C93D7700240CE7 /* VideoManager.swift */; };
@@ -103,6 +107,8 @@
 		DFF346262367A3FF006AA467 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346232367A3FC006AA467 /* Channel.swift */; };
 		DFF346292367AE0D006AA467 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346282367AE0D006AA467 /* Message.swift */; };
 		DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */; };
+		DFF3DBD123DD066F00557BC8 /* CommentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */; };
+		DFF3DBD323DD163200557BC8 /* CommentsSectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -163,13 +169,16 @@
 		DF4F7A17234C23A3001D6CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DF4F7A19234C23A3001D6CE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DF562A3223BE3E9F00CC43D3 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		DF5A223223D5F35D00BA053F /* ReAuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReAuthenticationViewController.swift; sourceTree = "<group>"; };
+		DF5A223423D5FAF000BA053F /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
+		DF5A223623D67F8200BA053F /* ForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewController.swift; sourceTree = "<group>"; };
+		DF5A223823D67FBC00BA053F /* PasswordResetEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetEmailViewController.swift; sourceTree = "<group>"; };
 		DF5CCF3A2360D21B005439BB /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		DF661A3B238B12880042B7AD /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		DF6A20AD23B1EF0400949CED /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
 		DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIF2MP4.swift; sourceTree = "<group>"; };
 		DF70721523C68D3400F00DF0 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		DF70721723C695A500F00DF0 /* UsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameViewController.swift; sourceTree = "<group>"; };
-		DF73728723C18282003ED359 /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
 		DF73728923C1899D003ED359 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		DF7D0ABA23B7083500B33E40 /* Discover.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Discover.storyboard; sourceTree = "<group>"; };
 		DF7D0ABC23B7104900B33E40 /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
@@ -186,8 +195,9 @@
 		DF9510292360E06E006B3B44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DF95103B23624402006B3B44 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePicture.swift; sourceTree = "<group>"; };
+		DF9E597F23D14A72004666DD /* VideoIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoIcon.swift; sourceTree = "<group>"; };
 		DFADF6FB2357F23F00383627 /* CameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
-		DFB0053E23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroAutolayoutFixPlugin.swift; sourceTree = "<group>"; };
 		DFC30E0223C7F104000704EC /* PlayerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerContainerView.swift; sourceTree = "<group>"; };
 		DFD10ED5234EE72C002616B4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DFDCA0A423C93D7700240CE7 /* VideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoManager.swift; sourceTree = "<group>"; };
@@ -210,6 +220,8 @@
 		DFF346232367A3FC006AA467 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		DFF346282367AE0D006AA467 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTableViewCell.swift; sourceTree = "<group>"; };
+		DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsTableViewCell.swift; sourceTree = "<group>"; };
+		DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsSectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -272,7 +284,7 @@
 				DF7D0AC423B83D9A00B33E40 /* DatabaseRepresentation.swift */,
 				DFC30E0223C7F104000704EC /* PlayerContainerView.swift */,
 				DFDCA0A423C93D7700240CE7 /* VideoManager.swift */,
-				DFB0053E23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift */,
+				DF9E597F23D14A72004666DD /* VideoIcon.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -298,6 +310,7 @@
 				DF7D0ABE23B711F500B33E40 /* FollowingViewController.swift */,
 				DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */,
 				DF73728923C1899D003ED359 /* CommentsViewController.swift */,
+				DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */,
 			);
 			path = Discover;
 			sourceTree = "<group>";
@@ -401,6 +414,8 @@
 				DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */,
 				DF70721523C68D3400F00DF0 /* SignUpViewController.swift */,
 				DF70721723C695A500F00DF0 /* UsernameViewController.swift */,
+				DF5A223623D67F8200BA053F /* ForgotPasswordViewController.swift */,
+				DF5A223823D67FBC00BA053F /* PasswordResetEmailViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -411,6 +426,9 @@
 				DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */,
 				DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */,
 				DF661A3B238B12880042B7AD /* WebViewController.swift */,
+				DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */,
+				DF5A223223D5F35D00BA053F /* ReAuthenticationViewController.swift */,
+				DF5A223423D5FAF000BA053F /* ChangePasswordViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -456,7 +474,7 @@
 				DF7D0AC223B83ABE00B33E40 /* Post.swift */,
 				DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */,
 				DF562A3223BE3E9F00CC43D3 /* Comment.swift */,
-				DF73728723C18282003ED359 /* Like.swift */,
+				DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -614,19 +632,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF5A223923D67FBC00BA053F /* PasswordResetEmailViewController.swift in Sources */,
 				DFDE080E234D23880017BFDA /* DiscoverViewController.swift in Sources */,
 				DF215AF9235563D900EE67D3 /* NextLevel.swift in Sources */,
 				DF215AF8235563D900EE67D3 /* NextLevelBufferRenderer.swift in Sources */,
 				DF215B0B2356673700EE67D3 /* Orientation.swift in Sources */,
+				DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */,
 				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
 				DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */,
 				DF215AFB235563D900EE67D3 /* NextLevelClip.swift in Sources */,
+				DF5A223723D67F8200BA053F /* ForgotPasswordViewController.swift in Sources */,
 				DF9510122360D945006B3B44 /* Account.swift in Sources */,
 				DF7D0AC323B83ABE00B33E40 /* Post.swift in Sources */,
 				DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */,
 				DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */,
 				DF4BC41B234D8267001AD00D /* Pencil.swift in Sources */,
+				DF5A223323D5F35D00BA053F /* ReAuthenticationViewController.swift in Sources */,
 				DF4BC420234D8267001AD00D /* UIImageExtensions.swift in Sources */,
+				DFF3DBD323DD163200557BC8 /* CommentsSectionViewController.swift in Sources */,
 				DF4BC410234D8267001AD00D /* BottomSheetViewController.swift in Sources */,
 				DF4BC40C234D8267001AD00D /* ColorsCollectionViewDelegate.swift in Sources */,
 				DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */,
@@ -658,11 +681,11 @@
 				DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */,
 				DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */,
 				DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */,
-				DF73728823C18282003ED359 /* Like.swift in Sources */,
 				DF469B84237B47B600CDB540 /* FollowersTableViewController.swift in Sources */,
 				DFDCA0A523C93D7700240CE7 /* VideoManager.swift in Sources */,
 				DF215B092356673700EE67D3 /* SwiftyCamViewController.swift in Sources */,
 				DF215AF6235563D900EE67D3 /* NextLevel+CIContext.swift in Sources */,
+				DFF3DBD123DD066F00557BC8 /* CommentsTableViewCell.swift in Sources */,
 				DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */,
 				DF7D0AC523B83D9A00B33E40 /* DatabaseRepresentation.swift in Sources */,
 				DF4BC415234D8267001AD00D /* ARCameraVC.swift in Sources */,
@@ -681,15 +704,16 @@
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
 				DF70721823C695A500F00DF0 /* UsernameViewController.swift in Sources */,
 				DF3C1A102399AF3D00106964 /* NotificationService.swift in Sources */,
-				DFB0053F23CF52BD00A99784 /* HeroAutolayoutFixPlugin.swift in Sources */,
 				DF7D0ACB23BA3AAF00B33E40 /* PostViewController.swift in Sources */,
 				DFD10ED6234EE72C002616B4 /* AppDelegate.swift in Sources */,
 				DF4BC422234D8267001AD00D /* EmojisCollectionViewDelegate.swift in Sources */,
 				DF4BC423234D8267001AD00D /* PhotoEditorViewController.swift in Sources */,
 				DFDD9EB5234FBC03007A3177 /* SearchCollectionViewCell.swift in Sources */,
 				DFDCA760237FB53D0045A351 /* CreateGroupViewController.swift in Sources */,
+				DF5A223523D5FAF000BA053F /* ChangePasswordViewController.swift in Sources */,
 				DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */,
 				DF562A3323BE3E9F00CC43D3 /* Comment.swift in Sources */,
+				DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */,
 				DF7D0ABD23B7104900B33E40 /* ExploreViewController.swift in Sources */,
 				DF469B7E237910E400CDB540 /* ProfileViewController.swift in Sources */,
 				DF21A36D2365597E00E39A55 /* ChatViewController.swift in Sources */,

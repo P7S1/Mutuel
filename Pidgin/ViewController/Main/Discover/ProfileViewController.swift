@@ -11,12 +11,19 @@ import FirebaseAuth
 import FirebaseStorage
 import Kingfisher
 import Lightbox
+import SkeletonView
+protocol ProfileDelegate {
+    func handleMoreButtonPressed(_ sender: Any)
+    func handleProfilePictureTapped()
+    func handleFollowersTapped()
+    func didPressFollowButton(_ sender: Any)
+}
 class ProfileViewController: UIViewController{
     
     @IBOutlet weak var followingStackView: UIStackView!
     @IBOutlet weak var followersStackView: UIStackView!
     
-    
+    var profileDelegate : ProfileDelegate?
     
     var user : Account?
     
@@ -64,23 +71,16 @@ class ProfileViewController: UIViewController{
         let gesture = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTapped))
         profile.addGestureRecognizer(gesture)
         
-        let settings = UIButton.init(type: .system)
-        if isCurrentUser{
-            let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
-            settings.setImage(UIImage(systemName: "gear", withConfiguration: config), for: UIControl.State.normal)
-        }else{
-            settings.setImage(UIImage(systemName: "square.and.pencil")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        }
-        settings.addTarget(self, action:#selector(settingsBarButtonPressed), for:.touchUpInside)
-        settings.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        settings.heightAnchor.constraint(equalToConstant: 25).isActive = true
-        let settingsButton = UIBarButtonItem.init(customView: settings)
-        navigationItem.rightBarButtonItems = [settingsButton]
+        
         //set profile url
         if let string = user?.profileURL{
             DispatchQueue.main.async {
                 if let url = URL(string: string){
-                    self.profile.kf.setImage(with: url,placeholder: FollowersHelper().getUserProfilePicture())
+                    self.profile.startSkeletonAnimation()
+                    self.profile.kf.setImage(with: URL(string: url.absoluteString)) { (result) in
+                    self.profile.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+                        
+                    }
                     self.profile.heroID = url.absoluteString
                 }else{
                     print("error url was nil")
@@ -216,40 +216,36 @@ class ProfileViewController: UIViewController{
     
     @IBAction func didPressFollowButton(_ sender: Any) {
         if !isCurrentUser{
+            followButton.isEnabled = false
         if let me = User.shared.uid, let followee = self.user?.uid{
             if userFollows{
-                FollowersHelper().unFollow(follower: me, followee: followee)
-                setNotFollowingState()
+                FollowersHelper().unFollow(follower: me, followee: followee) { (success) in
+                    if success{
+                        self.setNotFollowingState()
+                        self.followButton.isEnabled = true
+                        DispatchQueue.main.async {
+                            self.user?.followersCount = (self.user?.followersCount ?? 0) - 1
+                            self.followers.text = "\((self.user?.followersCount ?? 0) )"
+                        }
+                    }
+                }
             }else{
-                FollowersHelper().follow(follower: me, followee: followee, tokens: self.user?.tokens ?? [String]())
-            setFollowingState()
+                FollowersHelper().follow(follower: me, followee: followee, tokens: user?.tokens ?? [String]()) { (success) in
+                    if success{
+                        self.setFollowingState()
+                        self.followButton.isEnabled = true
+                        DispatchQueue.main.async {
+                            self.user?.followersCount = (self.user?.followersCount ?? 0) + 1
+                            self.followers.text = "\((self.user?.followersCount ?? 0)  )"
+                        }
+                    }
+                }
             }
         }else{
             print("failed to follow user")
         }
         }else{
             print("did press avtivity")
-        }
-    }
-    
-    @objc func settingsBarButtonPressed(){
-      if isCurrentUser{
-            let storyboard = UIStoryboard(name: "Settings", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController
-        navigationController?.pushViewController(vc, animated: true)
-        }else{
-        if let id1 = User.shared.uid, let id2 = user?.uid{
-        let docRef = db.collection("channels").document(FollowersHelper().getChannelID(id1: id1, id2: id2))
-            docRef.getDocument { (snapshot, error) in
-                if error == nil{
-                let channel = Channel(document: snapshot!)
-                let vc = ChatViewController()
-                vc.channel = channel
-                self.navigationController?.pushViewController(vc, animated: true)
-                }
-            }
-        }
-            
         }
     }
     

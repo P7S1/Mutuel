@@ -42,10 +42,11 @@ class ResultsTableViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
         
         vc.user = results[indexPath.row]
+        vc.isUserProfile = true
                
         let VC = UINavigationController(rootViewController: vc)
         self.present(VC, animated: true, completion: nil)

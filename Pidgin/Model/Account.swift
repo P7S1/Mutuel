@@ -76,8 +76,8 @@ class Account: Comparable{
         if let c = dictionary.get("name"){
             name = c as? String
         }
-        if let c = dictionary.get("birthday"){
-            birthday = c as? Date
+        if let c = dictionary.get("birthday") as? Timestamp{
+            birthday = c.dateValue()
         }
         if let c = dictionary.get("following"){
             following = c as? [String] ?? [String]()
@@ -104,7 +104,6 @@ class Account: Comparable{
 
 class User : Account{
     static var shared = User()
-    var password : String?
     
     func setUser(Email : String, UID : String, Name : String, Birthday : String, Username : String){
         invalidateUser()
@@ -130,11 +129,13 @@ class User : Account{
     }
     
     func invalidateToken(completion: @escaping (Bool) -> Void){
+        let user = User.shared
+        
         userListener?.remove()
         channelListener?.remove()
         channels.removeAll()
-        
-
+        ProgressHUD.show()
+        let batch = db.batch()
         if let token = Messaging.messaging().fcmToken{
             let query = db.collection("channels").whereField("fcmToken", arrayContains: token).whereField("active", isEqualTo: true)
             query.getDocuments { (snapshot, error) in
@@ -142,35 +143,31 @@ class User : Account{
                     for document in snapshot!.documents{
                     let docRef = db.collection("channels").document(document.documentID)
                     
-                    docRef.updateData([
-                        "fcmToken": FieldValue.arrayRemove([token]),
-                    ]) { err in
-                        if let err = err {
-                            print("Error updating document: \(err)")
-
-                        } else {
-                            print("Document successfully updated")
-                            
-                        }
-                    }
+                    batch.updateData(["fcmToken": FieldValue.arrayRemove([token])], forDocument: docRef)
+                        
+    
                     }
                 }else{
+                    ProgressHUD.showError("error")
                     print("therew as an error: \(error!)")
                 }
                 
-                let docRef = db.collection("users").document(User.shared.uid ?? "")
-                    docRef.updateData([
-                        "fcmToken": FieldValue.arrayRemove([token]),
-                    ]) { err in
-                        if let err = err {
-                            print("Error updating document: \(err)")
-                                completion(false)
-                        } else {
-                            print("Document successfully updated")
-                            completion(true)
+                let docRef = db.collection("users").document(user.uid ?? "")
                 
-                        }
+                batch.updateData([
+                    "fcmToken": FieldValue.arrayRemove([token]),
+                ], forDocument: docRef)
+                
+                batch.commit { (error) in
+                    if error == nil{
+                       completion(true)
+                        ProgressHUD.dismiss()
+                    }else{
+                        print("error logging out: \(error!.localizedDescription)")
+                       completion(false)
+                        ProgressHUD.dismiss()
                     }
+                }
             }
             
         }
@@ -196,7 +193,7 @@ extension User : DatabaseRepresentation{
         let rep : [String : Any] = [
             "username":username as Any,
             "email":email as Any,
-            "profileURL":profileURL as Any,
+            "profilePicURL":profileURL as Any,
             "birthday":Timestamp(date: birthday ?? Date()),
             "name": name as Any]
         return rep

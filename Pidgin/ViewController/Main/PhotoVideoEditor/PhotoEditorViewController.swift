@@ -11,8 +11,6 @@ import AVFoundation
 import AVKit
 import Photos
 import FirebaseAuth
-import GiphyUISDK
-import GiphyCoreSDK
 import Kingfisher
 import Lightbox
 public var switchCam = Bool()
@@ -44,7 +42,6 @@ public final class PhotoEditorViewController: UIViewController {
     public var output = AVPlayerItemVideoOutput()
     
     public var checkVideoOrIamge = Bool()
-     var users : [Account] = [Account]()
     
     
     //To hold the drawings and stickers
@@ -85,7 +82,6 @@ public final class PhotoEditorViewController: UIViewController {
     //my custom stuff
     
     @IBOutlet weak var drawButton: UIButton!
-    @IBOutlet weak var stickersButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
     @IBOutlet weak var deleteChanges: UIButton!
     @IBOutlet weak var editTextButton: UIButton!
@@ -123,7 +119,6 @@ public final class PhotoEditorViewController: UIViewController {
         deleteView.layer.addButtonShadows()
         doneButton.layer.addButtonShadows()
         drawButton.layer.addButtonShadows()
-        stickersButton.layer.addButtonShadows()
         exitButton.layer.addButtonShadows()
         deleteChanges.layer.addButtonShadows()
         editTextButton.layer.addButtonShadows()
@@ -393,26 +388,6 @@ public final class PhotoEditorViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func stickersButtonTapped(_ sender: Any) {
-        print("Send gif pressed")
-        let giphy = GiphyViewController()
-        
-        giphy.layout = .waterfall
-        giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
-        giphy.showConfirmationScreen = false
-        if self.traitCollection.userInterfaceStyle == .dark {
-            // User Interface is Dark
-            giphy.theme = .dark
-        } else {
-            giphy.theme = .light
-            // User Interface is Light
-        }
-        giphy.delegate = self
-        
-        self.present(giphy, animated: true, completion: nil)
-       // addBottomSheetView()
-    }
-    
     @IBAction func textButtonTapped(_ sender: Any) {
         
         let textView = UITextView(frame: CGRect(x: 0, y: tempImageView.center.y,
@@ -420,7 +395,7 @@ public final class PhotoEditorViewController: UIViewController {
         
         //Text Attributes
         textView.textAlignment = .center
-        textView.font = UIFont.systemFont(ofSize: 40, weight: .bold)
+        textView.font = UIFont.systemFont(ofSize: 40, weight: .semibold)
         textView.textColor = textColor
         textView.layer.shadowColor = UIColor.black.cgColor
         textView.layer.shadowOffset = CGSize(width: 1.0, height: 0.0)
@@ -522,47 +497,6 @@ public final class PhotoEditorViewController: UIViewController {
 
         // File to composit
         let asset = AVURLAsset(url: videoURL as URL)
-        var gifs = [GPHMediaView]()
-            for subview in self.tempImageView.subviews{
-                if subview is GPHMediaView{
-                let gifView = subview as! GPHMediaView
-                    gifs.append(gifView)
-                    /*
-                let gifURL = URL(string: (gifView.media?.url(rendition: .original, fileType: .gif))!)!
-            //    let image = LightboxImage(image: UIImage(named: "group")!, text: "test", videoURL: gifURL)
-             //   self.presentLightBoxController(images: [image], goToIndex: nil)
-                let tempUrl = URL(fileURLWithPath:NSTemporaryDirectory()).appendingPathComponent("gif.mp4")
-                
-                let data = try! Data(contentsOf: gifURL)
-                    let dispatchGroup = DispatchGroup()
-                        dispatchGroup.enter()
-                    DispatchQueue.global().async{
-                GIF2MP4(data: data )?.convertAndExport(to: tempUrl, completion: {
-                    let gifAsset = AVURLAsset(url: tempUrl)
-                    let gifTrack = composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
-                    var failed = false
-                   do{
-                        try gifTrack?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: gifAsset.duration), of: gifAsset.tracks(withMediaType: AVMediaType.video)[0], at: CMTime.zero)
-                    }
-                    catch{
-                        failed = true
-                        print("failed to add third track dick")
-                    }
-                    if !failed{
-                        print("succeeded to add tracks dick")
-                        tracks.append(gifTrack)
-                        assets.append(gifAsset)
-                        gifs.append(gifView)
-        
-                    }
-                    dispatchGroup.leave()
-                })
-                    }
-                    dispatchGroup.wait() */
-                   // let item = LightboxImage(image: UIImage(named: "group")!, text: "bitch", videoURL: tempUrl)
-                   // self.presentLightBoxController(images: [item], goToIndex: nil)
-            }
-        }
         print("dispatch group dick")
         let clipVideoTrack = asset.tracks(withMediaType: AVMediaType.video)[0]
 
@@ -658,24 +592,7 @@ public final class PhotoEditorViewController: UIViewController {
         parentlayer.addSublayer(watermarkLayer)
         gifLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: tempImageView.frame.size)
         
-        for gif in gifs{
-        let miniGifLayer = CALayer()
-        let animation = VideoHelper.createGIFAnimation(url: URL(string: (gif.media?.url(rendition: .original, fileType: .gif))!)!)
-    miniGifLayer.add(animation!, forKey: "test")
-      /*     let ratio = gif.media?.aspectRatio
-            let goalFrame = CGRect(origin: gif.frame.origin, size: CGSize(width: 150, height: 150))
-            let size = VideoHelper.getSuitableSize(goalFrame: goalFrame.size, ratio: ratio!)
-            miniGifLayer.frame = CGRect(origin: CGPoint(x: gif.frame.origin.x, y:(tempImageView.frame.height-size.height)-(gif.frame.origin.y)), size: size)
-            miniGifLayer.setAffineTransform(gif.transform)
-            print("before y origin\(gif.frame.origin.y)")
-            print("after y origin \(tempImageView.frame.height-(gif.frame.origin.y))")
-            //miniGifLayer.center = gif.center */
-            let frame = CGRect(x: gif.frame.origin.x, y: (tempImageView.frame.height-gif.frame.height)-(gif.frame.origin.y), width: gif.frame.width, height: gif.frame.height)
-            miniGifLayer.frame = gif.frame
-            miniGifLayer.frame.origin = gif.frame.origin
-            miniGifLayer.transform = gif.layer.transform
-            gifLayer.addSublayer(miniGifLayer)
-        }
+    
         let rectangle = CGRect(origin: CGPoint(x: 0, y: 0), size: naturalSize)
         let transform = VideoHelper.transformFromRect(from: gifLayer.frame, toRect: rectangle)
         gifLayer.setAffineTransform(transform)
@@ -689,7 +606,7 @@ public final class PhotoEditorViewController: UIViewController {
         instruction.layerInstructions = [transformer]
         
         videoComposition.instructions = [instruction]
-        let exporter = AVAssetExportSession.init(asset: asset, presetName: AVAssetExportPresetMediumQuality)
+        let exporter = AVAssetExportSession.init(asset: asset, presetName: AVAssetExportPreset960x540)
         exporter?.outputFileType = AVFileType.mov
         exporter?.outputURL = filePath
         exporter?.videoComposition = videoComposition
@@ -750,20 +667,6 @@ public final class PhotoEditorViewController: UIViewController {
     func renderCanvas(saveToPhotoLibrary : Bool){
         ProgressHUD.show()
                 if checkVideoOrIamge {
-                    var isGifImage = false
-                    var duration : TimeInterval = 0.0
-                    for subview in tempImageView.subviews{
-                        if subview is GPHMediaView{
-                            let gif = subview as! GPHMediaView
-                            if gif.animationDuration > duration{
-                                duration = gif.animationDuration
-                            }
-                            isGifImage = true
-                        }
-                    }
-                    if isGifImage{
-                        
-                    }else{
                         let imageFrame = VideoHelper.calculateRectOfImageInImageView(imageView: imageView)
                         let exportedImage = canvasView.toImage().croppedImage(withFrame: imageFrame, angle: 0, circularClip: false)
                         if saveToPhotoLibrary{
@@ -773,7 +676,7 @@ public final class PhotoEditorViewController: UIViewController {
                             presentSendToUserViewController(image: exportedImage, video: nil, size : imageFrame.size)
                             photoEditorDelegate?.imageEdited(image: exportedImage)
                         }
-                    }
+                    
                 } else {
                     convertVideoAndSaveTophotoLibrary(videoURL: videoURL!, saveToPhotoLibray: saveToPhotoLibrary)
                 }
@@ -816,7 +719,9 @@ extension PhotoEditorViewController: UITextViewDelegate {
         lastTextViewFont = textView.font!
         activeTextView = textView
         textView.superview?.bringSubviewToFront(textView)
-        textView.font = UIFont.systemFont(ofSize: 40, weight: .bold)
+        textView.font = UIFont.systemFont(ofSize: 40, weight: .semibold
+        
+        )
         UIView.animate(withDuration: 0.3,
                        animations: {
                         textView.transform = CGAffineTransform.identity
@@ -918,7 +823,6 @@ extension PhotoEditorViewController {
     func presentSendToUserViewController(image : UIImage?, video : URL?, size : CGSize){
        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
-        vc.selectedUsers = users
         vc.video = video
         vc.size = size
         if let img = image{
@@ -928,31 +832,4 @@ extension PhotoEditorViewController {
     }
 }
 
-extension PhotoEditorViewController: GiphyDelegate {
-    public func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
-        
-        let imageView = GPHMediaView()
-        imageView.setMedia(media)
-        let ratio = media.aspectRatio
-            imageView.contentMode = .scaleAspectFit
-        
-        let goalFrame = CGRect(x: 0, y: 0, width: 150, height: 150)
-        
-        let size = VideoHelper.getSuitableSize(goalFrame: goalFrame.size, ratio: ratio)
-        imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: size)
-            imageView.center = self.tempImageView.center
-            self.tempImageView.addSubview(imageView)
-            //Gestures
-            self.addGestures(view: imageView)
-            giphyViewController.dismiss(animated: true, completion: nil)
-        
-    }
-    
-    public func didDismiss(controller: GiphyViewController?) {
-        print("did dismiss")
-    }
-
-    
-    
-}
 

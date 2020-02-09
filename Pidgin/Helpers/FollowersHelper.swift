@@ -11,30 +11,7 @@ import FirebaseFirestore
 import FirebaseStorage
 class FollowersHelper{
     
-    func dayDifference(from interval : TimeInterval) -> String
-    {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "h:mm a"
-        formatter.amSymbol = "AM"
-        formatter.pmSymbol = "PM"
-        let timeString = formatter.string(from: Date(timeIntervalSince1970: interval))
-        let calendar = Calendar.current
-        let date = Date(timeIntervalSince1970: interval)
-        if calendar.isDateInYesterday(date) { return "Yesterday" }
-        else if calendar.isDateInToday(date) { return timeString }
-        else if calendar.isDateInTomorrow(date) { return "Tomorrow" }
-        else {
-            let startOfNow = calendar.startOfDay(for: Date())
-            let startOfTimeStamp = calendar.startOfDay(for: date)
-            let components = calendar.dateComponents([.day], from: startOfNow, to: startOfTimeStamp)
-            let day = components.day!
-            if day < 1 { return "\(-day) days ago" }
-            else { return "In \(day) days" }
-        }
-    }
-    
-    func follow(follower : String, followee : String, tokens : [String]){
+    func follow(follower : String, followee : String, tokens : [String], completion: @escaping (Bool) -> Void){
         if let user = User.shared.uid{
             if followee != user{
                 let batch = db.batch()
@@ -47,7 +24,9 @@ class FollowersHelper{
                     for token in tokens{
                         notify.sendPushNotification(to: token , title: "", body: "\(User.shared.name ?? "Someone") started following you", tag: nil, badge: nil)
                         }
+                        completion(true)
                     }else{
+                        completion(false)
                         print("error :\(error!)")
                     }
                 }
@@ -56,7 +35,7 @@ class FollowersHelper{
         }
     }
     
-    func unFollow(follower : String, followee : String){
+    func unFollow(follower : String, followee : String, completion: @escaping (Bool) -> Void){
         if let user = User.shared.uid{
             if followee != user{
                  let batch = db.batch()
@@ -66,8 +45,10 @@ class FollowersHelper{
                     "following": FieldValue.arrayRemove([followee]),
                 ]) { err in
                     if let err = err {
+                        completion(false)
                         print("Error updating document: \(err)")
                     } else {
+                        completion(true)
                         print("Document successfully updated")
                     }
                 }
@@ -185,6 +166,27 @@ class FollowersHelper{
         } catch let error {
             print("*** Error generating thumbnail: \(error.localizedDescription)")
             return nil
+        }
+    }
+    
+    static func deleteImage(at url : String){
+        let storage = Storage.storage()
+        let storageRef = storage.reference(forURL: url)
+
+        //Removes image from storage
+        storageRef.delete { error in
+            if error != nil{
+                print("there was an error \(error!.localizedDescription)")
+            }
+        }
+    }
+    
+    static func deletePost(post : Post){
+        let docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID)
+        docRef.delete(completion: nil)
+        FollowersHelper.deleteImage(at: post.photoURL)
+        if let url = post.videoURL{
+        FollowersHelper.deleteImage(at: url)
         }
     }
     

@@ -95,7 +95,7 @@ extension Post : DatabaseRepresentation{
 
 extension Post : DiffAware{
     var diffId: UUID? {
-        let id = UUID(uuidString: "\(self.postID)\(self.user?.uid ?? "")")
+        let id = UUID(uuidString: self.postID)
         return id
     }
     
@@ -103,7 +103,7 @@ extension Post : DiffAware{
     
 
     static func compareContent(_ a: Post, _ b: Post) -> Bool {
-        return (a.postID == b.postID) && (a.user?.uid == b.creatorID)
+        return (a.postID == b.postID)
     }
     
 }

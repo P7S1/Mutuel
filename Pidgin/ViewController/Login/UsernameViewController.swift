@@ -31,6 +31,7 @@ class UsernameViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationItem.title = "Finish setting up your account"
         usernameTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         

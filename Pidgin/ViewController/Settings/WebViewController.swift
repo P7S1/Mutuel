@@ -28,7 +28,6 @@ class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
-        tabBarController?.tabBar.isHidden = true
         webView.load(URLRequest(url: url))
             self.title = webView.title
         // Do any additional setup after loading the view.

@@ -48,11 +48,21 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     
     
     
+    @IBOutlet weak var moreButton: UIButton!
+    
+    
+    
     var btnTapAction : (()->())?
+    
+    var moreTapAction : (()->())?
 
     func setUpGestures(){
        let tap = UITapGestureRecognizer(target: self, action: #selector(btnTapped))
         topView.addGestureRecognizer(tap)
+        
+        let moreTapGesture = UITapGestureRecognizer(target: self, action: #selector(moreButtonTapped))
+        moreButton.addGestureRecognizer(moreTapGesture)
+     
     }
     func addButtonShadows(){
         blurView.layer.cornerRadius = blurView.frame.height/2
@@ -61,11 +71,17 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     func setUpPlayer(post : Post){
         playerContainerView.backgroundColor = .clear
         if post.isVideo{
-            playerContainerView.initialize(post: post, shouldPlay: true)
+            playerContainerView.play()
         }else{
             playerContainerView.isHidden = true
         }
     }
+    
+    @objc func moreButtonTapped(_ sender: Any) {
+        print("more button tapped")
+        moreTapAction?()
+    }
+    
     
     @objc func btnTapped() {
         print("Tapped!")
@@ -73,4 +89,6 @@ class FollowingCollectionViewCell: UICollectionViewCell {
         // use our "call back" action to tell the controller the button was tapped
         btnTapAction?()
     }
+    
+    
 }

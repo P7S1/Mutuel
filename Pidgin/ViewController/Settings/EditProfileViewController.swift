@@ -8,10 +8,14 @@
 
 import UIKit
 import Eureka
-import ImageRow
+import ViewRow
 import FirebaseFirestore
 import CropViewController
 class EditProfileViewController: FormViewController {
+    
+    var profileImage : UIImage?
+    
+    var cellView : ProfilePicture!
 
     override func viewDidLoad() {
             super.viewDidLoad()
@@ -22,78 +26,147 @@ class EditProfileViewController: FormViewController {
         saveChangesButton()
             navigationItem.title = "Account Settings"
             form +++ Section("")
-                <<< ImageRow() {
-                    $0.title = "Profile picture"
-                    $0.sourceTypes = .PhotoLibrary
-                    $0.clearAction = .yes(style: .destructive)
-                    $0.tag = "profilePicURL"
+                <<< ViewRow<ProfilePicture>("view") { (row) in
+                    row.title = nil // optional
                 }
-                .cellUpdate { cell, row in
-                    cell.accessoryView?.layer.cornerRadius = 17
-                    cell.accessoryView?.frame.size = CGSize(width: 34, height: 34)
+                .cellSetup { (cell, row) in
+                    //  Construct the view
+                    self.cellView = ProfilePicture(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 156))
+                    cell.view = self.cellView
+                    cell.view?.backgroundColor = cell.backgroundColor
+                    
+                    let tap = UITapGestureRecognizer(target: self, action: #selector(self.profilePictureTapped))
+                    cell.view?.addGestureRecognizer(tap)
                 }
             form +++ Section("")
                 <<< NameRow(){ row in
                     row.title = "Display Name"
+                    row.tag = "displayName"
                     row.placeholder = "Enter your name here"
                     row.value = User.shared.name
-
-                }
+                }.cellSetup({ (cell, row) in
+                    cell.textField.keyboardType = .default
+                })
                 <<< AccountRow(){ row in
                     row.title = "Username"
-                    row.placeholder = "Enter Username Here"
+                    row.tag = "username"
                     row.value = User.shared.username
-                }
-                <<< TextRow(){ row in
-                    row.title = "Bio"
-                    row.placeholder = "Say something about yourself"
-                }
-                form +++ Section("")
+                    row.evaluateDisabled()
+                }.cellSetup({ (cell, row) in
+                cell.textField.isEnabled = false
+                cell.textField.isUserInteractionEnabled = false
+                }).cellUpdate({ (cell, row) in
+                    cell.textField.textColor = .secondaryLabel
+                })
+         form +++ Section("")
                 <<< EmailRow(){ row in
                     row.title = "Email"
+                    row.tag = "email"
                     row.placeholder = "Enter Email Here"
                     row.value = User.shared.email
-                }
-                <<< PhoneRow(){
-                    $0.title = "Phone"
-                    $0.placeholder = "Enter phone number here"
-                }
-                <<< DateRow(){
-                    $0.title = "Date of Birth"
-                    $0.value = Date(timeIntervalSinceReferenceDate: 0)
-                }
+                    }.cellSetup({ (cell, row) in
+                    cell.textField.isEnabled = false
+                    cell.textField.isUserInteractionEnabled = false
+                    }).cellUpdate({ (cell, row) in
+                        cell.textField.textColor = .secondaryLabel
+                    })
+                <<< DateRow(){ (row) in
+                        row.tag = "dob"
+                        row.title = "Date of Birth"
+                        row.value = User.shared.birthday ?? Date()
+                }.cellSetup({ (cell, row) in
+                    cell.detailTextLabel?.textColor = .label
+                })
                 <<< ButtonRow(){
                     $0.title = "Change Password"
-                }
+                    $0.onCellSelection { (cell, row) in
+                       let vc = ReAuthenticationViewController()
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }.cellSetup({ (cell, row) in
+                    cell.tintColor = .systemPink
+                    
+                })
              form +++ Section("")
                 <<< SwitchRow("privateAccount"){
                         $0.title = "Private Account"
-                }
-                <<< ButtonRow(){
-                    $0.title = "Blocked List"
                 }
         }
     
     func saveChangesButton(){
         let settings = UIButton.init(type: .custom)
         settings.setTitle("Save", for: .normal)
-        settings.setTitleColor(.systemBlue, for: .normal)
+        settings.setTitleColor(.systemPink, for: .normal)
         settings.addTarget(self, action:#selector(handleSaveButton), for:.touchUpInside)
         let settingsButton = UIBarButtonItem.init(customView: settings)
         navigationItem.rightBarButtonItems = [settingsButton]
+    }
+    
+    @objc func profilePictureTapped(){
+       print("did recognize tap")
+        let alertController = UIAlertController(title: nil, message: nil , preferredStyle: .actionSheet)
+        
+        alertController.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: { (action) in
+            print("chose take photo")
+            
+        }))
+           
+           alertController.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { (action) in
+               print("chose choose from camera roll")
+               
+               let myPickerController = UIImagePickerController()
+               myPickerController.delegate = self
+               myPickerController.sourceType = UIImagePickerController.SourceType.photoLibrary
+               self.present(myPickerController, animated: true, completion: nil)
+               
+           }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+           self.present(alertController, animated: true, completion: nil)
     }
     
     @objc func handleSaveButton(){
         print("save bar button pressed")
         let formvalues = self.form.values()
         
-        let image = formvalues["profilePicURL"] as? UIImage
-       FollowersHelper().uploadPicture(data1: image?.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString)
+        if let image = profileImage{
+            if let url = User.shared.profileURL{
+            FollowersHelper.deleteImage(at: url)
+            }
+            let _ = FollowersHelper().uploadPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString)
+        }
+        let user = User.shared
+        if let name = formvalues["displayName"] as? String, let id = User.shared.uid{
+            if name != User.shared.name{
+            let docRef = db.collection("channels").whereField("members", arrayContains: id)
+            user.name = name
+            docRef.getDocuments { (snapshot, error) in
+                if error == nil{
+                    for document in snapshot!.documents{
+                    let channel = Channel(document: document)
+                        channel?.metaData?.setValue(name, forKey: id)
+                        let docRef2 = db.collection("channels").document(channel?.id ?? "")
+                        docRef2.setData(["metaData" : channel?.metaData as Any], merge: true)
+                }
+                }
+            }
+        }
+        }
         
+        if let dob = formvalues["dob"] as? Date{
+            user.birthday = dob
+        }
+        
+        let docRef = db.collection("users").document(User.shared.uid ?? "")
+        
+        docRef.updateData(user.representation, completion: nil)
         
         navigationController?.popToRootViewController(animated: true)
         
     }
+
+
+    
+    
     
     /*
     // MARK: - Navigation
@@ -105,4 +178,29 @@ class EditProfileViewController: FormViewController {
     }
     */
 
+}
+extension EditProfileViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true) {
+            if let newImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
+                self.presentCropViewController(image: newImage)
+            }
+        }
+    }
+}
+
+extension EditProfileViewController : CropViewControllerDelegate{
+    func presentCropViewController(image : UIImage) {
+        let cropViewController = CropViewController(croppingStyle: .circular, image: image)
+      cropViewController.delegate = self
+        self.present(cropViewController, animated: true, completion: nil)
+    }
+
+    func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+            // 'image' is the newly cropped version of the original image
+        self.profileImage = image
+        cellView.imageView.image = image
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
+        cropViewController.dismiss(animated: true, completion: nil)
+        }
 }

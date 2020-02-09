@@ -23,17 +23,20 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     
     var lastDocument : DocumentSnapshot?
     
+    var query : Query!
+    
+    var loadedAllPosts = false
+    
   override func viewDidLoad() {
     super.viewDidLoad()
     setupUI()
     configureNavItem(name: "Chats")
     tableView.delegate = self
     tableView.dataSource = self
-    tableView.prefetchDataSource = self
     
     if let userID = User.shared.uid{
         
-    let query = channelReference.whereField("members", arrayContains: userID).limit(to: 25).order(by: "lastSentDate", descending: true)
+    query = channelReference.whereField("members", arrayContains: userID).limit(to: 10).order(by: "lastSentDate", descending: true)
     
     channelListener = query.addSnapshotListener { querySnapshot, error in
       guard let snapshot = querySnapshot else {
@@ -83,15 +86,15 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         var newItems = channels
     newItems.append(channel)
         newItems.sort()
-    tableView.performBatchUpdates({
+   
         let changes = diff(old: old, new: newItems)
         tableView.reload(changes: changes, section: 0, updateData: {
           channels = newItems
         })
-    }, completion: nil)
   
 
   }
+    
   
     private func updateChannelInTable(ch: Channel) {
         let channel = ch
@@ -118,12 +121,11 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         var newItems = channels
         newItems[index] = channel
         newItems.sort()
-        tableView.performBatchUpdates({
             let changes = diff(old: old, new: newItems)
             tableView.reload(changes: changes, section: 0, updateData: {
               channels = newItems
             })
-        }, completion: nil)
+        
      NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
   }
     
@@ -136,12 +138,12 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         var newItems = channels
     newItems.remove(at: index)
         newItems.sort()
-    tableView.performBatchUpdates({
+
         let changes = diff(old: old, new: newItems)
         tableView.reload(changes: changes, section: 0, updateData: {
           channels = newItems
         })
-    }, completion: nil)
+    
   }
   
   private func handleDocumentChange(_ change: DocumentChange) {
@@ -163,6 +165,25 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
       removeChannelFromTable(channel)
     }
   }
+    
+    func getMorePosts(){
+        if let lastdoc = self.lastDocument{
+            query = query.start(afterDocument: lastdoc)
+        }
+        query.getDocuments { (snapshot, error) in
+            if error == nil{
+                if snapshot!.count < 10{
+                    self.loadedAllPosts = true
+                }
+                for document in snapshot!.documents{
+                    self.lastDocument = document
+                    if let channel = Channel(document: document){
+                    self.addChannelToTable(channel)
+                    }
+                }
+            }
+        }
+    }
   
 }
 
@@ -190,6 +211,13 @@ extension ChannelsViewController {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
       return 75
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == channels.count && !self.loadedAllPosts{
+            getMorePosts()
+        }
+    }
+    
   
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "ChannelCell", for: indexPath) as! ChannelTableViewCell
@@ -206,9 +234,9 @@ extension ChannelsViewController {
                         let lastOpen = channels[indexPath.row].lastOpened?.value(forKey: key) as? Timestamp,
                         let lastSent = channels[indexPath.row].lastMessageDate{
                         if lastOpen.dateValue() > lastSent{
-                            cell.message.text = "Read \(FollowersHelper().dayDifference(from: lastOpen.dateValue().timeIntervalSince1970).lowercased())"
+                            cell.message.text = "Read \(lastOpen.dateValue().getElapsedInterval())"
                         }else if channels[indexPath.row].reading?.value(forKey: key) as? Bool == true {
-                            cell.message.text = "Read \(FollowersHelper().dayDifference(from: Date().timeIntervalSince1970).lowercased())"
+                            cell.message.text = "Read \(Date().getElapsedInterval())"
                         }
                     }
                 }
@@ -239,7 +267,7 @@ extension ChannelsViewController {
     
     if let date = channels[indexPath.row].lastMessageDate{
         print(date)
-        cell.timeStamp.text = FollowersHelper().dayDifference(from: date.timeIntervalSince1970)
+        cell.timeStamp.text = date.getElapsedInterval()
     }
     
     cell.readIndicator.isHidden = true
@@ -251,7 +279,9 @@ extension ChannelsViewController {
                 cell.displayName.text = channels[indexPath.row].metaData?.value(forKey: i) as? String ?? ""
                 
                 if let url = channels[indexPath.row].profilePics?.value(forKey: i) as? String{
-                    cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
+                    DispatchQueue.main.async {
+                        cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
+                    }
                 }else{
                     cell.profilePic.image = FollowersHelper().getUserProfilePicture()
                 }
@@ -263,7 +293,9 @@ extension ChannelsViewController {
         cell.displayName.text = channels[indexPath.row].name
         if let id = channels[indexPath.row].id,
             let url = channels[indexPath.row].profilePics?.value(forKey: id) as? String{
-            cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
+            DispatchQueue.main.async {
+                cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
+            }
             cell.profilePic.clipsToBounds = true
             cell.profilePic.layer.cornerRadius = cell.profilePic.bounds.height/2
         }else{
@@ -306,9 +338,28 @@ extension ChannelsViewController {
   
 }
 
-extension ChannelsViewController : UITableViewDataSourcePrefetching{
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        print("prefetch rows")
+extension ChannelsViewController{
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
+            changeTabBar(hidden: true, animated: true)
+        }
+        else{
+            changeTabBar(hidden: false, animated: true)
+        }
+    }
 
-}
+    func changeTabBar(hidden:Bool, animated: Bool){
+        guard let tabBar = self.tabBarController?.tabBar else { return; }
+        if tabBar.isHidden == hidden{ return }
+        let frame = tabBar.frame
+        let offset = hidden ? frame.size.height : -frame.size.height
+        let duration:TimeInterval = (animated ? 0.2 : 0.0)
+        tabBar.isHidden = false
+
+        UIView.animate(withDuration: duration, animations: {
+            tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
+        }, completion: { (true) in
+            tabBar.isHidden = hidden
+        })
+    }
 }

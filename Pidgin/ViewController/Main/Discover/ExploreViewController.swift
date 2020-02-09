@@ -7,9 +7,11 @@
 //
 
 import UIKit
-import CHTCollectionViewWaterfallLayout
+import CollectionViewWaterfallLayout
 import DeepDiff
 import AVKit
+import FirebaseFirestore
+import SkeletonView
 public protocol ExploreViewControllerDelegate {
    func collectionViewScrolled(_ scrollView: UIScrollView)
 }
@@ -27,10 +29,25 @@ class ExploreViewController: UIViewController {
     
     var willPresentAView = false
     
+    var lastDocument : DocumentSnapshot?
+    
+    var originalQuery : Query!
+    
+    var query : Query!
+    
+    var loadedAllPosts = false
+    
+    var isUserProfile = false
+    
+    var user = Account()
+    
+    var isCurrentUser = false
+    
+    let refreshControl = UIRefreshControl()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.isHeroEnabled = true
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -47,26 +64,106 @@ class ExploreViewController: UIViewController {
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         if adjustInsets{
-            
-        collectionView.contentInset = UIEdgeInsets(top: 56, left: 0, bottom: 0, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 46, left: 0, bottom: 0, right: 0)
         }
-        let docRef = db.collectionGroup("posts").order(by: "publishDate", descending: true)
         
-
+        if isUserProfile{
+            navigationItem.largeTitleDisplayMode = .never
+            navigationItem.title = ""
+            
+            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 10)
+            originalQuery = query
+            let settings = UIButton.init(type: .system)
+            if isCurrentUser{
+                let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
+                settings.setImage(UIImage(systemName: "gear", withConfiguration: config), for: UIControl.State.normal)
+            }else{
+                settings.setImage(UIImage(systemName: "square.and.pencil")?.withRenderingMode(.alwaysTemplate), for: .normal)
+            }
+            settings.addTarget(self, action:#selector(settingsBarButtonPressed), for:.touchUpInside)
+            settings.widthAnchor.constraint(equalToConstant: 25).isActive = true
+            settings.heightAnchor.constraint(equalToConstant: 25).isActive = true
+            let settingsButton = UIBarButtonItem.init(customView: settings)
+            navigationItem.rightBarButtonItems = [settingsButton]
+        }else{
+            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 10)
+            originalQuery = query
+        }
+        getMorePosts(removeAll: false)
         
-        docRef.getDocuments { (snapshot, error) in
+        
+        refreshControl.tintColor = .secondaryLabel
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        collectionView.addSubview(refreshControl)
+        collectionView.alwaysBounceVertical = true
+        
+        self.view.isSkeletonable  = true
+        
+        // Do any additional setup after loading the view.
+    }
+    
+    @objc func refresh(){
+        lastDocument = nil
+        loadedAllPosts = false
+        query = originalQuery
+        getMorePosts(removeAll: true)
+    }
+    func setUpCollectionView(){
+         collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: CollectionViewWaterfallElementKindSectionHeader, withReuseIdentifier: "ProfileHeader")
+        
+       let layout = CollectionViewWaterfallLayout()
+        
+        if isUserProfile{
+         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }else{
+         collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        }
+        
+        // Change individual layout attributes for the spacing between cells'
+        layout.minimumColumnSpacing = 8
+        layout.minimumInteritemSpacing = 8
+        if isUserProfile{
+        layout.headerHeight = 180
+        }else{
+         layout.headerHeight = 0
+        }
+        
+        // Collection view attributes
+        collectionView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        collectionView.alwaysBounceVertical = true
+        
+        // Add the waterfall layout to your collection view
+        collectionView.collectionViewLayout = layout
+    }
+    
+    
+    func getMorePosts(removeAll : Bool){
+        if let doc = self.lastDocument{
+            query = query.start(afterDocument: doc)
+        }
+        query.getDocuments { (snapshot, error) in
             if error == nil{
+                if snapshot!.count < 10{
+                    self.loadedAllPosts = true
+                }
                 let old = self.posts
+                if removeAll{
+                    self.posts.removeAll()
+                }
                 var newItems = self.posts
                 for document in snapshot!.documents{
                     let post = Post(document: document)
-
+                    self.lastDocument = document
+                    if !self.posts.contains(post){
                     newItems.append(post)
-                    
+                    }
                     
                     print("append a post")
                 }
-                self.activityIndicator.stopAnimating()
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.refreshControl.endRefreshing()
+                }
                 self.collectionView.performBatchUpdates({
                     let changes = diff(old: old, new: newItems)
                     self.collectionView.reload(changes: changes, section: 0, updateData: {
@@ -77,35 +174,14 @@ class ExploreViewController: UIViewController {
                 print("there was an error \(error!)")
             }
         }
-        
-        // Do any additional setup after loading the view.
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.isHeroEnabled = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.isHeroEnabled = false
-    }
-    
-    func setUpCollectionView(){
-       let layout = CHTCollectionViewWaterfallLayout()
-        
-        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
-        
-        // Change individual layout attributes for the spacing between cells
-        layout.minimumColumnSpacing = 8
-        layout.minimumInteritemSpacing = 8
-        
-        // Collection view attributes
-        collectionView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        collectionView.alwaysBounceVertical = true
-        
-        // Add the waterfall layout to your collection view
-        collectionView.collectionViewLayout = layout
+    func collectionView(_ collectionView: UICollectionView,
+                 willDisplay cell: UICollectionViewCell,
+                   forItemAt indexPath: IndexPath) {
+        if indexPath.row + 1 == posts.count && !loadedAllPosts{
+            getMorePosts(removeAll: false)
+        }
     }
     
 
@@ -121,7 +197,7 @@ class ExploreViewController: UIViewController {
 
 }
 
-extension ExploreViewController: UICollectionViewDataSource{
+extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count
     }
@@ -131,15 +207,26 @@ extension ExploreViewController: UICollectionViewDataSource{
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreCollectionViewCell", for: indexPath) as! ExploreCollectionViewCell
         cell.imageView.clipsToBounds = true
         cell.imageView.layer.cornerRadius = 10
         cell.backgroundColor = .clear
         cell.contentView.backgroundColor = .clear
         cell.imageView.heroID = posts[indexPath.row].postID
-        cell.imageView.kf.setImage(with: URL(string: posts[indexPath.row].photoURL), placeholder: UIImage(named: "group"))
+        cell.imageView.isSkeletonable = true
+        let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
+        cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
+        DispatchQueue.main.async {
+            cell.imageView.kf.setImage(with: URL(string: self.posts[indexPath.row].photoURL)) { (result) in
+                cell.imageView.stopSkeletonAnimation()
+                cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+            }
+        }
         cell.playButton.isHidden = !(posts[indexPath.row].isVideo)
+        cell.playButton.heroModifiers = [.useNormalSnapshot]
         cell.playButton.heroID = "\(posts[indexPath.row].postID).playButton"
+        cell.playButton.shouldBlink = false
         return cell
     }
     
@@ -151,6 +238,14 @@ extension ExploreViewController: UICollectionViewDataSource{
          vc.posts = posts
         vc.indexPath = indexPath
         vc.postDelegate = self
+        vc.query = self.query
+        vc.originalQuery = self.query
+        vc.lastDocument = self.lastDocument
+        if isUserProfile{
+            vc.navTitle = user.username ?? ""
+        }else{
+            vc.navTitle = "Discover"
+        }
         willPresentAView = true
          navigationController?.pushViewController(vc, animated: true)
     }
@@ -158,29 +253,91 @@ extension ExploreViewController: UICollectionViewDataSource{
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         exploreDelegate?.collectionViewScrolled(scrollView)
     }
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
+            changeTabBar(hidden: true, animated: true)
+        }
+        else{
+            changeTabBar(hidden: false, animated: true)
+        }
+    }
+
+    func changeTabBar(hidden:Bool, animated: Bool){
+        guard let tabBar = self.tabBarController?.tabBar else { return; }
+        if tabBar.isHidden == hidden{ return }
+        let frame = tabBar.frame
+        print(frame.size.height)
+        let offset = hidden ? frame.size.height : -frame.size.height
+        let duration:TimeInterval = (animated ? 0.2 : 0.0)
+        tabBar.isHidden = false
+
+        UIView.animate(withDuration: duration, animations: {
+            tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
+        }, completion: { (true) in
+            tabBar.isHidden = hidden
+        })
+    }
+    
+    @objc func settingsBarButtonPressed(){
+      if isCurrentUser{
+            let storyboard = UIStoryboard(name: "Settings", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController
+        navigationController?.pushViewController(vc, animated: true)
+        }else{
+        if let id1 = User.shared.uid, let id2 = user.uid{
+        let docRef = db.collection("channels").document(FollowersHelper().getChannelID(id1: id1, id2: id2))
+            docRef.getDocument { (snapshot, error) in
+                if error == nil{
+                let channel = Channel(document: snapshot!)
+                let vc = ChatViewController()
+                vc.channel = channel
+                self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+        }
+            
+        }
+    }
 
     
     
 }
 
-extension ExploreViewController : CHTCollectionViewDelegateWaterfallLayout{
-    func collectionView(_ collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAt indexPath: IndexPath!) -> CGSize {
-        return posts[indexPath.row].photoSize
+extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
+    func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        posts[indexPath.row].photoSize
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ProfileHeader", for: indexPath)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        vc.user = user
+        vc.isCurrentUser = self.isCurrentUser
+        self.addChild(vc, in: header)
+        return header
     }
     
 }
 
 extension ExploreViewController : PostViewDelegate{
-    func preparePostsFor(indexPath: IndexPath, posts: [Post]) {
+    
+    func preparePostsFor(indexPath: IndexPath, posts: [Post], lastDocument: DocumentSnapshot?, loadedAllPosts: Bool) {
+        self.loadedAllPosts = loadedAllPosts
+        self.lastDocument = lastDocument
         self.collectionView.performBatchUpdates({
             let changes = diff(old: self.posts, new: posts)
             self.collectionView.reload(changes: changes, section: 0, updateData: {
                 self.posts = posts
-                self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
             })
-        })
-    
+        }) { (completion) in
+            if completion{
+             self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+            }
+        }
+        
     }
+
     
     
 }

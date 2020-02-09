@@ -308,7 +308,7 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return getHeaderView(with: "Select up to 30 members including yourself", tableView: tableView)
+        return getHeaderView(with: "Select up to 30 members", tableView: tableView)
     }
     
     
@@ -335,7 +335,10 @@ extension CreateGroupViewController : CropViewControllerDelegate{
     func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
             // 'image' is the newly cropped version of the original image
         self.image.setImage(image, for: .normal)
-        FollowersHelper().uploadGroupPicture(data1: image.jpegData(compressionQuality: 0.2), imageName: UUID().uuidString, docID: channel.id ?? "")
+        if let url = channel.metaData?.value(forKey: channel.id ?? "") as? String{
+        FollowersHelper.deleteImage(at: url)
+        }
+        FollowersHelper().uploadGroupPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString, docID: channel.id ?? "")
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
         cropViewController.dismiss(animated: true, completion: nil)
         }

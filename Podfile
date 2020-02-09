@@ -19,12 +19,14 @@ target 'Pidgin' do
   pod 'MessageKit'
   pod 'Eureka'
   pod 'NotificationBannerSwift'
-  pod 'ImageRow'
+  pod 'ViewRow'
   pod 'Kingfisher'
   pod 'Lightbox'
   pod 'Giphy'
   pod 'CropViewController'
   pod 'Hero'
   pod 'WLEmptyState'
-  pod 'CHTCollectionViewWaterfallLayout'
+  pod 'CollectionViewWaterfallLayout'
+  pod 'SkeletonView'
+
 end

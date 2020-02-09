@@ -14,7 +14,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
     
     override func viewDidLoad() {
         self.delegate = self
-        self.tabBar.isTranslucent = false
+        self.tabBar.isTranslucent = true
         self.tabBar.shadowImage = UIImage()
         self.tabBar.backgroundColor = .none
         self.tabBar.barTintColor = .none
@@ -25,7 +25,9 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         let discoverVC = storyboard.instantiateViewController(withIdentifier: "DiscoverViewController") as! DiscoverViewController
         let homeViewController = UINavigationController(rootViewController: discoverVC)
         let discoverTab = UITabBarItem(title: "Discover", image: UIImage(systemName: "globe", withConfiguration: config2), tag: 1)
+        discoverTab.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 11, weight: .medium)], for: .normal)
         homeViewController.tabBarItem = discoverTab
+
         
         let messagesVC = storyboard.instantiateViewController(withIdentifier: "ChannelsViewController") as! ChannelsViewController
         let secondViewController = UINavigationController(rootViewController: messagesVC)
@@ -33,20 +35,44 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         
         image?.withTintColor(.systemPink, renderingMode: .alwaysOriginal)
         let messagesTab = UITabBarItem(title: "Chat", image: image, tag: 2)
+        messagesTab.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 11, weight: .medium)], for: .normal)
         secondViewController.tabBarItem = messagesTab
         
         
         let cameraImage =  UIImage(systemName: "circle", withConfiguration: config)?.withTintColor(.systemPink, renderingMode: .alwaysOriginal)
         let actionViewController = storyboard.instantiateViewController(withIdentifier: "CameraVC") as! CameraVC
         let cameraTab = UITabBarItem(title: nil, image: cameraImage, tag: 3)
-        cameraTab.badgeColor = .systemPink
-        cameraTab.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: -16, right: 0)
-        cameraTab.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -16)
         actionViewController.tabBarItem = cameraTab
-        actionViewController.tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -16)
-        actionViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: -16, right: 0)
+    
         viewControllers = [homeViewController, actionViewController, secondViewController]
+        
+        NotificationCenter.default.addObserver(self,
+        selector: #selector(applicationWillEnterBackground),
+        name: UIApplication.willResignActiveNotification,
+        object: nil)
         super.viewDidLoad()
+    }
+    
+    @objc func applicationWillEnterBackground(){
+        if self.tabBar.isHidden{
+        changeTabBar(hidden: false
+            , animated: true)
+        }
+    }
+    
+    func changeTabBar(hidden:Bool, animated: Bool){
+        if tabBar.isHidden == hidden{ return }
+        let frame = tabBar.frame
+        print(frame.size.height)
+        let offset = hidden ? frame.size.height : -frame.size.height
+        let duration:TimeInterval = (animated ? 0.2 : 0.0)
+        tabBar.isHidden = false
+
+        UIView.animate(withDuration: duration, animations: {
+            self.tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
+        }, completion: { (true) in
+            self.tabBar.isHidden = hidden
+        })
     }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {

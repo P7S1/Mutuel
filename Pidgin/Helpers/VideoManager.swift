@@ -17,28 +17,13 @@ class VideoManager{
         }else{
             if let stringUrl = post.videoURL, let url = URL(string: stringUrl){
                 let player = AVPlayer(url: url)
+                player.automaticallyWaitsToMinimizeStalling = false
                 player.actionAtItemEnd = .none
                 player.externalPlaybackVideoGravity = .resizeAspectFill
                 let playerController = AVPlayerViewController()
                 playerController.player = player
                 VideoManager.shared.setValue(playerController, forKey: post.postID)
                 completion(true,playerController)
-         /*   CacheManager.shared.getFileWith(stringUrl:stringUrl) { result in
-                switch result {
-                case .success(let url):
-                     // do some magic with path to saved video
-                    let player = AVPlayer(url: url)
-                    player.actionAtItemEnd = .none
-                    player.externalPlaybackVideoGravity = .resizeAspectFill
-                    let playerController = AVPlayerViewController()
-                    playerController.player = player
-                    VideoManager.shared.setValue(playerController, forKey: post.postID)
-                    completion(true,playerController)
-                case .failure( _):
-                    // handle errror
-                    completion(false,nil)
-                }
-            }*/
             }else{
                 print("error, postID:\(post.postID)")
             }

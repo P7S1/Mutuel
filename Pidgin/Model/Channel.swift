@@ -4,8 +4,8 @@ struct Channel : DiffAware {
     var diffId: UUID?
     
     static func compareContent(_ a: Channel, _ b: Channel) -> Bool {
-        if let idA = a.lastSentMessageID, let readingA = a.reading{
-            return a.id == b.id && idA == b.lastSentMessageID && readingA == b.reading
+        if let idA = a.lastSentMessageID, let lastOpened = a.lastOpened{
+            return a.id == b.id && idA == b.lastSentMessageID && lastOpened == b.lastOpened
         }
         return false
     }

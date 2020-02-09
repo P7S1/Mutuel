@@ -9,21 +9,14 @@
 import UIKit
 import FirebaseStorage
 import AVFoundation
+import SkeletonView
 class SendToUserViewController: UIViewController {
-    var selectedChannels : [Channel] = [Channel]()
-    var selectedUsers : [Account] = [Account]()
-    var allChannels : [Channel] = [Channel]()
-    var allUsers : [Account] = [Account]()
     var video : URL?
     var image = UIImage()
     var size = CGSize()
-    @IBOutlet weak var addToTimelineButton: UIButton!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var sendingToLabel: UILabel!
+    var gifURL : String?
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textView: UITextView!
-    
-    var addToTimeline : Bool = false
     
     let sendButton = UIButton.init(type: .custom)
     
@@ -32,15 +25,19 @@ class SendToUserViewController: UIViewController {
         super.viewDidLoad()
         
         textView.delegate = self
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        addToTimelineButton.roundCorners()
-        navigationItem.title = "Share"
+        navigationItem.title = "New Post"
         setDismissButton()
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
+        if let gifString = self.gifURL, let gifURL = URL(string: gifString){
+        let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
+            imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
+            imageView.kf.setImage(with: gifURL) { (result) in
+                self.imageView.hideSkeleton()
+            }
+        }else{
         imageView.image = image
+        }
         
         // Do any additional setup after loading the view.
 
@@ -52,7 +49,10 @@ class SendToUserViewController: UIViewController {
         textView.layer.cornerRadius = 10
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         setUpSendButton()
-        populateTableView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        sendButton.isEnabled = true
     }
     
 
@@ -66,87 +66,17 @@ class SendToUserViewController: UIViewController {
     }
     */
     
-    func populateTableView(){
-        let channelsRef = db.collection("channels").whereField("members", arrayContains: User.shared.uid ?? "").limit(to: 5).order(by: "lastSentDate", descending: true)
-        
-        channelsRef.getDocuments { (snapshot, error) in
-            if error == nil{
-                for document in snapshot!.documents{
-                    if let channel = Channel(document: document){
-                        self.allChannels.append(channel)
-                    }
-            }
-                self.tableView.reloadData()
-                self.updateSendingToLabel()
-            }
-        }
-        let usersRef = db.collection("users").whereField("following", arrayContains: User.shared.uid ?? "").limit(to: 10)
-        usersRef.getDocuments { (snapshot, error) in
-            if error == nil{
-                for document in snapshot!.documents{
-                    let user = Account()
-                    user.convertFromDocument(dictionary: document)
-                    self.allUsers.append(user)
-            }
-                self.tableView.reloadData()
-                self.updateSendingToLabel()
-            }
-        }
-    }
     
-    func updateSendingToLabel(){
-        var names = [String]()
-        
-        for user in selectedUsers{
-            names.append(user.username ?? "")
-        }
-        
-        for channel in selectedChannels{
-            if channel.groupChat ?? false{
-                names.append(channel.name ?? "")
-            }else{
-                names.append(channel.metaData?.value(forKey: channel.getSenderID() ?? "") as? String ?? "")
-            }
-        }
-        names.sort()
-        var output = ""
-        var count = 0
-        while count < 3 && count < names.count && names.count > 0 {
-            count = count + 1
-            if names.count > 1{
-            output = "\(output), \(names[count-1])"
-            }else{
-                output = "\(names[count-1])"
-            }
-        }
-        if names.count > 3{
-            output = "\(output) + \(names.count-count) more"
-        }
-        sendingToLabel.text = "Sending to \(output)"
-        if names.count == 0{
-            sendingToLabel.text = "Select where to share to"
-        }
-        sendButton.isEnabled = !(names.count == 0) || addToTimeline
-    }
-    
-    @IBAction func addToTimelineButtonPressed(_ sender: Any) {
-        if !addToTimeline{
-            addToTimelineButton.setTitle("Undo", for: .normal)
-            addToTimelineButton.setTitleColor(.systemPink, for: .normal)
-            addToTimelineButton.backgroundColor = .systemGray6
-        }else{
-            addToTimelineButton.setTitle("Add to my timeline", for: .normal)
-            addToTimelineButton.setTitleColor(.white, for: .normal)
-            addToTimelineButton.backgroundColor = .systemPink
-        }
-        addToTimeline.toggle()
-        updateSendingToLabel()
-    }
+
     
     @objc func sendPressed(){
         print("send pressed")
+        sendButton.isEnabled = false
         ProgressHUD.show("Posting")
-        if addToTimeline{
+        
+        if let gifString = self.gifURL, let gifURL = URL(string: gifString){
+            self.saveToDatabase(photoURL: gifURL, videoURL: nil, isVideo: false)
+        }else{
             postMedia(isVideo: false) { (photoURL) in
                 if self.video != nil{
                     self.postMedia(isVideo: true) { (videoURL) in
@@ -157,7 +87,6 @@ class SendToUserViewController: UIViewController {
                 }
             }
         }
-        
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
@@ -211,6 +140,28 @@ class SendToUserViewController: UIViewController {
         navigationItem.rightBarButtonItems = [sendBarButton]
     }
     
+    func saveToDatabase(photoURL : URL, videoURL : URL?, isVideo : Bool){
+        let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
+        if textView.text == "Write a caption..."{
+            textView.text = ""
+        }
+        let widthInPixels = self.image.size.width * self.image.scale
+        let heightInPixels = self.image.size.height * self.image.scale
+        var imageSize = CGSize(width: widthInPixels, height: heightInPixels)
+        if isVideo{
+            imageSize = self.resolutionForLocalVideo(url: self.video!) ?? imageSize
+        }
+        let post = Post(photoURL: photoURL.absoluteString,
+                        caption: self.textView.text,
+                        publishDate: Date(),
+                        creatorID: User.shared.uid ?? "",
+                        isVideo: isVideo, videoURL: videoURL?.absoluteString,
+                        photoSize: imageSize,
+                        postID: ref.documentID)
+        ref.setData(post.representation)
+        ProgressHUD.showSuccess("Post Successful")
+    }
+    
 
 }
 
@@ -229,149 +180,5 @@ extension SendToUserViewController : UITextViewDelegate{
         }
     }
     
+    
 }
-
-extension SendToUserViewController : UITableViewDelegate, UITableViewDataSource{
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) {
-        if indexPath.section == 0{
-            let channel = allChannels[indexPath.row]
-            if selectedChannels.contains(channel){
-                selectedChannels.removeAll { (ch) -> Bool in
-                    return channel == ch
-                }
-                cell.accessoryType = .none
-            }else{
-               cell.accessoryType = .checkmark
-                selectedChannels.append(channel)
-            }
-        }else{
-            let user = allUsers[indexPath.row]
-            if selectedUsers.contains(user){
-                selectedUsers.removeAll { (person) -> Bool in
-                    return user == person
-                }
-               cell.accessoryType = .none
-            }else{
-               cell.accessoryType = .checkmark
-                selectedUsers.append(user)
-            }
-        }
-        }
-        updateSendingToLabel()
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0{
-            return allChannels.count
-        }
-        return allUsers.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchUserTableViewCell", for: indexPath) as! SearchUserTableViewCell
-        
-        if indexPath.section == 0{
-            let channel = allChannels[indexPath.row]
-            if channel.groupChat ?? false{
-                cell.displayName.text = channel.name
-                if let id = channel.id,
-                    let url = channel.profilePics?.value(forKey: id) as? String{
-                    cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
-                }else{
-                    cell.profilePic.image = FollowersHelper().getGroupProfilePicture()
-                }
-            }else{
-                cell.displayName.text = channel.metaData?.value(forKey: channel.getSenderID() ?? "") as? String ?? ""
-                if let url = channel.profilePics?.value(forKey: channel.getSenderID() ?? "") as? String{
-                    cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
-                }else{
-                    cell.profilePic.image = FollowersHelper().getUserProfilePicture()
-                }
-            }
-            if selectedChannels.contains(channel){
-                cell.accessoryType = .checkmark
-            }else{
-                cell.accessoryType = .none
-            }
-        }else{
-            let user = allUsers[indexPath.row]
-            cell.displayName.text = user.name ?? ""
-            cell.profilePic.kf.setImage(with: URL(string: user.profileURL ?? ""), placeholder: FollowersHelper().getUserProfilePicture())
-            if selectedUsers.contains(user){
-                cell.accessoryType = .checkmark
-            }else{
-                cell.accessoryType = .none
-            }
-        }
-        
-
-        
-        cell.username.text = ""
-        cell.profilePic.clipsToBounds = true
-        cell.profilePic.layer.cornerRadius = cell.profilePic.bounds.height/2
-        return cell
-        
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0{
-        return getHeaderView(with: "Recent Chats", tableView: tableView)
-        }else{
-         return getHeaderView(with: "Followers", tableView: tableView)
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
-    
-    func saveToDatabase(photoURL : URL, videoURL : URL?, isVideo : Bool){
-        let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
-        
-        let widthInPixels = self.image.size.width * self.image.scale
-        let heightInPixels = self.image.size.height * self.image.scale
-        var imageSize = CGSize(width: widthInPixels, height: heightInPixels)
-        if isVideo{
-            imageSize = self.resolutionForLocalVideo(url: self.video!) ?? imageSize
-        }
-        let post = Post(photoURL: photoURL.absoluteString,
-                        caption: self.textView.text,
-                        publishDate: Date(),
-                        creatorID: User.shared.uid ?? "",
-                        isVideo: isVideo, videoURL: videoURL?.absoluteString,
-                        photoSize: imageSize,
-                        postID: ref.documentID)
-        ref.setData(post.representation)
-        ProgressHUD.showSuccess("Post Successful")
-    }
-}
-/*
- let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
- 
- let widthInPixels = self.image.size.width * self.image.scale
- let heightInPixels = self.image.size.height * self.image.scale
- var imageSize = CGSize(width: widthInPixels, height: heightInPixels)
- if isVideo{
-     imageSize = self.resolutionForLocalVideo(url: self.video!) ?? imageSize
- }
- let post = Post(photoURL: "",
-                 caption: self.textView.text,
-                 publishDate: Date(),
-                 creatorID: User.shared.uid ?? "",
-                 isVideo: isVideo, videoURL: url!.absoluteString,
-                 photoSize: imageSize,
-                 postID: ref.documentID)
- ref.setData(post.representation)
- ProgressHUD.showSuccess("Post Successful")
- */

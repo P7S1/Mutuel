@@ -10,10 +10,13 @@ import UIKit
 import AVFoundation
 import ARKit
 import FirebaseAuth
+import GiphyUISDK
+import GiphyCoreSDK
 class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     
     @IBOutlet weak var captureButton: RecordingButton!
     
+    @IBOutlet weak var gifButton: UIButton!
     @IBOutlet weak var flipCameraButton : UIButton!
     @IBOutlet weak var flashButton      : UIButton!
     @IBOutlet weak var presentARButton: UIButton!
@@ -398,4 +401,41 @@ extension CALayer{
         shadowRadius = 2
         shadowOffset = CGSize(width: 3, height: 3)
     }
+}
+
+extension CameraVC : GiphyDelegate{
+    @IBAction func gifButtonPressed(_ sender: Any) {
+        print("gif button pressed")
+       let giphy = GiphyViewController()
+        
+        giphy.layout = .waterfall
+        giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
+        giphy.showConfirmationScreen = true
+        if self.traitCollection.userInterfaceStyle == .dark {
+            // User Interface is Dark
+            giphy.theme = .dark
+        } else {
+            giphy.theme = .light
+            // User Interface is Light
+        }
+        giphy.delegate = self
+        giphy.tabBarController?.tabBar.isHidden = true
+        giphy.hidesBottomBarWhenPushed = true
+        self.present(giphy, animated: true, completion: nil)
+    }
+    func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
+        vc.gifURL = media.contentUrl
+        print(media.contentUrl!)
+        giphyViewController.dismiss(animated: true) {
+            self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+        }
+    }
+    
+    func didDismiss(controller: GiphyViewController?) {
+        print("did dismiss")
+    }
+    
+    
 }

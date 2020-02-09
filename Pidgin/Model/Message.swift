@@ -10,7 +10,8 @@ import Foundation
 import FirebaseFirestore
 import MessageKit
 import FirebaseStorage
-class Message : MessageType, Equatable, Comparable{
+import DeepDiff
+class Message : MessageType, Equatable, Comparable, DiffAware{
     
     var sender: SenderType
     
@@ -30,6 +31,12 @@ class Message : MessageType, Equatable, Comparable{
     
     var profileImage : UIImage = FollowersHelper().getUserProfilePicture()
     var content : String?
+    
+    var diffId: UUID?
+
+    static func compareContent(_ a: Message, _ b: Message) -> Bool {
+        return a.messageId == b.messageId
+    }
     
     init(sender: SenderType, messageId: String, sentDate: Date, kind: MessageKind) {
         self.sender = sender

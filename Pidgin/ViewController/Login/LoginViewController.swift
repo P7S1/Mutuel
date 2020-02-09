@@ -87,10 +87,18 @@ class LoginViewController: UIViewController {
     }
     }
     
+    
+    @IBAction func forgotPasswordTapped(_ sender: Any) {
+        let storyboard = UIStoryboard.init(name: "Login", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ForgotPasswordViewController") as! ForgotPasswordViewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func fail(){
         ProgressHUD.showError("Error")
         errorText.isHidden = false
     }
+    
     
     /*
     // MARK: - Navigation

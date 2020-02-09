@@ -14,7 +14,12 @@ import FirebaseFirestore
 import FirebaseStorage
 import NotificationBannerSwift
 import Lightbox
-class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate, UIGestureRecognizerDelegate {
+import CollectionViewWaterfallLayout
+class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate, UICollectionViewDelegate, CollectionViewWaterfallLayoutDelegate {
+    func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return exploreVC.posts[indexPath.row].photoSize
+    }
+    
     
     @IBOutlet weak var containerView: UIView!
     
@@ -24,13 +29,13 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     
     
     private enum Constants {
-        static let segmentedControlHeight: CGFloat = 48
+        static let segmentedControlHeight: CGFloat = 35
         static let underlineViewColor: UIColor = .systemPink
-        static let underlineViewHeight: CGFloat = 4
+        static let underlineViewHeight: CGFloat = 2
     }
     
     private lazy var segmentedControlContainerView: UIView = {
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height:48 ))
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height:Constants.segmentedControlHeight ))
         containerView.backgroundColor = .systemBackground
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.isUserInteractionEnabled = true
@@ -38,7 +43,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     }()
     
     private lazy var segmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(frame: CGRect(x: 00, y: 0, width: 48, height: self.view.bounds.height))
+        let segmentedControl = UISegmentedControl(frame: CGRect(x: 00, y: 0, width: Constants.segmentedControlHeight, height: self.view.bounds.height))
         segmentedControl.isUserInteractionEnabled = true
         // Remove background and divider color
         segmentedControl.backgroundColor = .clear
@@ -55,12 +60,12 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         // Change text color and the font of the NOT selected (normal) segment
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)], for: .normal)
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .medium)], for: .normal)
 
         // Change text color and the font of the selected segment
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key.foregroundColor: UIColor.systemPink,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)], for: .selected)
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .bold)], for: .selected)
 
         // Set up event handler to get notified when the selected segment changes
         segmentedControl.addTarget(self, action: #selector(indexChanged(_:)), for: .valueChanged)
@@ -85,7 +90,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        isHeroEnabled = true
+
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         setupUI()
         self.configureNavItem(name: "Discover")
@@ -100,6 +105,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         followingVC.followingDelegate = self
         followingVC.adjustInsets = true
         indexChanged(segmentedControl)
+        
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
             if response {
@@ -142,12 +148,10 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.isHeroEnabled = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.isHeroEnabled = false
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -164,7 +168,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
                 followingVC.didMove(toParent: nil)
                 self.addChild(exploreVC)
                 self.containerView.addSubview(exploreVC.view)
-                addConstraints(view: exploreVC.view)
+                self.addConstraints(view: exploreVC.view)
                 exploreVC.didMove(toParent: self)
             case 1:
                 print("Following")
@@ -192,12 +196,36 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     }
     
      func addConstraints(view : UIView){
+        let safeLayoutGuide = self.view.safeAreaLayoutGuide
        view.frame = containerView.bounds
-     view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.topAnchor.constraint(equalTo: safeLayoutGuide.topAnchor).isActive = true
+        view.rightAnchor.constraint(equalTo: safeLayoutGuide.rightAnchor).isActive = true
+        view.leftAnchor.constraint(equalTo: safeLayoutGuide.leftAnchor).isActive = true
+        view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    super.scrollViewDidScroll(scrollView)
+        let safeLayoutGuide = self.view.safeAreaLayoutGuide
+        var verticalOffset = scrollView.contentOffset.y + 46
+        
+
+        if scrollView.refreshControl?.isRefreshing ?? false {
+            verticalOffset += 60 // After is refreshing changes its value the toolbar goes 60 points down
+            print(segmentedControlContainerView.frame.origin.y)
+        }
+
+        if verticalOffset >= 0 {
+            segmentedControlContainerView.transform = .identity
+        } else {
+            segmentedControlContainerView.transform = CGAffineTransform(translationX: 0, y: -verticalOffset)
+        }
     }
     
     func collectionViewScrolled(_ scrollView: UIScrollView) {
-        super.scrollViewDidScroll(scrollView)
+        self.scrollViewDidScroll(scrollView)
+        
     }
     func addSegmentedControlConstraints(){
            self.view.addSubview(segmentedControlContainerView)
@@ -241,21 +269,21 @@ extension UIViewController{
         let alert = UIAlertController(title: "Logged Out", message: "You have been logged out, please log back in.", preferredStyle: .alert)
         User.shared.invalidateToken { (completion) in
             User.shared.invalidateUser()
-            do{
-                try Auth.auth().signOut()
-            }catch{
-                print("Error signing out: \(error)")
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: { (action) in
+                let storyboard = UIStoryboard(name: "Login", bundle: nil)
+                    let vc = storyboard.instantiateViewController(withIdentifier: "WelcomeViewController") as! WelcomeViewController
+                vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true, completion: nil)
+            }))
+            self.present(alert, animated: true) {
+                do{
+                    try Auth.auth().signOut()
+                }catch{
+                    print("Error signing out: \(error)")
+                }
             }
             
         }
-        
-        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: { (action) in
-            let storyboard = UIStoryboard(name: "Login", bundle: nil)
-                let vc = storyboard.instantiateViewController(withIdentifier: "WelcomeViewController") as! WelcomeViewController
-            vc.modalPresentationStyle = .fullScreen
-                self.present(vc, animated: true, completion: nil)
-        }))
-        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -271,7 +299,7 @@ extension UIViewController{
          let label = UILabel()
          label.frame = CGRect.init(x: 5, y: 8, width: headerView.frame.width-10, height: headerView.frame.height-10)
         label.text = title
-        label.font = UIFont.systemFont(ofSize: 23 , weight: .bold)
+        label.font = UIFont.systemFont(ofSize: 21 , weight: .bold)
          if #available(iOS 13.0, *) {
             label.textColor = .label
          } else {
@@ -374,7 +402,6 @@ extension UIViewController{
       // Present your controller.
         controller.isHeroEnabled = true
         controller.hero.modalAnimationType = .selectBy(presenting:.zoom, dismissing:.zoomOut)
-      controller.tabBarController?.tabBar.isHidden = true
         
       present(controller, animated: true, completion: nil)
         if let index = goToIndex{
@@ -460,4 +487,39 @@ extension String {
     var isAlphanumeric: Bool {
         return !isEmpty && range(of: "[^a-zA-Z0-9]", options: .regularExpression) == nil
     }
+}
+extension UIViewController {
+    func addChild(_ controller: UIViewController, in containerView: UIView) {
+        self.addChild(controller)
+        controller.view.frame = containerView.bounds
+        containerView.addSubview(controller.view)
+    }
+}
+extension Date {
+
+func getElapsedInterval() -> String {
+
+    let interval = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: self, to: Date())
+
+    if let year = interval.year, year > 0 {
+        return year == 1 ? "\(year)" + " " + "year ago" :
+            "\(year)" + " " + "years ago"
+    } else if let month = interval.month, month > 0 {
+        return month == 1 ? "\(month)" + " " + "month ago" :
+            "\(month)" + " " + "months ago"
+    } else if let day = interval.day, day > 0 {
+        return day == 1 ? "\(day)" + " " + "day ago" :
+            "\(day)" + " " + "days ago"
+    }else if let hour = interval.hour, hour > 0{
+        return hour == 1 ? "\(hour)" + " " + "hour ago" :
+        "\(hour)" + " " + "hours ago"
+    }else if let minute = interval.minute, minute > 0{
+        return minute == 1 ? "\(minute)" + " " + "minute ago" :
+        "\(minute)" + " " + "minutes ago"
+    } else {
+        return "just now"
+
+    }
+
+}
 }

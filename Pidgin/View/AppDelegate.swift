@@ -114,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let id = Auth.auth().currentUser?.uid{
         let ref = db.collection("users").document(id)
             
-            ref.addSnapshotListener { (snapshot, error) in
+            userListener = ref.addSnapshotListener { (snapshot, error) in
             if error == nil{
                 User.shared.convertFromDocument(dictionary: snapshot!)
                 if User.shared.username != nil{

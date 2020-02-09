@@ -20,6 +20,14 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     var user : Account?
     
     var results : [Account] = [Account]()
+    
+    var query : Query!
+    
+    var lastDocument : DocumentSnapshot?
+    
+    var loadedAllDocs = false
+    
+    var queryLimit = 5
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,23 +70,28 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
             tableView.layoutIfNeeded()
             self.view.layoutIfNeeded()
             if let following = user?.following{
-                        for id in following{
-            
-                    let query = db.collection("users").document(id)
-                    query.getDocument { (snapshot, error) in
+                query = db.collection("users").whereField(FieldPath.documentID(), in: following).limit(to: queryLimit)
+                if let lastDoc = self.lastDocument{
+                    self.lastDocument = lastDoc
+                }
+                    query.getDocuments { (snapshot, error) in
                         if error == nil{
-                            
+                            if snapshot!.count < self.queryLimit{
+                                self.loadedAllDocs = true
+                            }
+                            for document in snapshot!.documents{
                                 let account = Account()
-                            account.convertFromDocument(dictionary: snapshot!)
-                                account.printClass()
+                            account.convertFromDocument(dictionary: document)
                                 self.results.append(account)
+                                self.lastDocument = document
+                            }
                             
                             self.tableView.reloadData()
                         }else{
                             print("there was an error \(error!)")
                         }
                     }
-                        }
+                        
                     }
         case "newMessage":
             viewTitle = "New Message"
@@ -91,12 +104,19 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func getUsersFollowers(){
-        let query = db.collection("users").whereField("following", arrayContains: user?.uid ?? "").limit(to: 10)
+        query = db.collection("users").whereField("following", arrayContains: user?.uid ?? "").limit(to: queryLimit)
+        if let doc = self.lastDocument{
+            query = query.start(afterDocument: doc)
+        }
         query.getDocuments { (snapshot, error) in
             if error == nil{
+                if snapshot!.count < self.queryLimit{
+                    self.loadedAllDocs = true
+                }
                 for document in snapshot!.documents{
                     let account = Account()
                     account.convertFromDocument(dictionary: document)
+                    self.lastDocument = document
                     account.printClass()
                     self.results.append(account)
                 }
@@ -145,6 +165,12 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return results.count
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == results.count && !self.loadedAllDocs{
+            self.getMoreUsers()
+        }
     }
     
      func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -211,13 +237,56 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
             
                 } 
         }else{
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
         vc.user = results[indexPath.row]
+        vc.isUserProfile = true
         navigationController?.pushViewController(vc, animated: true)
         }
+        
     }
+    func getMoreUsers(){
+               if let startAfter = lastDocument{
+                   query = query.start(afterDocument: startAfter)
+                   query.getDocuments { (snapshot, error) in
+                       if error == nil{
+                           if snapshot!.count < 10{
+                               self.loadedAllDocs = true
+                           }
+                           for document in snapshot!.documents{
+                           let account = Account()
+                           account.convertFromDocument(dictionary: document)
+                               self.results.append(account)
+                           }
+                        self.tableView.reloadData()
+                        }
+                   }
+               }
+           }
     
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+           if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
+               changeTabBar(hidden: true, animated: true)
+           }
+           else{
+               changeTabBar(hidden: false, animated: true)
+           }
+       }
+
+       func changeTabBar(hidden:Bool, animated: Bool){
+           guard let tabBar = self.tabBarController?.tabBar else { return; }
+           if tabBar.isHidden == hidden{ return }
+           let frame = tabBar.frame
+           let offset = hidden ? frame.size.height : -frame.size.height
+           let duration:TimeInterval = (animated ? 0.2 : 0.0)
+           tabBar.isHidden = false
+
+           UIView.animate(withDuration: duration, animations: {
+               tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
+           }, completion: { (true) in
+               tabBar.isHidden = hidden
+           })
+       }
 
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

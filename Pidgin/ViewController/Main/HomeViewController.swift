@@ -20,7 +20,6 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        isHeroEnabled = true
         navigationController?.hero.navigationAnimationType = .selectBy(presenting: .fade, dismissing:.fade)
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
@@ -33,6 +32,10 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         self.navigationController?.navigationBar.layer.shadowRadius = 4.0
         self.navigationController?.navigationBar.layer.shadowOpacity = 1.0
         self.navigationController?.navigationBar.layer.masksToBounds = false */
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,7 +62,7 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         /// Height of NavBar for Small state. Usually it's just 44
         static let NavBarHeightSmallState: CGFloat = 44
         /// Height of NavBar for Large state. Usually it's just 96.5 but if you have a custom font for the title, please make sure to edit this value since it changes the height for Large state of NavBar
-        static let NavBarHeightLargeState: CGFloat = 126.5
+        static let NavBarHeightLargeState: CGFloat = 96.5
     }
     
      func setupUI() {
@@ -178,8 +181,9 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
     }
     @objc func profileBarButtonPressed(){
         print("profile bar button item pressed")
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
+        vc.isUserProfile = true
         
         vc.user = User.shared
         vc.isCurrentUser = true
