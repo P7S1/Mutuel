@@ -102,12 +102,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.navigationController?.navigationBar.layer.masksToBounds = false
         navBarAppearanc */
         navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold)]
+        navBarAppearance.backgroundEffect = .none
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().tintColor = .label
         UITabBar.appearance().tintColor = .label
         UITabBar.appearance().backgroundColor = .systemBackground
+
     }
     
     @objc func logUserIn(){

@@ -103,8 +103,9 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         exploreVC.exploreDelegate = self
         followingVC  = storyboard.instantiateViewController(withIdentifier: "FollowingViewController") as? FollowingViewController
         followingVC.followingDelegate = self
-        followingVC.adjustInsets = true
         indexChanged(segmentedControl)
+        navigationItem.largeTitleDisplayMode = .never
+
         
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
@@ -138,6 +139,9 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        
+        
         if Auth.auth().currentUser != nil {
             print("user is signed in")
         } else {
@@ -207,8 +211,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     super.scrollViewDidScroll(scrollView)
-        let safeLayoutGuide = self.view.safeAreaLayoutGuide
-        var verticalOffset = scrollView.contentOffset.y + 46
+        var verticalOffset = scrollView.contentOffset.y + 42
         
 
         if scrollView.refreshControl?.isRefreshing ?? false {

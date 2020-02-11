@@ -102,6 +102,8 @@ class CommentsSectionViewController: UIViewController, UIScrollViewDelegate {
         // Do any additional setup after loading the view.
     }
     
+    
+    
     @objc func indexChanged(_ sender: UISegmentedControl) {
         changeSegmentedControlLinePosition()
         switch sender.selectedSegmentIndex{

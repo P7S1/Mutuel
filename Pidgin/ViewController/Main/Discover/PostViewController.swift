@@ -10,7 +10,7 @@ import UIKit
 import Hero
 import AVKit
 import Lightbox
-class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
+class PostViewController: UIViewController, UIScrollViewDelegate {
     
     @IBOutlet weak var contentView: UIView!
     
@@ -38,7 +38,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     var post : Post!
     
-    var panGR: UIPanGestureRecognizer!
+ //   var panGR: UIPanGestureRecognizer!
     
     @IBOutlet weak var playerContainerView: PlayerContainerView!
     
@@ -52,7 +52,8 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         scrollView.delegate = self
         navigationItem.largeTitleDisplayMode = .never
         
-        navigationItem.title = "Post"
+        
+        navigationItem.title = ""
         imageView.kf.indicatorType = .activity
         DispatchQueue.main.async {
             self.imageView.kf.setImage(with: URL(string: self.post.photoURL))
@@ -62,8 +63,10 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         caption.heroID = "\(post.postID).caption"
         timeLabel.text = post.publishDate.getElapsedInterval()
         scrollView.alwaysBounceVertical = true
-        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
-        
+        let height = UIApplication.shared.statusBarFrame.height 
+        print("the  best height is \(height)")
+        scrollView.contentInset = UIEdgeInsets(top: height, left: 0, bottom: 32, right: 0)
+        scrollView.contentInsetAdjustmentBehavior = .never
         
         
         let scale = UIScreen.main.bounds.width / post.photoSize.width
@@ -83,11 +86,17 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
             playerContainerView.isHidden = true
             playerContainerView.pause()
         }
+        let appearance = navigationController?.navigationBar.standardAppearance.copy()
+        appearance?.backgroundColor = .clear
+        appearance?.shadowImage = UIImage()
+        appearance?.shadowColor = .clear
+        navigationItem.standardAppearance = appearance
         
-        panGR = UIPanGestureRecognizer(target: self,
-                  action: #selector(handlePan(gestureRecognizer:)))
-        panGR.delegate = self
-        view.addGestureRecognizer(panGR)
+        
+       // panGR = UIPanGestureRecognizer(target: self,
+      //            action: #selector(handlePan(gestureRecognizer:)))
+       // panGR.delegate = self
+       // view.addGestureRecognizer(panGR)
         
         self.view.layoutIfNeeded()
         // Do any additional setup after loading the view.
@@ -95,12 +104,13 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.isHeroEnabled = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         playerContainerView.initialize(post: post, shouldPlay: true)
+
+        
      /*   if player != nil{
         self.player!.play()
         } */
@@ -108,20 +118,15 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-       
         if !shouldContinuePlaying
         {
-            navigationController?.isHeroEnabled = false
             playerContainerView.pause()
-        }else{
-             navigationController?.isHeroEnabled = true
         }
     }
     
     @objc func engagementTapped(){
         let vc = CommentsSectionViewController()
         vc.post = self.post
-        navigationController?.isHeroEnabled = false
         navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -132,7 +137,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         shouldContinuePlaying = true
     }
     
-    @objc func handlePan(gestureRecognizer:UIPanGestureRecognizer) {
+  /*  @objc func handlePan(gestureRecognizer:UIPanGestureRecognizer) {
         switch gestureRecognizer.state {
         case .began:
             shouldContinuePlaying = true
@@ -160,7 +165,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
             }
         }
         
-    }
+    } */
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
            if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{

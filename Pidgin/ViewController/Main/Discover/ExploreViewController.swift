@@ -64,12 +64,18 @@ class ExploreViewController: UIViewController {
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         if adjustInsets{
-        collectionView.contentInset = UIEdgeInsets(top: 46, left: 0, bottom: 0, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 42, left: 0, bottom: 0, right: 0)
         }
         
         if isUserProfile{
             navigationItem.largeTitleDisplayMode = .never
             navigationItem.title = ""
+            
+            let appearance = navigationController?.navigationBar.standardAppearance.copy()
+            appearance?.backgroundColor = .clear
+            appearance?.shadowImage = UIImage()
+            appearance?.shadowColor = .clear
+            navigationItem.standardAppearance = appearance
             
             query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 10)
             originalQuery = query
@@ -84,7 +90,7 @@ class ExploreViewController: UIViewController {
             settings.widthAnchor.constraint(equalToConstant: 25).isActive = true
             settings.heightAnchor.constraint(equalToConstant: 25).isActive = true
             let settingsButton = UIBarButtonItem.init(customView: settings)
-            navigationItem.rightBarButtonItems = [settingsButton]
+           // navigationItem.rightBarButtonItems = [settingsButton]
         }else{
             query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 10)
             originalQuery = query
@@ -120,8 +126,8 @@ class ExploreViewController: UIViewController {
         }
         
         // Change individual layout attributes for the spacing between cells'
-        layout.minimumColumnSpacing = 8
-        layout.minimumInteritemSpacing = 8
+        layout.minimumColumnSpacing = 4
+        layout.minimumInteritemSpacing = 4
         if isUserProfile{
         layout.headerHeight = 180
         }else{
@@ -209,6 +215,7 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreCollectionViewCell", for: indexPath) as! ExploreCollectionViewCell
+        let post = posts[indexPath.row]
         cell.imageView.clipsToBounds = true
         cell.imageView.layer.cornerRadius = 10
         cell.backgroundColor = .clear
@@ -218,14 +225,14 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
         cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
         DispatchQueue.main.async {
-            cell.imageView.kf.setImage(with: URL(string: self.posts[indexPath.row].photoURL)) { (result) in
+            cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
                 cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
             }
         }
-        cell.playButton.isHidden = !(posts[indexPath.row].isVideo)
+        cell.playButton.isHidden = !(post.isVideo)
         cell.playButton.heroModifiers = [.useNormalSnapshot]
-        cell.playButton.heroID = "\(posts[indexPath.row].postID).playButton"
+        cell.playButton.heroID = "\(post.postID).playButton"
         cell.playButton.shouldBlink = false
         return cell
     }

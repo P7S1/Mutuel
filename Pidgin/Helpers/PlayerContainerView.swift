@@ -25,6 +25,7 @@ class PlayerContainerView: UIView {
      }
     
     func initialize(post : Post, shouldPlay :  Bool){
+        DispatchQueue.main.async {
         if post.isVideo{
         self.backgroundColor = .clear
         VideoManager().requestPlayer(post: post) { (completion, playerController) in
@@ -46,7 +47,7 @@ class PlayerContainerView: UIView {
                 if shouldPlay{
                 (self.layer as! AVPlayerLayer).player?.play()
                 }
-                NotificationCenter.default.addObserver(self,
+                NotificationCenter.default.addObserver( self,
                                                        selector: #selector(self.playerItemDidReachEnd(notification:)),
                 name: .AVPlayerItemDidPlayToEndTime,
                 object: playerController?.player?.currentItem)
@@ -60,11 +61,8 @@ class PlayerContainerView: UIView {
         }else{
             print("post must be a video")
             self.pause()
-     
         }
-        
-
-
+        }
     }
     
     func play(){
@@ -75,18 +73,23 @@ class PlayerContainerView: UIView {
         self.initialize(post: post)
         }
         } */
-        do {
-           try AVAudioSession.sharedInstance().setCategory(.playback)
-        } catch(let error) {
-            print(error.localizedDescription)
+        DispatchQueue.main.async {
+            do {
+                try AVAudioSession.sharedInstance().setCategory(.multiRoute)
+            } catch(let error) {
+                print(error.localizedDescription)
+            }
+            (self.layer as! AVPlayerLayer).player?.isMuted = self.isMuted
+            (self.layer as! AVPlayerLayer).player?.play()
         }
-        (self.layer as! AVPlayerLayer).player?.isMuted = isMuted
-        (self.layer as! AVPlayerLayer).player?.play()
     }
     
     func pause(){
-        (self.layer as! AVPlayerLayer).player?.pause()
-        (self.layer as! AVPlayerLayer).player = nil
+        DispatchQueue.main.async {
+            (self.layer as! AVPlayerLayer).player?.pause()
+            (self.layer as! AVPlayerLayer).player = nil
+        }
+
     }
     
     override func layoutSublayers(of layer: CALayer) {
@@ -95,8 +98,10 @@ class PlayerContainerView: UIView {
     }
 
 @objc func playerItemDidReachEnd(notification: Notification) {
-    if let playerItem = notification.object as? AVPlayerItem {
-        playerItem.seek(to: CMTime.zero, completionHandler: nil)
+    DispatchQueue.main.async {
+        if let playerItem = notification.object as? AVPlayerItem {
+            playerItem.seek(to: CMTime.zero, completionHandler: nil)
+        }
     }
 }
 }

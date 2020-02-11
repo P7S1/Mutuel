@@ -67,9 +67,6 @@ class CommentsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.isHeroEnabled = false
-    }
     
     func getComments(deleteAll : Bool){
         query = self.originalQuery
@@ -293,6 +290,14 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         if indexPath.row + 1 == comments.count && !self.loadedAllDocuments{
             self.getComments(deleteAll: false)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+        return 110
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return getHeaderView(with: "test", tableView: tableView)
     }
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{

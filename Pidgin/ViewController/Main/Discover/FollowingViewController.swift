@@ -10,7 +10,6 @@ import UIKit
 import DeepDiff
 import FirebaseFirestore
 import AVKit
-import Hero
 import SkeletonView
  protocol PostViewDelegate {
     func preparePostsFor(indexPath: IndexPath, posts : [Post], lastDocument : DocumentSnapshot?, loadedAllPosts : Bool)
@@ -33,8 +32,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var activityIndicator : UIActivityIndicatorView!
     
-    var adjustInsets = false
-    
    var shouldContinuePlaying = false
     
     var lastDocument : DocumentSnapshot?
@@ -53,7 +50,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
@@ -73,9 +69,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
    
         collectionView.delegate = self
         collectionView.dataSource = self
-        if adjustInsets{
-        collectionView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 0, right: 0)
-        }
         if shouldQuery && User.shared.following.count > 0{
         query = db.collectionGroup("posts").order(by: "publishDate", descending: true).whereField("creatorID", in: User.shared.following).limit(to: 10)
         originalQuery = query
@@ -105,6 +98,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        print(collectionView.bounds.height)
         self.indexPath = nil
         self.shouldContinuePlaying = false
         if let visibleIndexPath = self.getVisibleCellsIndexPath(),
@@ -114,7 +108,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         self.scrollViewDidEndDecelerating(collectionView)
-        
+        changeTabBar(hidden: false, animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -240,15 +234,7 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         
         cell.addButtonShadows()
         
-        cell.contentView.backgroundColor = .clear
-        
-        cell.imageView.startSkeletonAnimation()
-        DispatchQueue.main.async {
-            cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
-                cell.imageView.stopSkeletonAnimation()
-                cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-            }
-        }
+
         cell.caption.text = post.caption
         cell.repostsLabel.text = String(post.repostsCount)
         cell.commentsLabel.text = String(post.commentsCount)
@@ -267,8 +253,7 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         cell.playerContainerView.heroID = "\(post.postID).player"
         cell.containerView.layer.masksToBounds = true
         cell.containerView.layer.cornerRadius = 20.0
-        cell.imageView.layer.masksToBounds = true
-         cell.imageView.layer.cornerRadius = 20.0
+
         cell.playerContainerView.layer.masksToBounds = true
         cell.playerContainerView.layer.cornerRadius = 20.0
         cell.playerContainerView.initialize(post: post, shouldPlay: false)
@@ -279,11 +264,38 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         if height < collectionView.bounds.width{
             height = collectionView.bounds.width
         }
-        if height > collectionView.bounds.height-56{
-            height = collectionView.bounds.height-56
+        var constant : CGFloat = 00
+        if !shouldQuery{
+            constant = 48
+        }
+        if height >= collectionView.bounds.height - 132 - constant{
+            height = collectionView.bounds.height - 132 - constant
         }
         
+    
+        
+        
+        if shouldQuery{
+            cell.yAnchor.constant = -35
+        }
         cell.height.constant = height
+        cell.contentView.setNeedsUpdateConstraints()
+        
+        cell.gradientView.isHidden = true
+        cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
+        cell.imageView.layer.cornerRadius = 20.0
+        cell.imageView.clipsToBounds = true
+        cell.contentView.isSkeletonable = true
+        DispatchQueue.main.async {
+            cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
+                   cell.imageView.stopSkeletonAnimation()
+                cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+                UIView.animate(withDuration: 0.2) {
+                    cell.imageView.layer.cornerRadius = 20.0
+                    cell.gradientView.isHidden = false
+                }
+            }
+        }
 
         if let user = cache.object(forKey: post.creatorID as NSString) {
             // use the cached version
@@ -415,7 +427,6 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
        // vc.postDelegate = self
         vc.post = posts[indexPath.row]
         shouldContinuePlaying = true
-        self.navigationController?.isHeroEnabled = true
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -446,15 +457,6 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
             
         }
     }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-           if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
-               changeTabBar(hidden: true, animated: true)
-           }
-           else{
-               changeTabBar(hidden: false, animated: true)
-           }
-       }
 
        func changeTabBar(hidden:Bool, animated: Bool){
            guard let tabBar = self.tabBarController?.tabBar else { return; }
