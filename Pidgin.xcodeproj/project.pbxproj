@@ -104,6 +104,12 @@
 		DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */; };
 		DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */; };
 		DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCABC23F3406F00397091 /* ReplyHeaderViewController.swift */; };
+		DFEFCAC123F38A9D00397091 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCAC023F38A9D00397091 /* UIViewController.swift */; };
+		DFEFCAC323F38B9800397091 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCAC223F38B9800397091 /* Character.swift */; };
+		DFEFCAC523F38BB300397091 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCAC423F38BB300397091 /* String.swift */; };
+		DFEFCAC723F38BF700397091 /* BackGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCAC623F38BF700397091 /* BackGradientView.swift */; };
+		DFEFCAC923F38C5B00397091 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCAC823F38C5B00397091 /* Date.swift */; };
+		DFEFCACB23F38CB000397091 /* CustomBannerColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCACA23F38CB000397091 /* CustomBannerColors.swift */; };
 		DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */; };
 		DFF346262367A3FF006AA467 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346232367A3FC006AA467 /* Channel.swift */; };
 		DFF346292367AE0D006AA467 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346282367AE0D006AA467 /* Message.swift */; };
@@ -218,6 +224,12 @@
 		DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		DFEE6F43239BA9020097EA52 /* Pidgin-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Pidgin-Bridging-Header.h"; sourceTree = "<group>"; };
 		DFEFCABC23F3406F00397091 /* ReplyHeaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyHeaderViewController.swift; sourceTree = "<group>"; };
+		DFEFCAC023F38A9D00397091 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		DFEFCAC223F38B9800397091 /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
+		DFEFCAC423F38BB300397091 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		DFEFCAC623F38BF700397091 /* BackGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackGradientView.swift; sourceTree = "<group>"; };
+		DFEFCAC823F38C5B00397091 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		DFEFCACA23F38CB000397091 /* CustomBannerColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBannerColors.swift; sourceTree = "<group>"; };
 		DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToUserViewController.swift; sourceTree = "<group>"; };
 		DFF346232367A3FC006AA467 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		DFF346282367AE0D006AA467 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -284,9 +296,7 @@
 				DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */,
 				DF6A20AD23B1EF0400949CED /* VideoHelper.swift */,
 				DF7D0AC423B83D9A00B33E40 /* DatabaseRepresentation.swift */,
-				DFC30E0223C7F104000704EC /* PlayerContainerView.swift */,
 				DFDCA0A423C93D7700240CE7 /* VideoManager.swift */,
-				DF9E597F23D14A72004666DD /* VideoIcon.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -382,6 +392,7 @@
 			children = (
 				DFEE6F43239BA9020097EA52 /* Pidgin-Bridging-Header.h */,
 				DFEB292A236DB082006FC6BB /* Pidgin.entitlements */,
+				DFEFCABF23F38A7900397091 /* Extensions */,
 				DF3D2D1F239EE7E000A9286A /* Helpers */,
 				DFDE0810234D24230017BFDA /* Model */,
 				DFDE0813234D24490017BFDA /* View */,
@@ -465,17 +476,13 @@
 		DFDE0810234D24230017BFDA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DFDD9EB4234FBC03007A3177 /* SearchCollectionViewCell.swift */,
+				DFEFCACD23F38CDA00397091 /* Custom Classes */,
+				DFEFCACC23F38CB900397091 /* Reusable Cells */,
 				DF9510112360D945006B3B44 /* Account.swift */,
-				DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */,
 				DFF346232367A3FC006AA467 /* Channel.swift */,
 				DFF346282367AE0D006AA467 /* Message.swift */,
-				DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */,
-				DF7D0AC023B8278E00B33E40 /* ExploreCollectionViewCell.swift */,
 				DF7D0AC223B83ABE00B33E40 /* Post.swift */,
-				DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */,
 				DF562A3223BE3E9F00CC43D3 /* Comment.swift */,
-				DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -513,6 +520,41 @@
 				DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */,
 			);
 			path = Comments;
+			sourceTree = "<group>";
+		};
+		DFEFCABF23F38A7900397091 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DFEFCAC023F38A9D00397091 /* UIViewController.swift */,
+				DFEFCAC223F38B9800397091 /* Character.swift */,
+				DFEFCAC423F38BB300397091 /* String.swift */,
+				DFEFCAC823F38C5B00397091 /* Date.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		DFEFCACC23F38CB900397091 /* Reusable Cells */ = {
+			isa = PBXGroup;
+			children = (
+				DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */,
+				DF7D0AC023B8278E00B33E40 /* ExploreCollectionViewCell.swift */,
+				DFDD9EB4234FBC03007A3177 /* SearchCollectionViewCell.swift */,
+				DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */,
+				DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */,
+				DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */,
+			);
+			path = "Reusable Cells";
+			sourceTree = "<group>";
+		};
+		DFEFCACD23F38CDA00397091 /* Custom Classes */ = {
+			isa = PBXGroup;
+			children = (
+				DFC30E0223C7F104000704EC /* PlayerContainerView.swift */,
+				DFEFCAC623F38BF700397091 /* BackGradientView.swift */,
+				DF9E597F23D14A72004666DD /* VideoIcon.swift */,
+				DFEFCACA23F38CB000397091 /* CustomBannerColors.swift */,
+			);
+			path = "Custom Classes";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -646,6 +688,7 @@
 				DF5A223923D67FBC00BA053F /* PasswordResetEmailViewController.swift in Sources */,
 				DFDE080E234D23880017BFDA /* DiscoverViewController.swift in Sources */,
 				DF215AF9235563D900EE67D3 /* NextLevel.swift in Sources */,
+				DFEFCACB23F38CB000397091 /* CustomBannerColors.swift in Sources */,
 				DF215AF8235563D900EE67D3 /* NextLevelBufferRenderer.swift in Sources */,
 				DF215B0B2356673700EE67D3 /* Orientation.swift in Sources */,
 				DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */,
@@ -655,8 +698,10 @@
 				DF5A223723D67F8200BA053F /* ForgotPasswordViewController.swift in Sources */,
 				DF9510122360D945006B3B44 /* Account.swift in Sources */,
 				DF7D0AC323B83ABE00B33E40 /* Post.swift in Sources */,
+				DFEFCAC523F38BB300397091 /* String.swift in Sources */,
 				DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */,
 				DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */,
+				DFEFCAC123F38A9D00397091 /* UIViewController.swift in Sources */,
 				DF4BC41B234D8267001AD00D /* Pencil.swift in Sources */,
 				DF5A223323D5F35D00BA053F /* ReAuthenticationViewController.swift in Sources */,
 				DF4BC420234D8267001AD00D /* UIImageExtensions.swift in Sources */,
@@ -664,6 +709,7 @@
 				DF4BC410234D8267001AD00D /* BottomSheetViewController.swift in Sources */,
 				DF4BC40C234D8267001AD00D /* ColorsCollectionViewDelegate.swift in Sources */,
 				DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */,
+				DFEFCAC923F38C5B00397091 /* Date.swift in Sources */,
 				DFDD9ECE234FDD5D007A3177 /* VirtualFaceContent.swift in Sources */,
 				DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */,
 				DF4BC427234D8267001AD00D /* ColorCollectionViewCell.swift in Sources */,
@@ -689,6 +735,7 @@
 				DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */,
 				DF215AF5235563D900EE67D3 /* NextLevelSession.swift in Sources */,
 				DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */,
+				DFEFCAC323F38B9800397091 /* Character.swift in Sources */,
 				DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */,
 				DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */,
 				DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */,
@@ -714,6 +761,7 @@
 				DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */,
 				DF215AFE235563D900EE67D3 /* NextLevel+CMSampleBuffer.swift in Sources */,
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
+				DFEFCAC723F38BF700397091 /* BackGradientView.swift in Sources */,
 				DF70721823C695A500F00DF0 /* UsernameViewController.swift in Sources */,
 				DF3C1A102399AF3D00106964 /* NotificationService.swift in Sources */,
 				DF7D0ACB23BA3AAF00B33E40 /* PostViewController.swift in Sources */,
