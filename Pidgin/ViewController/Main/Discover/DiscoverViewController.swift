@@ -12,8 +12,6 @@ import Photos
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
-import NotificationBannerSwift
-import Lightbox
 import CollectionViewWaterfallLayout
 class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate, UICollectionViewDelegate, CollectionViewWaterfallLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
