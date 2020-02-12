@@ -63,9 +63,9 @@ class PostViewController: UIViewController, UIScrollViewDelegate {
         caption.heroID = "\(post.postID).caption"
         timeLabel.text = post.publishDate.getElapsedInterval()
         scrollView.alwaysBounceVertical = true
-        let height = UIApplication.shared.statusBarFrame.height 
-        print("the  best height is \(height)")
-        scrollView.contentInset = UIEdgeInsets(top: height, left: 0, bottom: 32, right: 0)
+        let height = UIApplication.shared.statusBarFrame.height
+        let bottomInset = tabBarController?.tabBar.frame.height ?? 0
+        scrollView.contentInset = UIEdgeInsets(top: height, left: 0, bottom: bottomInset + 16, right: 0)
         scrollView.contentInsetAdjustmentBehavior = .never
         
         

@@ -148,8 +148,8 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        collectionView.collectionViewLayout.invalidateLayout()
         if let path = indexPath{
+            collectionView.collectionViewLayout.invalidateLayout()
             self.collectionView.scrollToItem(at: path, at: [.centeredVertically], animated: false)
         }
         

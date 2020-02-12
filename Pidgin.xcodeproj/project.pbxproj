@@ -103,6 +103,7 @@
 		DFEB2929236DAF7C006FC6BB /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */; };
 		DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */; };
 		DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */; };
+		DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCABC23F3406F00397091 /* ReplyHeaderViewController.swift */; };
 		DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */; };
 		DFF346262367A3FF006AA467 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346232367A3FC006AA467 /* Channel.swift */; };
 		DFF346292367AE0D006AA467 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346282367AE0D006AA467 /* Message.swift */; };
@@ -216,6 +217,7 @@
 		DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		DFEE6F43239BA9020097EA52 /* Pidgin-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Pidgin-Bridging-Header.h"; sourceTree = "<group>"; };
+		DFEFCABC23F3406F00397091 /* ReplyHeaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyHeaderViewController.swift; sourceTree = "<group>"; };
 		DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToUserViewController.swift; sourceTree = "<group>"; };
 		DFF346232367A3FC006AA467 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		DFF346282367AE0D006AA467 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -303,14 +305,13 @@
 		DF469B7C23790FEE00CDB540 /* Discover */ = {
 			isa = PBXGroup;
 			children = (
+				DFEFCABE23F341A400397091 /* Comments */,
 				DFDE080D234D23880017BFDA /* DiscoverViewController.swift */,
-				DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */,
 				DF469B7D237910E400CDB540 /* ProfileViewController.swift */,
 				DF7D0ABC23B7104900B33E40 /* ExploreViewController.swift */,
+				DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */,
 				DF7D0ABE23B711F500B33E40 /* FollowingViewController.swift */,
 				DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */,
-				DF73728923C1899D003ED359 /* CommentsViewController.swift */,
-				DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */,
 			);
 			path = Discover;
 			sourceTree = "<group>";
@@ -504,6 +505,16 @@
 			path = "Progress-HUD";
 			sourceTree = "<group>";
 		};
+		DFEFCABE23F341A400397091 /* Comments */ = {
+			isa = PBXGroup;
+			children = (
+				DF73728923C1899D003ED359 /* CommentsViewController.swift */,
+				DFEFCABC23F3406F00397091 /* ReplyHeaderViewController.swift */,
+				DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */,
+			);
+			path = Comments;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -677,6 +688,7 @@
 				DF7D0AC123B8278E00B33E40 /* ExploreCollectionViewCell.swift in Sources */,
 				DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */,
 				DF215AF5235563D900EE67D3 /* NextLevelSession.swift in Sources */,
+				DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */,
 				DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */,
 				DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */,
 				DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */,

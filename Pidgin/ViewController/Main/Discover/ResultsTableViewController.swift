@@ -22,6 +22,8 @@ class ResultsTableViewController: UIViewController, UITableViewDelegate, UITable
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         results.removeAll()
+        
+        tableView.contentInset = UIEdgeInsets(top: 40, left: 00, bottom: 0, right: 00)
         tableView.delegate = self
         tableView.dataSource = self
         

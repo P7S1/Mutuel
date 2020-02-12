@@ -36,7 +36,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     
     if let userID = User.shared.uid{
         
-    query = channelReference.whereField("members", arrayContains: userID).limit(to: 10).order(by: "lastSentDate", descending: true)
+    query = channelReference.whereField("members", arrayContains: userID).limit(to: 15).order(by: "lastSentDate", descending: true)
     
     channelListener = query.addSnapshotListener { querySnapshot, error in
       guard let snapshot = querySnapshot else {
@@ -172,7 +172,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         }
         query.getDocuments { (snapshot, error) in
             if error == nil{
-                if snapshot!.count < 10{
+                if snapshot!.count < 15{
                     self.loadedAllPosts = true
                 }
                 for document in snapshot!.documents{

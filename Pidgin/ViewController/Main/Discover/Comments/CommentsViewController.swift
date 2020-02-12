@@ -18,6 +18,8 @@ class CommentsViewController: UIViewController {
     
     var comments : [Comment] = [Comment]()
     
+    var commentReply : Comment?
+    
     @IBOutlet weak var gifButton: UIButton!
     
     @IBOutlet weak var tableView: UITableView!
@@ -38,6 +40,10 @@ class CommentsViewController: UIViewController {
     
     var media : GPHMedia?
     
+    var isReplying = false
+    
+    var navTitle = "Comments"
+    
     private enum Constants {
         static let numberOfCommentsToLoad: Int = 10
     }
@@ -49,20 +55,27 @@ class CommentsViewController: UIViewController {
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
-        navigationItem.title = "Comments"
+        navigationItem.title = navTitle
         tableView.delegate = self
         tableView.dataSource = self
         textView.delegate = self
         textView.clipsToBounds = false
         textView.layer.cornerRadius = 10
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        self.tableView.sectionHeaderHeight = UITableView.automaticDimension
+        self.tableView.estimatedSectionHeaderHeight = 38
         
         textView.addDoneButtonOnKeyboard()
         
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         tableView.addSubview(refreshControl)
         
-        originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+        if isReplying && commentReply != nil{
+            originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+        }else{
+         originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+        }
+    
         getComments(deleteAll: false)
         // Do any additional setup after loading the view.
     }
@@ -116,7 +129,10 @@ class CommentsViewController: UIViewController {
         textView.text = ""
         
         ProgressHUD.show("Sending...")
-        let docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document()
+        var docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document()
+        if isReplying && commentReply != nil{
+            docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document(commentReply!.commentID).collection("replies").document()
+        }
         let comment = Comment(text: text, commentID: docRef.documentID, post: self.post, media: self.media)
         docRef.setData(comment.representation) { (error) in
             if error == nil{
@@ -160,7 +176,11 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         var comment = comments[indexPath.row]
         
         cell.usernameLabel.text = comment.creatorUsername
+        if self.isReplying{
+            cell.viewRepliesLabel.text = ""
+        }else{
         cell.viewRepliesLabel.text = "VIEW \(comment.repliesCount) REPLIES"
+        }
         
         cell.captionLabel.text = comment.text
         cell.likeButton.setTitle(String(comment.likes.count), for: .normal)
@@ -199,7 +219,11 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         
         cell.likeTapAction = {
         () in
-            let docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
+            var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
+            
+            if self.isReplying && self.commentReply != nil{
+                docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.postID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
+            }
             cell.likeButton.isEnabled = false
             guard let uid = User.shared.uid else { return }
             if comment.likes.contains(uid){
@@ -211,7 +235,9 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                 docRef.updateData(["likes" : FieldValue.arrayRemove([uid])]) { (error) in
                 if error == nil{
                 cell.likeButton.isEnabled = true
-                }
+                }else{
+                    print("here was an error \(error!)")
+                    }
             }
             }else{
             cell.setLikedState()
@@ -220,7 +246,9 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
              docRef.updateData(["likes" : FieldValue.arrayUnion([uid])]) { (error) in
                     if error == nil{
                     cell.likeButton.isEnabled = true
-                    }
+                    }else{
+                        print("there was an error \(error!)")
+                }
                 }
             }
             cell.likeButton.setTitle(String(comment.likes.count), for: .normal)
@@ -248,7 +276,12 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
             let actionViewController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             if comment.creatorID == User.shared.uid{
                 actionViewController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
-                    let docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
+                    var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
+                    
+                    if self.isReplying && self.commentReply != nil{
+                        docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.postID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
+                    }
+                    
                     docRef.delete { (error) in
                         if error == nil{
                             if let index = self.comments.firstIndex(of: comment){
@@ -284,7 +317,18 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if !isReplying{
+        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "CommentsViewController") as! CommentsViewController
+        vc.isReplying = true
+        let comment = comments[indexPath.row]
+        vc.commentReply = comment
+        vc.post = post
+        vc.navTitle = "Replies"
+        navigationController?.pushViewController(vc, animated: true)
+        }
     }
+    
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row + 1 == comments.count && !self.loadedAllDocuments{
@@ -292,12 +336,17 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         }
     }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        return 110
-    }
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return getHeaderView(with: "test", tableView: tableView)
+        if isReplying && commentReply != nil{
+        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ReplyHeaderViewController") as! ReplyHeaderViewController
+            vc.comment = commentReply!
+        let header = vc.view
+        self.addChild(vc)
+        return header
+        }else{
+            return self.getHeaderView(with: "\(post.commentsCount) Comments", tableView: tableView)
+        }
     }
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{

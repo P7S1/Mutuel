@@ -300,7 +300,7 @@ extension UIViewController{
          
 
          let label = UILabel()
-         label.frame = CGRect.init(x: 5, y: 8, width: headerView.frame.width-10, height: headerView.frame.height-10)
+         label.frame = CGRect.init(x:16, y: 8, width: headerView.frame.width-10, height: headerView.frame.height-10)
         label.text = title
         label.font = UIFont.systemFont(ofSize: 21 , weight: .bold)
          if #available(iOS 13.0, *) {
