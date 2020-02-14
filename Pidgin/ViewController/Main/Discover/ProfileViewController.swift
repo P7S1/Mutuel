@@ -144,7 +144,7 @@ class ProfileViewController: UIViewController{
     
     @IBAction func handleMoreButtonPressed(_ sender: Any) {
         let alertController = UIAlertController(title: user?.name, message:"@\(user?.username ?? "Unknown")" , preferredStyle: .actionSheet)
-            
+        if self.user?.uid != User.shared.uid{
             alertController.addAction(UIAlertAction(title: "Block \(user?.name ?? "")", style: .default, handler: { (action) in
                 print("blocking user")
                 let alert = UIAlertController(title: "Block \(self.user?.name ?? "")", message: "Are you sure you want to block \(self.user?.name ?? "")? This will make you both unfollow each other.", preferredStyle: .alert)
@@ -156,14 +156,47 @@ class ProfileViewController: UIViewController{
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                     print("user cancelled")
                 }))
+                
                 self.present(alert, animated: true, completion: nil)
+            }))
+    }
+        
+            var text = "Send Message"
+            if self.user?.uid == User.shared.uid {
+                text = "Settings"
+            }
+            
+            alertController.addAction(UIAlertAction(title: text, style: .default, handler: { (action) in
+                self.settingsButtonPressed()
             }))
             
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 print("cancelled")
             }))
+        
 
             self.present(alertController, animated: true, completion: nil)
+    }
+    
+     func settingsButtonPressed(){
+      if isCurrentUser{
+            let storyboard = UIStoryboard(name: "Settings", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController
+        navigationController?.pushViewController(vc, animated: true)
+        }else{
+        if let id1 = User.shared.uid, let id2 = user?.uid{
+        let docRef = db.collection("channels").document(FollowersHelper().getChannelID(id1: id1, id2: id2))
+            docRef.getDocument { (snapshot, error) in
+                if error == nil{
+                let channel = Channel(document: snapshot!)
+                let vc = ChatViewController()
+                vc.channel = channel
+                self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+        }
+            
+        }
     }
     
     @objc func handleProfilePictureTapped(){

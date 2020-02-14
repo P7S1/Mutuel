@@ -172,7 +172,8 @@ class FollowersHelper{
     static func deleteImage(at url : String){
         let storage = Storage.storage()
         let storageRef = storage.reference(forURL: url)
-
+        
+        
         //Removes image from storage
         storageRef.delete { error in
             if error != nil{
@@ -184,7 +185,9 @@ class FollowersHelper{
     static func deletePost(post : Post){
         let docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID)
         docRef.delete(completion: nil)
+        if !post.isGIF{
         FollowersHelper.deleteImage(at: post.photoURL)
+        }
         if let url = post.videoURL{
         FollowersHelper.deleteImage(at: url)
         }

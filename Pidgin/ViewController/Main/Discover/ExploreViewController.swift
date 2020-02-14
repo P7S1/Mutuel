@@ -59,6 +59,10 @@ class ExploreViewController: UIViewController {
         
         activityIndicator.startAnimating()
         
+        if self.navigationController == nil{
+            self.setDismissButton()
+        }
+        
         setUpCollectionView()
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
@@ -79,18 +83,7 @@ class ExploreViewController: UIViewController {
             
             query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 10)
             originalQuery = query
-            let settings = UIButton.init(type: .system)
-            if isCurrentUser{
-                let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
-                settings.setImage(UIImage(systemName: "gear", withConfiguration: config), for: UIControl.State.normal)
-            }else{
-                settings.setImage(UIImage(systemName: "square.and.pencil")?.withRenderingMode(.alwaysTemplate), for: .normal)
-            }
-            settings.addTarget(self, action:#selector(settingsBarButtonPressed), for:.touchUpInside)
-            settings.widthAnchor.constraint(equalToConstant: 25).isActive = true
-            settings.heightAnchor.constraint(equalToConstant: 25).isActive = true
-            let settingsButton = UIBarButtonItem.init(customView: settings)
-           // navigationItem.rightBarButtonItems = [settingsButton]
+            
         }else{
             query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 10)
             originalQuery = query
@@ -284,7 +277,7 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
             tabBar.isHidden = hidden
         })
     }
-    
+    /*
     @objc func settingsBarButtonPressed(){
       if isCurrentUser{
             let storyboard = UIStoryboard(name: "Settings", bundle: nil)
@@ -305,6 +298,7 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
             
         }
     }
+ */
 
     
     

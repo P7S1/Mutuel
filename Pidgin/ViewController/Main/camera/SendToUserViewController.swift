@@ -10,15 +10,19 @@ import UIKit
 import FirebaseStorage
 import AVFoundation
 import SkeletonView
+import GiphyCoreSDK
 class SendToUserViewController: UIViewController {
     var video : URL?
     var image = UIImage()
     var size = CGSize()
-    var gifURL : String?
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textView: UITextView!
     
     let sendButton = UIButton.init(type: .custom)
+    
+    var isGIF = false
+    
+    var media = GPHMedia()
     
     
     override func viewDidLoad() {
@@ -29,16 +33,16 @@ class SendToUserViewController: UIViewController {
         setDismissButton()
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
-        if let gifString = self.gifURL, let gifURL = URL(string: gifString){
-        let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
-            imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
-            imageView.kf.setImage(with: gifURL) { (result) in
-                self.imageView.hideSkeleton()
+        if isGIF{
+            if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString) {
+                imageView.kf.setImage(with: gifURL)
+                size = CGSize(width: 100 * media.aspectRatio, height: 100 * (1/media.aspectRatio))
+            } else{
+             self.dismiss(animated: true, completion: nil)
             }
         }else{
-        imageView.image = image
+            imageView.image = image
         }
-        
         // Do any additional setup after loading the view.
 
         textView.addDoneButtonOnKeyboard()
@@ -74,8 +78,13 @@ class SendToUserViewController: UIViewController {
         sendButton.isEnabled = false
         ProgressHUD.show("Posting")
         
-        if let gifString = self.gifURL, let gifURL = URL(string: gifString){
-            self.saveToDatabase(photoURL: gifURL, videoURL: nil, isVideo: false)
+        if isGIF{
+            if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString){
+              self.saveToDatabase(photoURL: gifURL, videoURL: nil, isVideo: false)
+            }else{
+                self.dismiss(animated: true, completion: nil)
+                ProgressHUD.showError("Error")
+            }
         }else{
             postMedia(isVideo: false) { (photoURL) in
                 if self.video != nil{
@@ -87,6 +96,7 @@ class SendToUserViewController: UIViewController {
                 }
             }
         }
+        
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
@@ -145,19 +155,22 @@ class SendToUserViewController: UIViewController {
         if textView.text == "Write a caption..."{
             textView.text = ""
         }
+        if !isGIF{
         let widthInPixels = self.image.size.width * self.image.scale
         let heightInPixels = self.image.size.height * self.image.scale
-        var imageSize = CGSize(width: widthInPixels, height: heightInPixels)
+        size = CGSize(width: widthInPixels, height: heightInPixels)
         if isVideo{
-            imageSize = self.resolutionForLocalVideo(url: self.video!) ?? imageSize
+            size = self.resolutionForLocalVideo(url: self.video!) ?? size
+        }
         }
         let post = Post(photoURL: photoURL.absoluteString,
                         caption: self.textView.text,
                         publishDate: Date(),
                         creatorID: User.shared.uid ?? "",
                         isVideo: isVideo, videoURL: videoURL?.absoluteString,
-                        photoSize: imageSize,
-                        postID: ref.documentID)
+                        photoSize: size,
+                        postID: ref.documentID,
+                        isGIF: self.isGIF)
         ref.setData(post.representation)
         ProgressHUD.showSuccess("Post Successful")
     }

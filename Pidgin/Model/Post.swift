@@ -38,6 +38,8 @@ struct Post{
     
     var naturalSize : CGSize
     
+    var isGIF : Bool
+    
     init(document : DocumentSnapshot) {
         let data = document.data()
         
@@ -47,6 +49,7 @@ struct Post{
         publishDate = date.dateValue()
      creatorID = data?["creatorID"] as? String ?? ""
         isVideo = data?["isVideo"] as? Bool ?? false
+        isGIF = data?["isGIF"] as? Bool ?? false
         videoURL = data?["videoURL"] as? String
         repostsCount = data?["repostsCount"] as? Int ?? 0
         commentsCount = data?["commentsCount"] as? Int ?? 0
@@ -60,7 +63,7 @@ struct Post{
         postID = document.documentID
     }
     
-    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String) {
+    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool) {
         self.photoURL = photoURL
         self.caption = caption
         self.publishDate = publishDate
@@ -72,6 +75,7 @@ struct Post{
         self.postID = postID
         self.commentsCount = 0
         self.repostsCount = 0
+        self.isGIF = isGIF
     }
     
 }
@@ -86,7 +90,8 @@ extension Post : DatabaseRepresentation{
                                     "isVideo" : isVideo,
                                     "videoURL" : videoURL as Any,
                                     "width" : photoSize.width,
-                                    "height" : photoSize.height]
+                                    "height" : photoSize.height,
+                                    "isGIF" : self.isGIF]
         return rep
     }
     

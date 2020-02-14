@@ -15,18 +15,15 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
     override func viewDidLoad() {
         self.delegate = self
         self.tabBar.isTranslucent = true
-        self.tabBar.shadowImage = UIImage()
         self.tabBar.backgroundColor = .none
-        self.tabBar.barTintColor = .none
         self.tabBar.itemPositioning = .centered
         let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
-        let config2 = UIImage.SymbolConfiguration(pointSize: 17, weight: .medium)
+        let config2 = UIImage.SymbolConfiguration(pointSize: 19, weight: .medium)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let discoverVC = storyboard.instantiateViewController(withIdentifier: "DiscoverViewController") as! DiscoverViewController
         let homeViewController = UINavigationController(rootViewController: discoverVC)
         let discoverTab = UITabBarItem(title: " ", image: UIImage(systemName: "globe", withConfiguration: config2), tag: 1)
         discoverTab.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 11, weight: .medium)], for: .normal)
-        discoverTab.imageInsets = UIEdgeInsets(top: 8, left: 0, bottom: 00, right: 0)
         homeViewController.tabBarItem = discoverTab
 
         
@@ -37,23 +34,21 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         image?.withTintColor(.systemPink, renderingMode: .alwaysOriginal)
         let messagesTab = UITabBarItem(title: " ", image: image, tag: 2)
         messagesTab.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 11, weight: .medium)], for: .normal)
-        messagesTab.imageInsets = UIEdgeInsets(top: 8, left: 0, bottom: -8, right: 0)
+        messagesTab.imageInsets = UIEdgeInsets(top: -8, left: -8, bottom: 000, right: 0)
         secondViewController.tabBarItem = messagesTab
         
         
         let cameraImage =  UIImage(systemName: "circle", withConfiguration: config)?.withTintColor(.systemPink, renderingMode: .alwaysOriginal)
         let actionViewController = storyboard.instantiateViewController(withIdentifier: "CameraVC") as! CameraVC
         let cameraTab = UITabBarItem(title: nil, image: cameraImage, tag: 3)
-        cameraTab.imageInsets = UIEdgeInsets(top: 8, left: 0, bottom: -8, right: 0)
         actionViewController.tabBarItem = cameraTab
-    
+ 
         viewControllers = [homeViewController, actionViewController, secondViewController]
         
         NotificationCenter.default.addObserver(self,
         selector: #selector(applicationWillEnterBackground),
         name: UIApplication.willResignActiveNotification,
         object: nil)
-        super.viewDidLoad()
     }
     
     @objc func applicationWillEnterBackground(){

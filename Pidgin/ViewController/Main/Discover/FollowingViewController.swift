@@ -112,7 +112,10 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        if collectionView.indexPathsForVisibleItems.count > 0{
         postDelegate?.preparePostsFor(indexPath: collectionView.indexPathsForVisibleItems[0], posts: posts, lastDocument: self.lastDocument, loadedAllPosts: self.loadedAllPosts)
+        }
+        
         super.viewWillDisappear(animated)
         
         if self.isMovingFromParent{

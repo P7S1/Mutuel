@@ -46,6 +46,7 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         presentARButton.layer.addButtonShadows()
         dismissButton.layer.addButtonShadows()
         galleryButton.layer.addButtonShadows()
+        gifButton.layer.addButtonShadows()
         
         let captureTap = UITapGestureRecognizer(target: self, action: #selector(takeAPhoto))
         captureButton.addGestureRecognizer(captureTap)
@@ -231,6 +232,7 @@ extension CameraVC {
             }
             self.galleryButton.alpha = 0.0
             self.dismissButton.alpha = 0.0
+            self.gifButton.alpha = 0.0
         }
     }
     
@@ -243,6 +245,7 @@ extension CameraVC {
             }
             self.galleryButton.alpha = 1.0
             self.dismissButton.alpha = 1.0
+            self.gifButton.alpha = 1.0
         }
     }
     
@@ -426,8 +429,8 @@ extension CameraVC : GiphyDelegate{
     func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
-        vc.gifURL = media.contentUrl
-        print(media.contentUrl!)
+        vc.isGIF = true
+        vc.media = media
         giphyViewController.dismiss(animated: true) {
             self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
         }
