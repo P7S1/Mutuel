@@ -67,7 +67,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate {
         let bottomInset = tabBarController?.tabBar.frame.height ?? 0
         scrollView.contentInset = UIEdgeInsets(top: height, left: 0, bottom: bottomInset + 16, right: 0)
         scrollView.contentInsetAdjustmentBehavior = .never
-        
+        print(post.photoSize)
         
         let scale = UIScreen.main.bounds.width / post.photoSize.width
         imageViewHeightConstraint.constant = post.photoSize.height * scale
@@ -97,6 +97,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate {
       //            action: #selector(handlePan(gestureRecognizer:)))
        // panGR.delegate = self
        // view.addGestureRecognizer(panGR)
+        print("height : \(post.photoSize)")
         
         self.view.layoutIfNeeded()
         // Do any additional setup after loading the view.

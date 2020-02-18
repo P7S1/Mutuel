@@ -11,23 +11,15 @@ import FirebaseFirestore
 import FirebaseStorage
 class FollowersHelper{
     
-    func follow(follower : String, followee : String, tokens : [String], completion: @escaping (Bool) -> Void){
-        if let user = User.shared.uid{
+    func follow( followeeUser : Account, completion: @escaping (Bool) -> Void){
+        
+        if let user = User.shared.uid, let followee = followeeUser.uid {
             if followee != user{
-                let batch = db.batch()
-            let docRef = db.collection("users")
-                docRef.document(user).updateData((["following": FieldValue.arrayUnion([followee])]))
-                docRef.document(followee).updateData(["followerCount": FieldValue.increment(Int64(1))])
-                batch.commit { (error) in
+                let relationship = Relationship(followedUser: followeeUser)
+                let docRef = db.collection("users").document(user).collection("relationships").document("\(user)_\(followee)")
+                docRef.setData(relationship.representation) { (error) in
                     if error == nil{
-                    let notify = PushNotificationSender()
-                    for token in tokens{
-                        notify.sendPushNotification(to: token , title: "", body: "\(User.shared.name ?? "Someone") started following you", tag: nil, badge: nil)
-                        }
                         completion(true)
-                    }else{
-                        completion(false)
-                        print("error :\(error!)")
                     }
                 }
             }
@@ -35,24 +27,15 @@ class FollowersHelper{
         }
     }
     
-    func unFollow(follower : String, followee : String, completion: @escaping (Bool) -> Void){
-        if let user = User.shared.uid{
+    func unFollow(followeeUser : Account, completion: @escaping (Bool) -> Void){
+        if let user = User.shared.uid, let followee = followeeUser.uid {
             if followee != user{
-                 let batch = db.batch()
-                let docRef = db.collection("users")
-                docRef.document(followee).updateData(["followerCount": FieldValue.increment(Int64(-1))])
-                docRef.document(user).updateData([
-                    "following": FieldValue.arrayRemove([followee]),
-                ]) { err in
-                    if let err = err {
-                        completion(false)
-                        print("Error updating document: \(err)")
-                    } else {
+                let docRef = db.collection("users").document(user).collection("relationships").document("\(user)_\(followee)")
+                docRef.delete { (error) in
+                    if error == nil{
                         completion(true)
-                        print("Document successfully updated")
                     }
                 }
-                batch.commit()
                 }
             }
         }

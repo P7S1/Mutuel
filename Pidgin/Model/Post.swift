@@ -28,8 +28,6 @@ struct Post{
     
     var postID : String
     
-    var user : Account?
-    
     var commentsCount : Int
     
     var repostsCount : Int
@@ -39,6 +37,10 @@ struct Post{
     var naturalSize : CGSize
     
     var isGIF : Bool
+    
+    var creatorDisplayName : String
+    var creatorPhotoURL : String
+    var creatorUsername : String
     
     init(document : DocumentSnapshot) {
         let data = document.data()
@@ -60,7 +62,12 @@ struct Post{
         naturalSize = CGSize(width: width, height: height)
 
         photoSize = CGSize(width: width, height: height)
-        postID = document.documentID
+        postID = data?["postID"] as? String ?? ""
+        
+        creatorDisplayName = data?["creatorDisplayName"] as? String ?? ""
+        creatorPhotoURL = data?["creatorPhotoURL"] as? String ?? ""
+        creatorUsername = data?["creatorUsername"] as? String ?? ""
+        
     }
     
     init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool) {
@@ -76,6 +83,10 @@ struct Post{
         self.commentsCount = 0
         self.repostsCount = 0
         self.isGIF = isGIF
+        
+        self.creatorDisplayName = User.shared.name ?? ""
+        self.creatorPhotoURL = User.shared.profileURL ?? ""
+        self.creatorUsername = User.shared.username ?? ""
     }
     
 }
@@ -85,13 +96,15 @@ extension Post : DatabaseRepresentation{
     var representation : [String : Any]{
         let rep : [String : Any] = ["photoURL": photoURL,
                                     "caption" : caption,
-                                    "publishDate" : Timestamp(date: publishDate),
                                     "creatorID" : creatorID,
                                     "isVideo" : isVideo,
                                     "videoURL" : videoURL as Any,
                                     "width" : photoSize.width,
                                     "height" : photoSize.height,
-                                    "isGIF" : self.isGIF]
+                                    "isGIF" : self.isGIF,
+                                    "creatorDisplayName" : self.creatorDisplayName,
+                                    "creatorPhotoURL" : self.creatorPhotoURL,
+                                    "creatorUsername" : self.creatorUsername]
         return rep
     }
     

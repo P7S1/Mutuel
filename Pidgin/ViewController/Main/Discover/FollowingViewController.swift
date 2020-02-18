@@ -55,7 +55,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         self.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-        self.activityIndicator = UIActivityIndicatorView(style: .medium)
+        self.activityIndicator = UIActivityIndicatorView(style: .large)
         self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
         
         
@@ -70,7 +70,11 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         collectionView.delegate = self
         collectionView.dataSource = self
         if shouldQuery && User.shared.following.count > 0{
-        query = db.collectionGroup("posts").order(by: "publishDate", descending: true).whereField("creatorID", in: User.shared.following).limit(to: 10)
+            guard let uid = User.shared.uid else{
+                self.dismiss(animated: true, completion: nil)
+                return
+            }
+        query = db.collection("users").document(uid).collection("feed").limit(to: 10).order(by: "publishDate", descending: true) 
         originalQuery = query
             getMorePosts(removeAll: false)
         }else{
@@ -98,7 +102,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(collectionView.bounds.height)
         self.indexPath = nil
         self.shouldContinuePlaying = false
         if let visibleIndexPath = self.getVisibleCellsIndexPath(),
@@ -184,6 +187,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
                     }
                     DispatchQueue.main.async {
                         self.activityIndicator.stopAnimating()
+                        self.collectionView.activityIndicator(show: false)
                         self.refreshControl.endRefreshing()
                     }
                 
@@ -223,6 +227,7 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.row + 1 == posts.count && !self.loadedAllPosts{
+            collectionView.activityIndicator(show: true)
             getMorePosts(removeAll: false)
         }
     }
@@ -235,19 +240,12 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
         let post = posts[indexPath.row]
         
-        cell.addButtonShadows()
-        
 
         cell.caption.text = post.caption
-        cell.repostsLabel.text = String(post.repostsCount)
-        cell.commentsLabel.text = String(post.commentsCount)
         
         cell.imageView.heroID = post.postID
-    
-        cell.engagementStackView.heroID = "\(post.postID).engagementStackView"
  
         cell.caption.heroID = "\(post.postID).caption"
-        cell.blurView.heroID = "\(post.postID).blurView"
         
         cell.playButton.isHidden = !(posts[indexPath.row].isVideo)
         
@@ -299,22 +297,12 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
                 }
             }
         }
-
-        if let user = cache.object(forKey: post.creatorID as NSString) {
-            // use the cached version
-            cell.usernameLabel.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-            cell.nameLabel.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-            cell.profilePictureView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-            cell.usernameLabel.text = "@\(user.username ?? "")"
-            cell.nameLabel.text = user.name ?? ""
-            cell.profilePictureView.showAnimatedGradientSkeleton(usingGradient: gradient)
+        cell.usernameLabel.text = post.publishDate.getElapsedInterval()
+        cell.nameLabel.text = post.creatorUsername 
             cell.profilePictureView.clipsToBounds = true
             cell.profilePictureView.layer.cornerRadius = cell.profilePictureView.frame.height/2
             DispatchQueue.main.async {
-                cell.profilePictureView.kf.setImage(with: URL(string: user.profileURL ?? "")) { (result) in
-                    cell.profilePictureView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                    cell.profilePictureView.layer.cornerRadius = cell.profilePictureView.frame.height/2
-                }
+                cell.profilePictureView.kf.setImage(with: URL(string: post.creatorPhotoURL), placeholder: FollowersHelper().getUserProfilePicture())
             }
             cell.moreTapAction = {
                 () in
@@ -358,47 +346,25 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
                 let storyboard = UIStoryboard(name: "Discover", bundle: nil)
                 let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
                 vc.isUserProfile = true
-                if user == User.shared{
+                if post.creatorID == User.shared.uid{
                 vc.user = User.shared
                 vc.isCurrentUser = true
-                }else{
-                    vc.user = user
-                    vc.isCurrentUser = false
-                }
                 self.navigationController?.pushViewController(vc, animated: true)
+                }else{
+                    let docRef = db.collection("users").document(post.creatorID)
+                    docRef.getDocument { (snapshot, error) in
+                        if error == nil{
+                            let user = Account()
+                            user.convertFromDocument(dictionary: snapshot!)
+                            vc.user = user
+                            vc.isCurrentUser = false
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
+                    }
+                }
             }
             cell.setUpGestures()
-        } else {
-            cell.usernameLabel.text = ""
-            cell.usernameLabel.lastLineFillPercent = 50
-            cell.usernameLabel.linesCornerRadius = 5
-            cell.nameLabel.text = ""
-            cell.nameLabel.lastLineFillPercent = 50
-            cell.nameLabel.linesCornerRadius = 5
-            cell.usernameLabel.showAnimatedGradientSkeleton(usingGradient: gradient)
-            cell.nameLabel.showAnimatedGradientSkeleton(usingGradient: gradient)
-            cell.profilePictureView.showAnimatedGradientSkeleton(usingGradient: gradient)
-            // create it from scratch then store in the cache
-            let query = db.collection("users").document(post.creatorID)
-            query.getDocument { (snapshot, error) in
-                if error == nil{
-                    let user = User()
-                    user.convertFromDocument(dictionary: snapshot!)
-                    self.collectionView.performBatchUpdates({
-                        if let index = self.posts.firstIndex(of: post){
-                            self.posts[index].user = user
-                        self.cache.setObject(user, forKey: post.creatorID as NSString)
-                            let indep = IndexPath(row: index, section: 0)
-                            cell.usernameLabel.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                            cell.nameLabel.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                            cell.profilePictureView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                            collectionView.reloadItems(at: [indep])
-                        
-                    }
-                    }, completion: nil)
-                }
-            }
-        }
+        
         
         cell.profilePictureView.clipsToBounds = true
         cell.profilePictureView.layer.cornerRadius = cell.profilePictureView.frame.height/2

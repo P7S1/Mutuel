@@ -824,7 +824,7 @@ extension PhotoEditorViewController {
        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
         vc.video = video
-        vc.size = size
+        vc.photoSize = size
         if let img = image{
             vc.image = img
         }

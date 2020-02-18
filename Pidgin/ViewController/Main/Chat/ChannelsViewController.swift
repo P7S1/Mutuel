@@ -212,6 +212,19 @@ extension ChannelsViewController {
       return 75
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        if self.loadedAllPosts{
+        footer.activityIndicator(show: false)
+        }else{
+        footer.activityIndicator(show: true)
+        }
+        return footer
+    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 100
+    }
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row + 1 == channels.count && !self.loadedAllPosts{
             getMorePosts()

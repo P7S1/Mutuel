@@ -25,8 +25,6 @@ class ExploreViewController: UIViewController {
     
      var adjustInsets = false
     
-    var activityIndicator : UIActivityIndicatorView!
-    
     var willPresentAView = false
     
     var lastDocument : DocumentSnapshot?
@@ -51,14 +49,6 @@ class ExploreViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        self.activityIndicator = UIActivityIndicatorView(style: .medium)
-        self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
-        self.activityIndicator.hidesWhenStopped = true
-        
-        collectionView.addSubview(activityIndicator)
-        
-        activityIndicator.startAnimating()
-        
         if self.navigationController == nil{
             self.setDismissButton()
         }
@@ -69,6 +59,8 @@ class ExploreViewController: UIViewController {
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         if adjustInsets{
         collectionView.contentInset = UIEdgeInsets(top: 42, left: 0, bottom: 0, right: 0)
+        }else{
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         }
         
         if isUserProfile{
@@ -109,13 +101,14 @@ class ExploreViewController: UIViewController {
     }
     func setUpCollectionView(){
          collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: CollectionViewWaterfallElementKindSectionHeader, withReuseIdentifier: "ProfileHeader")
+        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: CollectionViewWaterfallElementKindSectionFooter, withReuseIdentifier: "BottomActivity")
         
        let layout = CollectionViewWaterfallLayout()
         
         if isUserProfile{
-         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         }else{
-         collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+         collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 32, right: 0)
         }
         
         // Change individual layout attributes for the spacing between cells'
@@ -126,6 +119,7 @@ class ExploreViewController: UIViewController {
         }else{
          layout.headerHeight = 0
         }
+        layout.footerHeight = 100
         
         // Collection view attributes
         collectionView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -159,8 +153,8 @@ class ExploreViewController: UIViewController {
                     
                     print("append a post")
                 }
+            
                 DispatchQueue.main.async {
-                    self.activityIndicator.stopAnimating()
                     self.refreshControl.endRefreshing()
                 }
                 self.collectionView.performBatchUpdates({
@@ -310,13 +304,25 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ProfileHeader", for: indexPath)
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
-        vc.user = user
-        vc.isCurrentUser = self.isCurrentUser
-        self.addChild(vc, in: header)
-        return header
+        switch kind {
+        case CollectionViewWaterfallElementKindSectionHeader:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ProfileHeader", for: indexPath)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+            vc.user = user
+            vc.isCurrentUser = self.isCurrentUser
+            self.addChild(vc, in: header)
+            return header
+        default:
+            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "BottomActivity", for: indexPath)
+            if self.loadedAllPosts{
+            footer.activityIndicator(show: false)
+            }else{
+            footer.activityIndicator(show: true)
+            }
+            return footer
+        }
+        
     }
     
 }

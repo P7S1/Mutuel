@@ -91,24 +91,45 @@ class ProfileViewController: UIViewController{
         self.profile.layer.cornerRadius = self.profile.bounds.height / 2
         self.profile.clipsToBounds = true
         followers.text = "\(user?.followersCount ?? 0)"
-        following.text = "\(user?.following.count ?? 0)"
+        following.text = "\(user?.followingCount ?? 0)"
     
         followButton.isEnabled = false
+        followButton.setTitle("", for: .normal)
         followButton.backgroundColor = .systemGray6
         followButton.roundCorners()
         
         user?.printClass()
         
         if !isCurrentUser{
-            
-            if User.shared.following.contains(user?.uid ?? ""){
-                print("user follows")
-                self.setFollowingState()
-            }else{
-                self.setNotFollowingState()
+            guard let follower = User.shared.uid else {
+                self.dismiss(animated: true, completion: nil)
+                return }
+            guard let followed = user?.uid else {
+                self.dismiss(animated: true, completion: nil)
+                return }
+            let docRef = db.collection("users").document(follower).collection("relationships").document("\(follower)_\(followed)")
+            docRef.getDocument { (document, error) in
+                if let document = document {
+                    if document.exists{
+                        
+                        let relationship = Relationship(document: document)
+                        if relationship.isApproved ?? false{
+                            self.setFollowingState()
+                        }
+                    } else {
+
+                        self.setNotFollowingState()
+
+                    }
+                }
+                if let err = error{
+                    print(err.localizedDescription)
+                }
+                 self.followButton.isEnabled = true
             }
+
             
-            self.followButton.isEnabled = true
+           
         
         }else{
             followButton.setTitle("ACTIVITY", for: .normal)
@@ -250,9 +271,9 @@ class ProfileViewController: UIViewController{
     @IBAction func didPressFollowButton(_ sender: Any) {
         if !isCurrentUser{
             followButton.isEnabled = false
-        if let me = User.shared.uid, let followee = self.user?.uid{
+        if let followee = self.user{
             if userFollows{
-                FollowersHelper().unFollow(follower: me, followee: followee) { (success) in
+                FollowersHelper().unFollow(followeeUser: followee) { (success) in
                     if success{
                         self.setNotFollowingState()
                         self.followButton.isEnabled = true
@@ -263,7 +284,7 @@ class ProfileViewController: UIViewController{
                     }
                 }
             }else{
-                FollowersHelper().follow(follower: me, followee: followee, tokens: user?.tokens ?? [String]()) { (success) in
+                FollowersHelper().follow(followeeUser: followee) { (success) in
                     if success{
                         self.setFollowingState()
                         self.followButton.isEnabled = true

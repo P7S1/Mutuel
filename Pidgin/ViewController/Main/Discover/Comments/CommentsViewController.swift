@@ -104,6 +104,7 @@ class CommentsViewController: UIViewController {
                 }
                 if snapshot!.documents.count < Constants.numberOfCommentsToLoad{
                     self.loadedAllDocuments = true
+                    self.tableView.reloadData()
                 }
                 let changes = diff(old: old, new: newItems)
                 self.tableView.reload(changes: changes, section: 0, updateData: {
@@ -136,7 +137,7 @@ class CommentsViewController: UIViewController {
         let comment = Comment(text: text, commentID: docRef.documentID, post: self.post, media: self.media)
         docRef.setData(comment.representation) { (error) in
             if error == nil{
-                ProgressHUD.showSuccess("Sent")
+                ProgressHUD.dismiss()
                 let old = self.comments
                 var newItems = self.comments
                 newItems.append(comment)
@@ -144,6 +145,7 @@ class CommentsViewController: UIViewController {
                 self.tableView.reload(changes: changes, section: 0, updateData: {
                     self.comments = newItems
                 })
+                self.post.commentsCount =  self.post.commentsCount + 1
                 self.media = nil
                 self.gifButton.setImage(nil, for: .normal)
 
@@ -287,6 +289,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                             if let index = self.comments.firstIndex(of: comment){
                                 self.comments.remove(at: index)
                                 tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                                self.post.commentsCount =  self.post.commentsCount - 1
                             }
                         }else{
                             ProgressHUD.showError("Error")
@@ -347,6 +350,19 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         }else{
             return self.getHeaderView(with: "\(post.commentsCount) Comments", tableView: tableView)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        if self.loadedAllDocuments{
+        footer.activityIndicator(show: false)
+        }else{
+        footer.activityIndicator(show: true)
+        }
+        return footer
+    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 100
     }
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{

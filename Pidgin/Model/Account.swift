@@ -34,6 +34,7 @@ class Account: Comparable{
     var following : [String] = [String]()
     var tokens : [String] = [String]()
     var followersCount : Int?
+    var followingCount : Int?
     
     
     func convertFrom(dictionary: NSDictionary){
@@ -82,8 +83,11 @@ class Account: Comparable{
         if let c = dictionary.get("following"){
             following = c as? [String] ?? [String]()
         }
-        if let c = dictionary.get("followerCount"){
+        if let c = dictionary.get("followersCount"){
             followersCount = c as? Int
+        }
+        if let c = dictionary.get("followingCount"){
+            followingCount = c as? Int
         }
         if let c = dictionary.get("fcmToken"){
             tokens = c as? [String] ?? [String]()

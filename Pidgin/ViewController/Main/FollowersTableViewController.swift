@@ -27,7 +27,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     
     var loadedAllDocs = false
     
-    var queryLimit = 5
+    var queryLimit = 15
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,8 +69,8 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
             createGroupView.removeFromSuperview()
             tableView.layoutIfNeeded()
             self.view.layoutIfNeeded()
-            if let following = user?.following{
-                query = db.collection("users").whereField(FieldPath.documentID(), in: following).limit(to: queryLimit)
+            if let id = user?.uid{
+                query = db.collectionGroup("relationships").whereField("follower", isEqualTo: id).limit(to: queryLimit).order(by: "creationDate")
                 if let lastDoc = self.lastDocument{
                     self.lastDocument = lastDoc
                 }
@@ -80,8 +80,8 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
                                 self.loadedAllDocs = true
                             }
                             for document in snapshot!.documents{
-                                let account = Account()
-                            account.convertFromDocument(dictionary: document)
+                                let relationship = Relationship(document: document)
+                                let account = relationship.getFollowedAccount()
                                 self.results.append(account)
                                 self.lastDocument = document
                             }
@@ -104,7 +104,8 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func getUsersFollowers(){
-        query = db.collection("users").whereField("following", arrayContains: user?.uid ?? "").limit(to: queryLimit)
+        guard let uid = user?.uid else { return }
+        query = db.collectionGroup("relationships").whereField("followed", isEqualTo: uid).limit(to: queryLimit).order(by: "creationDate")
         if let doc = self.lastDocument{
             query = query.start(afterDocument: doc)
         }
@@ -114,10 +115,9 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
                     self.loadedAllDocs = true
                 }
                 for document in snapshot!.documents{
-                    let account = Account()
-                    account.convertFromDocument(dictionary: document)
+                    let relationship = Relationship(document: document)
+                    let account = relationship.getFollowerAccount()
                     self.lastDocument = document
-                    account.printClass()
                     self.results.append(account)
                 }
                 self.tableView.reloadData()
@@ -143,7 +143,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+        return 65
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -177,7 +177,8 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchUserTableViewCell", for: indexPath) as! SearchUserTableViewCell
         
         cell.displayName.text = results[indexPath.row].name ?? ""
-        cell.username.text = "@\(results[indexPath.row].username ?? "")"
+  
+        cell.username.text = ""
         
         if let url = results[indexPath.row].profileURL{
             cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
@@ -239,9 +240,17 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
         }else{
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
-        vc.user = results[indexPath.row]
-        vc.isUserProfile = true
-        navigationController?.pushViewController(vc, animated: true)
+            guard let uid = results[indexPath.row].uid else { return }
+            let docRef = db.collection("users").document(uid)
+            docRef.getDocument { (snapshot, error) in
+                if error == nil{
+                    let result = Account()
+                    result.convertFromDocument(dictionary: snapshot!)
+                    vc.user = result
+                    vc.isUserProfile = true
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
         }
         
     }

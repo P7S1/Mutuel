@@ -11,6 +11,7 @@
 		DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */; };
 		DF0002DF2385E0CD00654EAC /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */; };
 		DF086D8423C4197B00D3CCA0 /* FredokaOne-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */; };
+		DF209AC523F701DC00E031DB /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF209AC423F701DC00E031DB /* UIView.swift */; };
 		DF215AF3235563D900EE67D3 /* NextLevel+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215AE5235563D900EE67D3 /* NextLevel+Foundation.swift */; };
 		DF215AF4235563D900EE67D3 /* NextLevel+Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215AE6235563D900EE67D3 /* NextLevel+Metadata.swift */; };
 		DF215AF5235563D900EE67D3 /* NextLevelSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215AE7235563D900EE67D3 /* NextLevelSession.swift */; };
@@ -65,6 +66,7 @@
 		DF5A223923D67FBC00BA053F /* PasswordResetEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF5A223823D67FBC00BA053F /* PasswordResetEmailViewController.swift */; };
 		DF5CCF3B2360D21B005439BB /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CCF3A2360D21B005439BB /* Login.storyboard */; };
 		DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661A3B238B12880042B7AD /* WebViewController.swift */; };
+		DF661AFC23F8CBE3006702C7 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661AFB23F8CBE3006702C7 /* Relationship.swift */; };
 		DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AD23B1EF0400949CED /* VideoHelper.swift */; };
 		DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */; };
 		DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721523C68D3400F00DF0 /* SignUpViewController.swift */; };
@@ -125,6 +127,7 @@
 		DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfoViewController.swift; sourceTree = "<group>"; };
 		DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FredokaOne-Regular.otf"; sourceTree = "<group>"; };
+		DF209AC423F701DC00E031DB /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		DF215AE5235563D900EE67D3 /* NextLevel+Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NextLevel+Foundation.swift"; sourceTree = "<group>"; };
 		DF215AE6235563D900EE67D3 /* NextLevel+Metadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NextLevel+Metadata.swift"; sourceTree = "<group>"; };
 		DF215AE7235563D900EE67D3 /* NextLevelSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NextLevelSession.swift; sourceTree = "<group>"; };
@@ -182,6 +185,7 @@
 		DF5A223823D67FBC00BA053F /* PasswordResetEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetEmailViewController.swift; sourceTree = "<group>"; };
 		DF5CCF3A2360D21B005439BB /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		DF661A3B238B12880042B7AD /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		DF661AFB23F8CBE3006702C7 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		DF6A20AD23B1EF0400949CED /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
 		DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIF2MP4.swift; sourceTree = "<group>"; };
 		DF70721523C68D3400F00DF0 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
@@ -483,6 +487,7 @@
 				DFF346282367AE0D006AA467 /* Message.swift */,
 				DF7D0AC223B83ABE00B33E40 /* Post.swift */,
 				DF562A3223BE3E9F00CC43D3 /* Comment.swift */,
+				DF661AFB23F8CBE3006702C7 /* Relationship.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -529,6 +534,7 @@
 				DFEFCAC223F38B9800397091 /* Character.swift */,
 				DFEFCAC423F38BB300397091 /* String.swift */,
 				DFEFCAC823F38C5B00397091 /* Date.swift */,
+				DF209AC423F701DC00E031DB /* UIView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -690,6 +696,7 @@
 				DF215AF9235563D900EE67D3 /* NextLevel.swift in Sources */,
 				DFEFCACB23F38CB000397091 /* CustomBannerColors.swift in Sources */,
 				DF215AF8235563D900EE67D3 /* NextLevelBufferRenderer.swift in Sources */,
+				DF661AFC23F8CBE3006702C7 /* Relationship.swift in Sources */,
 				DF215B0B2356673700EE67D3 /* Orientation.swift in Sources */,
 				DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */,
 				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
@@ -759,6 +766,7 @@
 				DF215AFC235563D900EE67D3 /* NextLevelConfiguration.swift in Sources */,
 				DFDD9ECF234FDD5D007A3177 /* RemoteFaceFilter.swift in Sources */,
 				DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */,
+				DF209AC523F701DC00E031DB /* UIView.swift in Sources */,
 				DF215AFE235563D900EE67D3 /* NextLevel+CMSampleBuffer.swift in Sources */,
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
 				DFEFCAC723F38BF700397091 /* BackGradientView.swift in Sources */,

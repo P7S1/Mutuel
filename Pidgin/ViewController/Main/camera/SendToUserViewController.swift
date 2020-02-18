@@ -14,7 +14,7 @@ import GiphyCoreSDK
 class SendToUserViewController: UIViewController {
     var video : URL?
     var image = UIImage()
-    var size = CGSize()
+    var photoSize : CGSize!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textView: UITextView!
     
@@ -36,7 +36,7 @@ class SendToUserViewController: UIViewController {
         if isGIF{
             if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString) {
                 imageView.kf.setImage(with: gifURL)
-                size = CGSize(width: 100 * media.aspectRatio, height: 100 * (1/media.aspectRatio))
+                photoSize = CGSize(width: self.view.frame.width, height: self.view.frame.width * (1/media.aspectRatio))
             } else{
              self.dismiss(animated: true, completion: nil)
             }
@@ -158,17 +158,19 @@ class SendToUserViewController: UIViewController {
         if !isGIF{
         let widthInPixels = self.image.size.width * self.image.scale
         let heightInPixels = self.image.size.height * self.image.scale
-        size = CGSize(width: widthInPixels, height: heightInPixels)
+        photoSize = CGSize(width: widthInPixels, height: heightInPixels)
         if isVideo{
-            size = self.resolutionForLocalVideo(url: self.video!) ?? size
+            photoSize = self.resolutionForLocalVideo(url: self.video!) ?? photoSize
         }
         }
+        
+        print("photosize \(photoSize)")
         let post = Post(photoURL: photoURL.absoluteString,
                         caption: self.textView.text,
                         publishDate: Date(),
                         creatorID: User.shared.uid ?? "",
                         isVideo: isVideo, videoURL: videoURL?.absoluteString,
-                        photoSize: size,
+                        photoSize: self.photoSize,
                         postID: ref.documentID,
                         isGIF: self.isGIF)
         ref.setData(post.representation)

@@ -83,7 +83,6 @@ extension Comment : DatabaseRepresentation{
             "creatorID":creatorID,
             "commentID":commentID,
             "creatorUsername":creatorUsername,
-            "creationDate": Timestamp(date: creationDate),
             "postID":self.postID,
             "likes":self.likes,
             "mediaID": self.mediaID as Any,

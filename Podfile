@@ -28,5 +28,6 @@ target 'Pidgin' do
   pod 'WLEmptyState'
   pod 'CollectionViewWaterfallLayout'
   pod 'SkeletonView'
+  pod 'Firebase/Database'
 
 end

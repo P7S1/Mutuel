@@ -17,20 +17,10 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     
-    
-    @IBOutlet weak var engagementStackView: UIStackView!
-    
     @IBOutlet weak var caption: UILabel!
-    
-    @IBOutlet weak var repostsLabel: UILabel!
-    
-    
-    @IBOutlet weak var commentsLabel: UILabel!
     
 
     @IBOutlet weak var gradientView: BackGradientView!
-    
-    @IBOutlet weak var blurView: UIVisualEffectView!
     
     @IBOutlet weak var nameLabel: UILabel!
     
@@ -65,11 +55,7 @@ class FollowingCollectionViewCell: UICollectionViewCell {
         let moreTapGesture = UITapGestureRecognizer(target: self, action: #selector(moreButtonTapped))
         moreButton.addGestureRecognizer(moreTapGesture)
      
-    }
-    func addButtonShadows(){
-        blurView.layer.cornerRadius = blurView.frame.height/2
-        blurView.clipsToBounds = true
-    }   
+    } 
     func setUpPlayer(post : Post){
         playerContainerView.backgroundColor = .clear
         if post.isVideo{
