@@ -3,6 +3,7 @@ import FirebaseFirestore
 import FirebaseMessaging
 import UIKit
 import UserNotifications
+import FirebaseDatabase
 class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCenterDelegate {
     let userID: String
     init(userID: String) {
@@ -28,20 +29,14 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
         updateFirestorePushTokenIfNeeded()
     }
     func updateFirestorePushTokenIfNeeded() {
-        if let token = Messaging.messaging().fcmToken, let id = User.shared.uid {
-            let query2 = db.collection("users").document(id)
-            query2.updateData((["fcmToken": FieldValue.arrayUnion([token])]))
-            DispatchQueue.global(qos: .background).async {
-                let query = db.collection("channels").whereField("members", arrayContains: id).whereField("active", isEqualTo: true)
-                query.getDocuments { (snapshot, error) in
-                    if error == nil{
-                        for document in snapshot!.documents{
-                            let docRef = db.collection("channels").document(document.documentID)
-                            docRef.updateData((["fcmToken": FieldValue.arrayUnion([token])]))
-                        }
-                    }else{
-                        
-                    }
+        if let token = Messaging.messaging().fcmToken,
+            let userID = User.shared.uid,
+            let deviceID = UIDevice.current.identifierForVendor?.uuidString{
+            ref.child("devices/\(userID)/\(deviceID)").setValue(token) { (error, ref) in
+                if error == nil{
+                    print("successfully registered for push notificaitons")
+                }else{
+                    print("there was an error \(error!.localizedDescription)")
                 }
             }
         }

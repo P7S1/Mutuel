@@ -9,6 +9,7 @@
 import Foundation
 import Firebase
 import MessageKit
+import DeepDiff
 class Account: Comparable{
     static func < (lhs: Account, rhs: Account) -> Bool {
         if let id1 = lhs.uid, let id2 = rhs.uid{
@@ -106,6 +107,21 @@ class Account: Comparable{
     }
 }
 
+extension Account : DiffAware{
+    var diffId: UUID? {
+        let id = UUID(uuidString: self.uid ?? "")
+        return id
+    }
+    
+    typealias DiffId = UUID?
+    
+
+    static func compareContent(_ a: Account, _ b: Account) -> Bool {
+        return (a.uid ?? "" == b.uid ?? "")
+    }
+    
+}
+
 class User : Account{
     static var shared = User()
     
@@ -134,46 +150,19 @@ class User : Account{
     
     func invalidateToken(completion: @escaping (Bool) -> Void){
         let user = User.shared
-        
         userListener?.remove()
         channelListener?.remove()
         channels.removeAll()
         ProgressHUD.show()
-        let batch = db.batch()
-        if let token = Messaging.messaging().fcmToken{
-            let query = db.collection("channels").whereField("fcmToken", arrayContains: token).whereField("active", isEqualTo: true)
-            query.getDocuments { (snapshot, error) in
+        if  let userID = user.uid,
+            let deviceID = UIDevice.current.identifierForVendor?.uuidString{
+            ref.child("devices/\(userID)/\(deviceID)").removeValue() { (error, ref) in
                 if error == nil{
-                    for document in snapshot!.documents{
-                    let docRef = db.collection("channels").document(document.documentID)
-                    
-                    batch.updateData(["fcmToken": FieldValue.arrayRemove([token])], forDocument: docRef)
-                        
-    
-                    }
+                    completion(true)
                 }else{
-                    ProgressHUD.showError("error")
-                    print("therew as an error: \(error!)")
-                }
-                
-                let docRef = db.collection("users").document(user.uid ?? "")
-                
-                batch.updateData([
-                    "fcmToken": FieldValue.arrayRemove([token]),
-                ], forDocument: docRef)
-                
-                batch.commit { (error) in
-                    if error == nil{
-                       completion(true)
-                        ProgressHUD.dismiss()
-                    }else{
-                        print("error logging out: \(error!.localizedDescription)")
-                       completion(false)
-                        ProgressHUD.dismiss()
-                    }
+                    completion(false)
                 }
             }
-            
         }
         
     }

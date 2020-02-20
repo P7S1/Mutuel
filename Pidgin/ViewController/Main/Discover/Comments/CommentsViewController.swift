@@ -72,6 +72,9 @@ class CommentsViewController: UIViewController {
         
         if isReplying && commentReply != nil{
             originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+            
+
+            
         }else{
          originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
         }
@@ -111,6 +114,8 @@ class CommentsViewController: UIViewController {
                     self.comments = newItems
                 })
                 self.refreshControl.endRefreshing()
+            }else{
+                print(error!.localizedDescription)
             }
         }
     
@@ -134,7 +139,7 @@ class CommentsViewController: UIViewController {
         if isReplying && commentReply != nil{
             docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document(commentReply!.commentID).collection("replies").document()
         }
-        let comment = Comment(text: text, commentID: docRef.documentID, post: self.post, media: self.media)
+        let comment = Comment(text: text, commentID: docRef.documentID, post: self.post, media: self.media, reply : commentReply)
         docRef.setData(comment.representation) { (error) in
             if error == nil{
                 ProgressHUD.dismiss()
@@ -178,7 +183,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         var comment = comments[indexPath.row]
         
         cell.usernameLabel.text = comment.creatorUsername
-        if self.isReplying{
+        if self.isReplying || comment.repliesCount <= 0{
             cell.viewRepliesLabel.text = ""
         }else{
         cell.viewRepliesLabel.text = "VIEW \(comment.repliesCount) REPLIES"
@@ -258,7 +263,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         
         cell.profileTapAction = {
         () in
-            let docRef = db.collection("users").document(self.post.creatorID)
+            let docRef = db.collection("users").document(comment.creatorID)
             docRef.getDocument { (snapshot, error) in
                 if error == nil{
                     let user = Account()

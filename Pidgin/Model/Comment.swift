@@ -33,9 +33,11 @@ struct Comment{
     
     var mediaID : String?
     
+    var replyCreatorID : String?
+    
     var aspectRatio : CGFloat
     
-    init(text: String, commentID : String, post : Post, media : GPHMedia?) {
+    init(text: String, commentID : String, post : Post, media : GPHMedia?, reply : Comment?) {
         self.text = text
         self.photoURL = User.shared.profileURL ?? ""
         self.commentID = commentID
@@ -49,6 +51,7 @@ struct Comment{
         self.mediaID = media?.id
         self.aspectRatio = media?.aspectRatio ?? 0
         self.postCreatorID = post.creatorID
+        self.replyCreatorID = reply?.creatorID
     }
     
     init(document : DocumentSnapshot) {
@@ -62,6 +65,7 @@ struct Comment{
         self.repliesCount = data?["repliesCount"] as? Int ?? 0
         self.postID = data?["postID"] as? String ?? ""
         self.mediaID = data?["mediaID"] as? String
+        self.replyCreatorID = data?["replyCreatorID"] as? String
         self.aspectRatio = data?["aspectRatio"] as? CGFloat ?? 0
         self.postCreatorID = data?["postCreatorID"] as? String ?? ""
         let timestamp = data?["creationDate"] as? Timestamp
@@ -80,6 +84,7 @@ extension Comment : DatabaseRepresentation{
         let rep : [String : Any] = [
             "photoURL":photoURL as Any,
             "text":text,
+            "replyCreatorID":replyCreatorID,
             "creatorID":creatorID,
             "commentID":commentID,
             "creatorUsername":creatorUsername,

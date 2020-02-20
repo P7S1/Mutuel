@@ -10,7 +10,8 @@ import UIKit
 import Hero
 import AVKit
 import Lightbox
-class PostViewController: UIViewController, UIScrollViewDelegate {
+import FirebaseDatabase
+class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var contentView: UIView!
     
@@ -58,6 +59,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate {
         DispatchQueue.main.async {
             self.imageView.kf.setImage(with: URL(string: self.post.photoURL))
         }
+        setBackBarButtonCustom()
         imageView.heroID = post.postID
         engagementStackView.heroID = "\(post.postID).engagementStackView"
         caption.heroID = "\(post.postID).caption"
@@ -91,6 +93,16 @@ class PostViewController: UIViewController, UIScrollViewDelegate {
         appearance?.shadowImage = UIImage()
         appearance?.shadowColor = .clear
         navigationItem.standardAppearance = appearance
+        
+        ref.child("postData/\(post.postID)").observe(DataEventType.value) { (snapshot) in
+            let postDict = snapshot.value as? [String : AnyObject] ?? [:]
+            if let commentCount = postDict["commentsCount"] as? Int{
+                self.post.commentsCount = commentCount
+                self.commentsLabel.text = String(commentCount)
+            }
+        }
+        
+        
         
         
        // panGR = UIPanGestureRecognizer(target: self,
@@ -130,6 +142,31 @@ class PostViewController: UIViewController, UIScrollViewDelegate {
         vc.post = self.post
         navigationController?.pushViewController(vc, animated: true)
         
+    }
+    
+    func setBackBarButtonCustom()
+    {
+        //Back buttion
+        let btnLeftMenu: UIButton = UIButton()
+        let config = UIImage.SymbolConfiguration(pointSize: 13, weight: .bold)
+
+        let img = UIImage(systemName: "chevron.left", withConfiguration: config)
+        btnLeftMenu.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 2)
+        btnLeftMenu.setImage(img, for: .normal)
+        btnLeftMenu.backgroundColor = .secondarySystemBackground
+        btnLeftMenu.addTarget(self, action: #selector(onClcikBack), for: UIControl.Event.touchUpInside)
+        btnLeftMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        btnLeftMenu.layer.cornerRadius = btnLeftMenu.frame.height/2
+        
+        let barButton = UIBarButtonItem(customView: btnLeftMenu)
+        self.navigationItem.leftBarButtonItem = barButton
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+
+    @objc func onClcikBack()
+    {
+        _ = self.navigationController?.popViewController(animated: true)
     }
 
     

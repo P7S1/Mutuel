@@ -11,7 +11,10 @@ import SvrfSDK
 import Firebase
 import FirebaseFirestore
 import GiphyUISDK
+import FirebaseDatabase
 let db = Firestore.firestore()
+
+var ref: DatabaseReference!
 
 var userListener: ListenerRegistration?
 var appDidLoad = false
@@ -20,7 +23,6 @@ var appDidLoad = false
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        print("did finish launching")
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
@@ -35,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           print("Could not authenticate with the Svrf API: \(err)")
         })
         FirebaseApp.configure()
+        ref = Database.database().reference()
         GiphyUISDK.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
         if #available(iOS 13.0, *) {
             configureNavBariOS13()
@@ -121,30 +124,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 User.shared.convertFromDocument(dictionary: snapshot!)
                 if User.shared.username != nil{
                 if !appDidLoad{
-                    // this line is important
-                    //elf.window = UIWindow(frame: UIScreen.main.bounds)
-                    // In project directory storyboard looks like Main.storyboard,
-                    // you should use only part before ".storyboard" as it's name,
-                    // so in this example name is "Main".
-                    // controller identifier sets up in storyboard utilities
-                    // panel (on the right), it called Storyboard ID
-                    
-                /*    let viewController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as! TabBarController
-                    UIView.animate(withDuration: 0.2) {
-                        self.window?.rootViewController = viewController
-                        self.window?.makeKeyAndVisible()
-                    } */
+    
                     let vc = TabBarController()
                     UIApplication.shared.windows.first?.rootViewController = vc
                     appDidLoad = true
                 }
-                    let tokens = snapshot?.get("fcmToken") as? [String]
-                    if let token = Messaging.messaging().fcmToken {
-                        if !(tokens?.contains(token) ?? false){
                         let pushManager = PushNotificationManager(userID: id)
                         pushManager.registerForPushNotifications()
-                    }
-                }
+                 
                 }else{
                     print("User has invalid username")
                     self.presentUsernameVC()

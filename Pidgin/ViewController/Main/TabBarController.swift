@@ -8,6 +8,7 @@
 
 import UIKit
 import Hero
+
 class TabBarController: UITabBarController, UITabBarControllerDelegate{
     
     let gradientlayer = CAGradientLayer()
@@ -22,6 +23,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let discoverVC = storyboard.instantiateViewController(withIdentifier: "DiscoverViewController") as! DiscoverViewController
         let homeViewController = UINavigationController(rootViewController: discoverVC)
+    
         let discoverTab = UITabBarItem(title: " ", image: UIImage(systemName: "globe", withConfiguration: config2), tag: 1)
         discoverTab.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 11, weight: .medium)], for: .normal)
         homeViewController.tabBarItem = discoverTab
@@ -29,6 +31,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         
         let messagesVC = storyboard.instantiateViewController(withIdentifier: "ChannelsViewController") as! ChannelsViewController
         let secondViewController = UINavigationController(rootViewController: messagesVC)
+     
         let image = UIImage(systemName: "ellipses.bubble", withConfiguration: config2)
         
         image?.withTintColor(.systemPink, renderingMode: .alwaysOriginal)

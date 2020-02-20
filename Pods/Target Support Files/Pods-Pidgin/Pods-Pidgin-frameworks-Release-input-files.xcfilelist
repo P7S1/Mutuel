@@ -25,6 +25,9 @@ ${BUILT_PRODUCTS_DIR}/SkeletonView/SkeletonView.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfGLTFSceneKit/SvrfGLTFSceneKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfSDK/SvrfSDK.framework
+${BUILT_PRODUCTS_DIR}/SwipeTransition/SwipeTransition.framework
+${BUILT_PRODUCTS_DIR}/SwipeTransitionAutoSwipeBack/SwipeTransitionAutoSwipeBack.framework
+${BUILT_PRODUCTS_DIR}/SwipeTransitionAutoSwipeToDismiss/SwipeTransitionAutoSwipeToDismiss.framework
 ${BUILT_PRODUCTS_DIR}/ViewRow/ViewRow.framework
 ${BUILT_PRODUCTS_DIR}/WLEmptyState/WLEmptyState.framework
 ${BUILT_PRODUCTS_DIR}/abseil/absl.framework

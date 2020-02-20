@@ -239,6 +239,21 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwipeTransition.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwipeTransitionAutoSwipeBack.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwipeTransitionAutoSwipeToDismiss.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>ViewRow.xcscheme</key>
 		<dict>
 			<key>isShown</key>

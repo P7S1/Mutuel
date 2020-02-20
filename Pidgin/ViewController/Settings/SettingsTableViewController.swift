@@ -31,7 +31,7 @@ class SettingsTableViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         checkIfSignedIn()
-        changeTabBar(hidden: true, animated: true)
+        changeTabBar(hidden: false, animated: true)
     }
     
     @IBAction func logOutButtonPressed(_ sender: Any) {

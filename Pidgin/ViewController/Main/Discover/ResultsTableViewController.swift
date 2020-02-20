@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseFirestore
+import DeepDiff
 class ResultsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var tableView: UITableView!
@@ -49,9 +50,9 @@ class ResultsTableViewController: UIViewController, UITableViewDelegate, UITable
         
         vc.user = results[indexPath.row]
         vc.isUserProfile = true
-               
-        let VC = UINavigationController(rootViewController: vc)
-        self.present(VC, animated: true, completion: nil)
+        vc.setDismissButton()
+        
+        self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
         
     }
 
@@ -107,29 +108,41 @@ class ResultsTableViewController: UIViewController, UITableViewDelegate, UITable
 
 extension ResultsTableViewController: UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
-        results.removeAll()
-        self.tableView.reloadData()
-        if let result = searchController.searchBar.text{
+        let result = searchController.searchBar.text ?? ""
+        if !result.isEmpty{
             let docRef = db.collection("users")
-            let query = docRef.whereField("username", isGreaterThan: result.lowercased()).limit(to: 3)
-        
+            let query = docRef.order(by: "username").start(at: [result]).end(at: ["\(result)\u{f8ff}"]).limit(to: 5)
         query.getDocuments { (snapshot, error) in
             if error == nil{
-                if snapshot?.count == 0{
-                    print("no results for \(result)")
-                    self.tableView.reloadData()
-                }else{
+                    let old = self.results
+                    var newItems = [Account]()
                     for document in snapshot!.documents{
                         let user = Account()
                         user.convertFromDocument(dictionary: document)
-                        self.results.append(user)
-                        self.tableView.reloadData()
+                        newItems.append(user)
                     }
-                }
+                self.tableView.performBatchUpdates({
+                    let changes = diff(old: old, new: newItems)
+                    self.tableView.reload(changes: changes, section: 0, updateData: {
+                        self.results = newItems
+                    })
+                }, completion: nil)
+                    
+                
             }else{
                 print("error getting data: \(error!)")
             }
         }
+        }else{
+            tableView.performBatchUpdates({
+                let old = self.results
+                let newItems = [Account]()
+                let changes = diff(old: old, new: newItems)
+                self.tableView.reload(changes: changes, section: 0, updateData: {
+                    self.results = newItems
+                })
+            }, completion: nil)
+            
         }
     }
     

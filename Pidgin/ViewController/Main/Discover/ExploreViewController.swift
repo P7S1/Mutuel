@@ -15,7 +15,7 @@ import SkeletonView
 public protocol ExploreViewControllerDelegate {
    func collectionViewScrolled(_ scrollView: UIScrollView)
 }
-class ExploreViewController: UIViewController {
+class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -99,13 +99,47 @@ class ExploreViewController: UIViewController {
         query = originalQuery
         getMorePosts(removeAll: true)
     }
+    
+    func setBackBarButtonCustom()
+    {
+        //Back buttion
+        let btnLeftMenu: UIButton = UIButton()
+        let config = UIImage.SymbolConfiguration(pointSize: 13, weight: .bold)
+
+        let img = UIImage(systemName: "chevron.left", withConfiguration: config)
+        btnLeftMenu.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 2)
+        btnLeftMenu.setImage(img, for: .normal)
+        btnLeftMenu.backgroundColor = .secondarySystemBackground
+        btnLeftMenu.addTarget(self, action: #selector(onClcikBack), for: UIControl.Event.touchUpInside)
+        btnLeftMenu.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        btnLeftMenu.layer.cornerRadius = btnLeftMenu.frame.height/2
+        
+        let barButton = UIBarButtonItem(customView: btnLeftMenu)
+        self.navigationItem.leftBarButtonItem = barButton
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+
+    @objc func onClcikBack()
+    {
+        _ = self.navigationController?.popViewController(animated: true)
+    }
+    
     func setUpCollectionView(){
          collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: CollectionViewWaterfallElementKindSectionHeader, withReuseIdentifier: "ProfileHeader")
         collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: CollectionViewWaterfallElementKindSectionFooter, withReuseIdentifier: "BottomActivity")
         
        let layout = CollectionViewWaterfallLayout()
         
+        if navigationController != nil{
+            setBackBarButtonCustom()
+        }
+        
         if isUserProfile{
+
+            let statusBarView = UIView(frame: CGRect(x:0, y:0, width:view.frame.size.width, height: UIApplication.shared.statusBarFrame.height))
+            statusBarView.backgroundColor=UIColor.systemBackground
+            view.addSubview(statusBarView)
          collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         }else{
          collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 32, right: 0)
@@ -138,6 +172,7 @@ class ExploreViewController: UIViewController {
             if error == nil{
                 if snapshot!.count < 10{
                     self.loadedAllPosts = true
+                    self.updateFooter()
                 }
                 let old = self.posts
                 if removeAll{
@@ -151,7 +186,7 @@ class ExploreViewController: UIViewController {
                     newItems.append(post)
                     }
                     
-                    print("append a post")
+      
                 }
             
                 DispatchQueue.main.async {
@@ -175,8 +210,23 @@ class ExploreViewController: UIViewController {
         if indexPath.row + 1 == posts.count && !loadedAllPosts{
             getMorePosts(removeAll: false)
         }
+        updateFooter()
     }
     
+    
+    func updateFooter(){
+        let indexes = self.collectionView.indexPathsForVisibleItems
+            if indexes.count > 0{
+        if let view = self.collectionView.supplementaryView(forElementKind: "CollectionViewWaterfallElementKindSectionFooter", at: indexes[0]){
+            view.activityIndicator(show: !self.loadedAllPosts)
+        }
+            }else{
+            let indexPath = IndexPath(row: 0, section: 0)
+           if let view = self.collectionView.supplementaryView(forElementKind: "CollectionViewWaterfallElementKindSectionFooter", at: indexPath){
+                view.activityIndicator(show: !self.loadedAllPosts)
+            }
+        }
+    }
 
     /*
     // MARK: - Navigation
@@ -315,11 +365,9 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
             return header
         default:
             let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "BottomActivity", for: indexPath)
-            if self.loadedAllPosts{
-            footer.activityIndicator(show: false)
-            }else{
-            footer.activityIndicator(show: true)
-            }
+
+            footer.activityIndicator(show: !self.loadedAllPosts)
+            
             return footer
         }
         

@@ -98,8 +98,6 @@ class ProfileViewController: UIViewController{
         followButton.backgroundColor = .systemGray6
         followButton.roundCorners()
         
-        user?.printClass()
-        
         if !isCurrentUser{
             guard let follower = User.shared.uid else {
                 self.dismiss(animated: true, completion: nil)

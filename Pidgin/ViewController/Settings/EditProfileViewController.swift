@@ -134,22 +134,11 @@ class EditProfileViewController: FormViewController {
             }
             let _ = FollowersHelper().uploadPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString)
         }
+        
         let user = User.shared
-        if let name = formvalues["displayName"] as? String, let id = User.shared.uid{
-            if name != User.shared.name{
-            let docRef = db.collection("channels").whereField("members", arrayContains: id)
+        
+        if let name = formvalues["displayName"] as? String{
             user.name = name
-            docRef.getDocuments { (snapshot, error) in
-                if error == nil{
-                    for document in snapshot!.documents{
-                    let channel = Channel(document: document)
-                        channel?.metaData?.setValue(name, forKey: id)
-                        let docRef2 = db.collection("channels").document(channel?.id ?? "")
-                        docRef2.setData(["metaData" : channel?.metaData as Any], merge: true)
-                }
-                }
-            }
-        }
         }
         
         if let dob = formvalues["dob"] as? Date{

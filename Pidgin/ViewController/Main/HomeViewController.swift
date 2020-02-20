@@ -50,7 +50,7 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
     
     private struct Const {
         /// Image height/width for Large NavBar state
-        static let ImageSizeForLargeState: CGFloat = 40
+        static let ImageSizeForLargeState: CGFloat = 35
         /// Margin from right anchor of safe area to right anchor of Image
         static let ImageRightMargin: CGFloat = 16
         /// Margin from bottom anchor of NavBar to bottom anchor of Image for Large NavBar state

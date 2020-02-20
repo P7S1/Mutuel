@@ -29,5 +29,8 @@ target 'Pidgin' do
   pod 'CollectionViewWaterfallLayout'
   pod 'SkeletonView'
   pod 'Firebase/Database'
+  pod "SwipeTransition"
+  pod "SwipeTransitionAutoSwipeBack"      # if needed
+  pod "SwipeTransitionAutoSwipeToDismiss" # if needed
 
 end

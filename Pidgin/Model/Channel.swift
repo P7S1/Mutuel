@@ -83,8 +83,6 @@ struct Channel : DiffAware {
     }
     
     id = document.documentID
-    
-    print("channel created successfully")
   }
     
     func getSenderID() -> String? {
