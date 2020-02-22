@@ -49,12 +49,12 @@ class CommentsSectionViewController: UIViewController, UIScrollViewDelegate {
         // Change text color and the font of the NOT selected (normal) segment
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .medium)], for: .normal)
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)], for: .normal)
 
         // Change text color and the font of the selected segment
         segmentedControl.setTitleTextAttributes([
-            NSAttributedString.Key.foregroundColor: UIColor.systemPink,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .bold)], for: .selected)
+            NSAttributedString.Key.foregroundColor: UIColor.label,
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)], for: .selected)
 
         // Set up event handler to get notified when the selected segment changes
         segmentedControl.addTarget(self, action: #selector(indexChanged(_:)), for: .valueChanged)

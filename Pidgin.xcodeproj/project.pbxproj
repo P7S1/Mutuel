@@ -67,6 +67,10 @@
 		DF5CCF3B2360D21B005439BB /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF5CCF3A2360D21B005439BB /* Login.storyboard */; };
 		DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661A3B238B12880042B7AD /* WebViewController.swift */; };
 		DF661AFC23F8CBE3006702C7 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661AFB23F8CBE3006702C7 /* Relationship.swift */; };
+		DF661B1A23FF50CB006702C7 /* PTSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF661B1523FF50CB006702C7 /* PTSans-Italic.ttf */; };
+		DF661B1B23FF50CB006702C7 /* PTSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF661B1623FF50CB006702C7 /* PTSans-BoldItalic.ttf */; };
+		DF661B1D23FF50CB006702C7 /* PTSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF661B1823FF50CB006702C7 /* PTSans-Regular.ttf */; };
+		DF661B1E23FF50CB006702C7 /* PTSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF661B1923FF50CB006702C7 /* PTSans-Bold.ttf */; };
 		DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AD23B1EF0400949CED /* VideoHelper.swift */; };
 		DF6A20B023B3AC6700949CED /* GIF2MP4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */; };
 		DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721523C68D3400F00DF0 /* SignUpViewController.swift */; };
@@ -186,6 +190,10 @@
 		DF5CCF3A2360D21B005439BB /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		DF661A3B238B12880042B7AD /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		DF661AFB23F8CBE3006702C7 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
+		DF661B1523FF50CB006702C7 /* PTSans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PTSans-Italic.ttf"; sourceTree = "<group>"; };
+		DF661B1623FF50CB006702C7 /* PTSans-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PTSans-BoldItalic.ttf"; sourceTree = "<group>"; };
+		DF661B1823FF50CB006702C7 /* PTSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PTSans-Regular.ttf"; sourceTree = "<group>"; };
+		DF661B1923FF50CB006702C7 /* PTSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PTSans-Bold.ttf"; sourceTree = "<group>"; };
 		DF6A20AD23B1EF0400949CED /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
 		DF6A20AF23B3AC6600949CED /* GIF2MP4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GIF2MP4.swift; sourceTree = "<group>"; };
 		DF70721523C68D3400F00DF0 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
@@ -266,6 +274,7 @@
 		DF086D8023C4191300D3CCA0 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				DF661B1423FF50CB006702C7 /* PT_Sans */,
 				DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */,
 			);
 			path = Fonts;
@@ -406,6 +415,17 @@
 				DF95101B2360DBC1006B3B44 /* GoogleService-Info.plist */,
 			);
 			path = Pidgin;
+			sourceTree = "<group>";
+		};
+		DF661B1423FF50CB006702C7 /* PT_Sans */ = {
+			isa = PBXGroup;
+			children = (
+				DF661B1523FF50CB006702C7 /* PTSans-Italic.ttf */,
+				DF661B1623FF50CB006702C7 /* PTSans-BoldItalic.ttf */,
+				DF661B1823FF50CB006702C7 /* PTSans-Regular.ttf */,
+				DF661B1923FF50CB006702C7 /* PTSans-Bold.ttf */,
+			);
+			path = PT_Sans;
 			sourceTree = "<group>";
 		};
 		DF9510132360DA70006B3B44 /* Main */ = {
@@ -625,19 +645,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF4BC40F234D8267001AD00D /* Eventtus-Icons.ttf in Resources */,
+				DF661B1B23FF50CB006702C7 /* PTSans-BoldItalic.ttf in Resources */,
 				DF4F7A18234C23A3001D6CE8 /* LaunchScreen.storyboard in Resources */,
 				DF4BC42C234D8267001AD00D /* PhotoEditor.storyboard in Resources */,
 				DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */,
 				DF086D8423C4197B00D3CCA0 /* FredokaOne-Regular.otf in Resources */,
+				DF661B1E23FF50CB006702C7 /* PTSans-Bold.ttf in Resources */,
 				DF95102A2360E06E006B3B44 /* Assets.xcassets in Resources */,
 				DF7D0ABB23B7083600B33E40 /* Discover.storyboard in Resources */,
 				DF4BC41E234D8267001AD00D /* BottomSheetViewController.xib in Resources */,
 				DF4BC419234D8267001AD00D /* ColorCollectionViewCell.xib in Resources */,
+				DF661B1A23FF50CB006702C7 /* PTSans-Italic.ttf in Resources */,
 				DF95101C2360DBC1006B3B44 /* GoogleService-Info.plist in Resources */,
 				DF4BC41D234D8267001AD00D /* Main.storyboard in Resources */,
 				DF4BC41A234D8267001AD00D /* EmojiCollectionViewCell.xib in Resources */,
 				DF4BC425234D8267001AD00D /* StickerCollectionViewCell.xib in Resources */,
 				DF95103C23624402006B3B44 /* Settings.storyboard in Resources */,
+				DF661B1D23FF50CB006702C7 /* PTSans-Regular.ttf in Resources */,
 				DF5CCF3B2360D21B005439BB /* Login.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

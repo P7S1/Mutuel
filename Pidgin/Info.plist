@@ -32,6 +32,10 @@
 	<string>0e3b5b79f2dfa52d9bbf437fab983fc4</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>PTSans-Italic.ttf</string>
+		<string>PTSans-BoldItalic.ttf</string>
+		<string>PTSans-Regular.ttf</string>
+		<string>PTSans-Bold.ttf</string>
 		<string>FredokaOne-Regular.otf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

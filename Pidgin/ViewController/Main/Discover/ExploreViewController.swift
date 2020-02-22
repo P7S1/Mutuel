@@ -149,7 +149,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         layout.minimumColumnSpacing = 4
         layout.minimumInteritemSpacing = 4
         if isUserProfile{
-        layout.headerHeight = 180
+        layout.headerHeight = 160
         }else{
          layout.headerHeight = 0
         }
@@ -286,7 +286,7 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         vc.originalQuery = self.query
         vc.lastDocument = self.lastDocument
         if isUserProfile{
-            vc.navTitle = user.username ?? ""
+            vc.navTitle = user.name ?? ""
         }else{
             vc.navTitle = "Discover"
         }

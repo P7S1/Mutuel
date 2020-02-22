@@ -60,6 +60,12 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="undraw_welcoming_xvuq" translatesAutoresizingMaskIntoConstraints="NO" id="hxE-W0-p42">
+                                <rect key="frame" x="16" y="347" width="382" height="202.00000000000011"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="hxE-W0-p42" secondAttribute="height" multiplier="240:127" id="z5D-Wb-7md"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -68,7 +74,10 @@
                             <constraint firstItem="mI5-FA-kTb" firstAttribute="trailing" secondItem="4Ll-UG-zPS" secondAttribute="trailing" id="Ply-ck-1mC"/>
                             <constraint firstItem="4Ll-UG-zPS" firstAttribute="top" secondItem="mI5-FA-kTb" secondAttribute="top" id="WH2-iG-rLT"/>
                             <constraint firstItem="mI5-FA-kTb" firstAttribute="trailing" secondItem="CUj-iC-F5N" secondAttribute="trailing" constant="32" id="aa6-fx-2BO"/>
+                            <constraint firstAttribute="trailing" secondItem="hxE-W0-p42" secondAttribute="trailing" constant="16" id="jGZ-DJ-6QU"/>
+                            <constraint firstItem="hxE-W0-p42" firstAttribute="leading" secondItem="mI5-FA-kTb" secondAttribute="leading" constant="16" id="lDI-Xh-rga"/>
                             <constraint firstItem="4Ll-UG-zPS" firstAttribute="leading" secondItem="mI5-FA-kTb" secondAttribute="leading" id="vGA-bs-Qyw"/>
+                            <constraint firstItem="hxE-W0-p42" firstAttribute="centerY" secondItem="rXy-u8-wdt" secondAttribute="centerY" id="wOD-Td-onD"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="mI5-FA-kTb"/>
                     </view>
@@ -711,5 +720,6 @@
     </scenes>
     <resources>
         <image name="envelope.badge" catalog="system" width="64" height="48"/>
+        <image name="undraw_welcoming_xvuq" width="825" height="506"/>
     </resources>
 </document>

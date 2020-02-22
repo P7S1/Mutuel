@@ -98,6 +98,8 @@ class ProfileViewController: UIViewController{
         followButton.backgroundColor = .systemGray6
         followButton.roundCorners()
         
+        user?.printClass()
+        
         if !isCurrentUser{
             guard let follower = User.shared.uid else {
                 self.dismiss(animated: true, completion: nil)
@@ -131,7 +133,7 @@ class ProfileViewController: UIViewController{
         
         }else{
             followButton.setTitle("ACTIVITY", for: .normal)
-            followButton.setTitleColor(.systemPink, for: .normal)
+            followButton.setTitleColor(.systemPurple, for: .normal)
             followButton.backgroundColor = .systemGray6
             followButton.isEnabled = true
         }
@@ -143,7 +145,7 @@ class ProfileViewController: UIViewController{
         displayName.text = user?.name ?? "Unknown"
         
         moreButton.backgroundColor = .systemGray6
-        moreButton.tintColor = .systemPink
+        moreButton.tintColor = .label
         moreButton.roundCorners()
 
         // Do any additional setup after loading the view.
@@ -262,7 +264,7 @@ class ProfileViewController: UIViewController{
     func setNotFollowingState(){
         followButton.setTitle("FOLLOW", for: .normal)
         followButton.setTitleColor(.white, for: .normal)
-        followButton.backgroundColor = .systemPink
+        followButton.backgroundColor = .systemBlue
         self.userFollows = false
     }
     

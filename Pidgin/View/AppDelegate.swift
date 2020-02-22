@@ -64,6 +64,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) {
             ProgressHUD.statusColor(.label)
         }
+        
+  
+       /* guard let customFont = UIFont(name: "OpenSans-SemiBold", size: UIFont.labelFontSize) else {
+            fatalError("""
+                Failed to load the " OpenSans-SemiBold" font.
+                Make sure the font file is included in the project and the font name is spelled correctly.
+                """
+            )
+        }
+        UILabel.appearance().font = customFont */
+
         application.applicationIconBadgeNumber = 0
         // Override point for customization after application launch.
         return true
@@ -104,7 +115,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.navigationController?.navigationBar.layer.shadowOpacity = 1.0
         self.navigationController?.navigationBar.layer.masksToBounds = false
         navBarAppearanc */
-        navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold)]
+        navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold
+            )]
         navBarAppearance.backgroundEffect = .none
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance

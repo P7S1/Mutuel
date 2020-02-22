@@ -49,6 +49,25 @@ class SettingsTableViewController: UITableViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch section {
+        case 0:
+           return self.getHeaderView(with: "My Account", tableView: tableView)
+        case 1:
+            return self.getHeaderView(with: "General", tableView: tableView)
+        case 2:
+            return self.getHeaderView(with: "Support", tableView: tableView)
+        case 3:
+            return self.getHeaderView(with: "Legal", tableView: tableView)
+        default:
+            return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 45
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
