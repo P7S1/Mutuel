@@ -18,7 +18,7 @@ class CreateGroupViewController: UIViewController{
     @IBOutlet weak var image: UIButton!
     
     
-    var channel = Channel(name: "")
+    var channel : Channel!
     
     var mode = ""
     
@@ -51,7 +51,7 @@ class CreateGroupViewController: UIViewController{
     func setUpProfilePicture(){
         image.roundCorners()
         image.imageView?.contentMode = .scaleAspectFill
-        if let string = channel.id, let urlString = channel.profilePics?.value(forKey: string) as? String{
+        if  let urlString = channel.profilePics.value(forKey: channel.id) as? String{
             image.kf.setImage(with: URL(string: urlString), for: .normal, placeholder: FollowersHelper().getGroupProfilePicture())
         }else{
             image.setImage(FollowersHelper().getGroupProfilePicture(), for: .normal)
@@ -162,12 +162,12 @@ class CreateGroupViewController: UIViewController{
             var profileURLs = NSMutableDictionary()
             var memberList = [String]()
             
-            if (channel.metaData != nil) && mode == "editing"{
-                metaData = channel.metaData!
+            if  mode == "editing"{
+                metaData = channel.metaData
             }
             
-            if (channel.profilePics != nil) && mode == "editing"{
-                profileURLs = channel.profilePics!
+            if  mode == "editing"{
+                profileURLs = channel.profilePics
             }
             for member in members{
                 if let id = member.uid{
@@ -179,15 +179,14 @@ class CreateGroupViewController: UIViewController{
             }
             
             if mode == "editing"{
-                tokens = Array(Set(channel.tokens + tokens))
                 memberList = Array(Set(channel.members + memberList))
             }
            
             var docRef = db.collection("channels").document()
             if mode == "editing"{
-                if let id = channel.id{
-                docRef = db.collection("channels").document(id)
-                }
+
+                docRef = db.collection("channels").document(channel.id)
+                
             }
             
             docRef.setData(["fcmToken":tokens,
@@ -197,7 +196,7 @@ class CreateGroupViewController: UIViewController{
                "name": textField.text ?? "",
                "groupChat": true],merge : true)
             
-            var channel = Channel(name: textField.text ?? "")
+            var channel = Channel(id: docRef.documentID, name: textField.text ?? "")
             channel.metaData = metaData
             channel.profilePics = profileURLs
             channel.groupChat = true
@@ -280,14 +279,8 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
                 if let index = members.firstIndex(of: results[indexPath.row]){
                     
                     if let index2 = channel.members.firstIndex(of: members[index].uid ?? ""){
-                    channel.metaData?.removeObject(forKey: members[index].uid ?? "")
+                        channel.metaData.removeObject(forKey: members[index].uid ?? "")
                     channel.members.remove(at: index2)
-                    }
-                    
-                    for token in results[indexPath.row].tokens{
-                        if let index3 = channel.tokens.firstIndex(of: token){
-                            channel.tokens.remove(at: index3)
-                        }
                     }
                 members.remove(at: index)
                 }
@@ -335,11 +328,10 @@ extension CreateGroupViewController : CropViewControllerDelegate{
     func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
             // 'image' is the newly cropped version of the original image
         self.image.setImage(image, for: .normal)
-        if let url = channel.metaData?.value(forKey: channel.id ?? "") as? String{
+        if let url = channel.metaData.value(forKey: channel.id ?? "") as? String{
         FollowersHelper.deleteImage(at: url)
         }
         FollowersHelper().uploadGroupPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString, docID: channel.id ?? "")
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
         cropViewController.dismiss(animated: true, completion: nil)
         }
 }

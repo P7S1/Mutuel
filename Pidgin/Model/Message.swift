@@ -23,7 +23,9 @@ class Message : MessageType, Equatable, Comparable, DiffAware{
     
     var photoURL : String?
     
-    var messageKind : String?
+    var messageKind = "text"
+    
+    var isDelivered = false
     
     var profilePicURL : String?
     
@@ -35,7 +37,7 @@ class Message : MessageType, Equatable, Comparable, DiffAware{
     var diffId: UUID?
 
     static func compareContent(_ a: Message, _ b: Message) -> Bool {
-        return a.messageId == b.messageId
+        return a.messageId == b.messageId && a.isDelivered == b.isDelivered
     }
     
     init(sender: SenderType, messageId: String, sentDate: Date, kind: MessageKind) {
@@ -55,62 +57,21 @@ class Message : MessageType, Equatable, Comparable, DiffAware{
         print("content: \(String(describing: content))\n") */
     }
     
-    func convertFromDictionary(dictionary: NSDictionary){
-        var id = User.shared.uid ?? ""
-        var displayName = User.shared.name ?? ""
-        if let x = dictionary.value(forKey: "senderUID"){
-                   id = x as! String
-               }
-               if let x = dictionary.value(forKey: "sender"){
-                   displayName  = x as! String
-               }
-               sender = Sender(id: id, displayName: displayName)
-               if let x = dictionary.value(forKey: "sentDate"){
-                    let timestamp = x as! Timestamp
-                   sentDate  = timestamp.dateValue()
-               }
-               if let x = dictionary.value(forKey: "messageKind"){
-                   messageKind  = x as? String
-               }
-        if messageKind == "photo"{
-               if let x = dictionary.value(forKey: "profilePicURL"){
-                   profilePicURL  = x as? String
-                let image = FollowersHelper().getGroupProfilePicture()
-                kind = .photo(ImageMediaItem(image: image))
-               }
-        } else if messageKind == "video"{
-            
-        }else{
-               if let x = dictionary.value(forKey: "content") as? String{
-                   content  = x
-                if x.containsOnlyEmoji && x.count < 4{
-                    kind = MessageKind.emoji(x)
-                }else{
-                   kind = MessageKind.text(content!)
-                }
-        }
-        }
-        if let x = dictionary.value(forKey: "messageID"){
-            messageId = x as? String ?? ""
-               }
-    }
-    
     func convertFrom(dictionary: DocumentSnapshot){
         var id = ""
         var displayName = ""
-        if let x = dictionary.get("uid"){
-            id = x as! String
+        if let x = dictionary.get("uid") as? String{
+            id = x
         }
-        if let x = dictionary.get("sender"){
-            displayName  = x as! String
+        if let x = dictionary.get("sender")  as? String{
+            displayName  = x
         }
         sender = Sender(id: id, displayName: displayName)
-        if let x = dictionary.get("sentDate"){
-             let timestamp = x as! Timestamp
-            sentDate  = timestamp.dateValue()
+        if let x = dictionary.get("sentDate") as?  Timestamp{
+            sentDate  = x.dateValue()
         }
-        if let x = dictionary.get("messageKind"){
-            messageKind  = x as? String
+        if let x = dictionary.get("messageKind") as? String{
+            messageKind  = x
         }
         if messageKind == "photo"{
         if let x = dictionary.get("photoURL"){
@@ -136,6 +97,9 @@ class Message : MessageType, Equatable, Comparable, DiffAware{
         }
         if let x = dictionary.get("messageID"){
             messageId = x as? String ?? ""
+        }
+        if let x = dictionary.get("delivered") as? Bool{
+            self.isDelivered = x
         }
     }
     

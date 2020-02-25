@@ -41,27 +41,23 @@ class FollowersHelper{
         }
     
     func leaveChat(channel : Channel){
-        if let id = channel.id{
-        let docRef = db.collection("channels").document(id)
-        
-        let tokens = Array(Set(channel.tokens).subtracting(User.shared.tokens))
+        let docRef = db.collection("channels").document(channel.id)
             
         var members = channel.members
             
         let metaData = channel.metaData
             
-        metaData?.removeObject(forKey: User.shared.uid ?? "")
+        metaData.removeObject(forKey: User.shared.uid ?? "")
             
             if let index = members.firstIndex(of: User.shared.uid ?? ""){
                 members.remove(at: index)
             }
         
-            docRef.updateData(["fcmToken" : tokens,
-                               "members" : members,
+            docRef.updateData(["members" : members,
                                "metaData": metaData as Any])
             
             ProgressHUD.showSuccess("Left \(channel.name ?? "group")")
-    }
+    
         
         
     }

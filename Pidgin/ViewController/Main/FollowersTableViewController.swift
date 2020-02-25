@@ -27,7 +27,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     
     var loadedAllDocs = false
     
-    var queryLimit = 15
+    var queryLimit = 25
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -218,9 +218,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
                 docRef.getDocument { (document, error) in
                     if error == nil{
                         
-                    guard var channel = Channel(document: document!) else {
-                      return
-                    }
+                     var channel = Channel(document: document!)
                     let vc = ChatViewController()
                     vc.channel = channel
                     channel.metaData = metaData

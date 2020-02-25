@@ -11,8 +11,9 @@ import FirebaseFirestore
 import GiphyUISDK
 import GiphyCoreSDK
 import DeepDiff
-var channels = [Channel]()
-var channelListener: ListenerRegistration?
+protocol ChannelDelegate {
+    func updateChannel(channel : Channel)
+}
 class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
@@ -21,11 +22,23 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     return db.collection("channels")
   }
     
+    var channels = [Channel]()
+    var channelListener: ListenerRegistration?
+    
     var lastDocument : DocumentSnapshot?
     
     var query : Query!
     
     var loadedAllPosts = false
+    
+    var channelDelegate : ChannelDelegate?
+    
+    
+    
+    deinit {
+        print("deinit")
+        channelListener?.remove()
+    }
     
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,9 +48,9 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     tableView.dataSource = self
     
     if let userID = User.shared.uid{
+
+    query = channelReference.whereField("members", arrayContains: userID).limit(to: 25).order(by: "lastSentDate", descending: true)
         
-    query = channelReference.whereField("members", arrayContains: userID).limit(to: 15).order(by: "lastSentDate", descending: true)
-    
     channelListener = query.addSnapshotListener { querySnapshot, error in
       guard let snapshot = querySnapshot else {
         print("Error listening for channel updates: \(error?.localizedDescription ?? "No error")")
@@ -54,21 +67,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     }
     
   }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
- 
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-  }
-  
+
   // MARK: - Actions
   
   
@@ -77,14 +76,17 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
   // MARK: - Helpers
   
   private func addChannelToTable(_ channel: Channel) {
-    print("add channel to table")
-    guard !channels.contains(channel) else {
-      return
-    }
     
     let old = channels
-        var newItems = channels
-    newItems.append(channel)
+    var newItems = channels
+    
+    if channels.contains(channel) {
+        let index = channels.firstIndex(of: channel)
+        channels.remove(at: index!)
+        channels.insert(channel, at: index!)
+    }else{
+        newItems.append(channel)
+    }
         newItems.sort()
    
         let changes = diff(old: old, new: newItems)
@@ -98,25 +100,10 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
   
     private func updateChannelInTable(ch: Channel) {
         let channel = ch
-    print("update channel")
         guard let index = channels.firstIndex(of: channel) else {
       return
     }
-        if (channels[index].lastSentMessageID != channel.lastSentMessageID) && (channel.lastSentUser != User.shared.uid){
-            let userInfo = NSMutableDictionary()
-            if channel.groupChat == nil{
-                userInfo.setValue(channel.metaData?.value(forKey: channel.getSenderID() ?? ""), forKey: "title")
-                userInfo.setValue("New Message", forKey: "message")
-                userInfo.setValue(channel.profilePics?.value(forKey: channel.getSenderID() ?? ""), forKey: "photoURL")
-            }else{
-                userInfo.setValue(channel.name, forKey: "title")
-                userInfo.setValue("from \(channel.metaData?.value(forKey: channel.getSenderID() ?? "") ?? "")", forKey: "message")
-                userInfo.setValue(channel.profilePics?.value(forKey: channel.id ?? ""), forKey: "photoURL")
-            }
-            
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "presentNotification"), object: nil, userInfo: userInfo as? [AnyHashable : Any])
-            print("sending notificaiton")
-        }
+        
     let old = channels
         var newItems = channels
         newItems[index] = channel
@@ -126,7 +113,6 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
               channels = newItems
             })
         
-     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
   }
     
   private func removeChannelFromTable(_ channel: Channel) {
@@ -147,12 +133,11 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
   }
   
   private func handleDocumentChange(_ change: DocumentChange) {
-    print("handle doc change channel")
-    guard let channel = Channel(document: change.document) else {
-      return
-    }
+    let channel = Channel(document: change.document)
     
     lastDocument = change.document
+    
+    self.channelDelegate?.updateChannel(channel: channel)
     
     switch change.type {
     case .added:
@@ -172,14 +157,14 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         }
         query.getDocuments { (snapshot, error) in
             if error == nil{
-                if snapshot!.count < 15{
+                if snapshot!.count < 25{
                     self.loadedAllPosts = true
                 }
                 for document in snapshot!.documents{
                     self.lastDocument = document
-                    if let channel = Channel(document: document){
+                     let channel = Channel(document: document)
                     self.addChannelToTable(channel)
-                    }
+                    
                 }
             }
         }
@@ -235,105 +220,49 @@ extension ChannelsViewController {
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "ChannelCell", for: indexPath) as! ChannelTableViewCell
     
-    if let lastMsg = channels[indexPath.row].lastMesssageText{
-        if let lastSender = channels[indexPath.row].lastSentUser{
-            
-            if channels[indexPath.row].groupChat == nil{
-                if lastSender != User.shared.uid ?? ""{
-                    cell.message.text = "New message"
-                }else{
-                    cell.message.text = "Delivered"
-                    if let key = channels[indexPath.row].getSenderID(),
-                        let lastOpen = channels[indexPath.row].lastOpened?.value(forKey: key) as? Timestamp,
-                        let lastSent = channels[indexPath.row].lastMessageDate{
-                        if lastOpen.dateValue() > lastSent{
-                            cell.message.text = "Read \(lastOpen.dateValue().getElapsedInterval())"
-                        }else if channels[indexPath.row].reading?.value(forKey: key) as? Bool == true {
-                            cell.message.text = "Read \(Date().getElapsedInterval())"
-                        }
-                    }
-                }
-            }else{
-                let sender = channels[indexPath.row].metaData?.value(forKey: lastSender) as? String ?? ""
-                if sender == User.shared.uid{
-                    cell.message.text = "Delivered"
-                }else{
-                    if lastSender == User.shared.uid{
-                cell.message.text = "Delivered"
-                    }else{
-                cell.message.text = "\(sender): New message"
-                    }
-                }
-                
-            }
-        
-            
-            
-            
-        }else{
-        cell.message.text = lastMsg
-        }
-    }
-    else{
-        cell.message.text = ""
-    }
-    
-    if let date = channels[indexPath.row].lastMessageDate{
-        print(date)
-        cell.timeStamp.text = date.getElapsedInterval()
-    }
-    
-    cell.readIndicator.isHidden = true
-        
-    if channels[indexPath.row].groupChat == nil{
-        for i in channels[indexPath.row].members{
-            if i != User.shared.uid{
-                channels[indexPath.row].name = channels[indexPath.row].metaData?.value(forKey: i) as? String ?? ""
-                cell.displayName.text = channels[indexPath.row].metaData?.value(forKey: i) as? String ?? ""
-                
-                if let url = channels[indexPath.row].profilePics?.value(forKey: i) as? String{
-                    DispatchQueue.main.async {
-                        cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
-                    }
-                }else{
-                    cell.profilePic.image = FollowersHelper().getUserProfilePicture()
-                }
-                cell.profilePic.clipsToBounds = true
-                cell.profilePic.layer.cornerRadius = cell.profilePic.bounds.height/2
-            }
-        }
+    let channel = channels[indexPath.row]
+    var id = ""
+    if channel.groupChat{
+        id = channel.id
+        cell.displayName.text = channel.name
     }else{
-        cell.displayName.text = channels[indexPath.row].name
-        if let id = channels[indexPath.row].id,
-            let url = channels[indexPath.row].profilePics?.value(forKey: id) as? String{
-            DispatchQueue.main.async {
-                cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
-            }
-            cell.profilePic.clipsToBounds = true
-            cell.profilePic.layer.cornerRadius = cell.profilePic.bounds.height/2
-        }else{
-            cell.profilePic.image = FollowersHelper().getGroupProfilePicture()
-        }
+        id = channel.getSenderID()
+        cell.displayName.text = channel.metaData.value(forKey: id) as? String ?? ""
     }
-    cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-    cell.message.textColor = .secondaryLabel
-    cell.message.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-    cell.timeStamp.textColor = .secondaryLabel
-    cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .regular)
     
-    if let lastMsgDate = channels[indexPath.row].lastMessageDate,
-        let lastOpenDate = channels[indexPath.row].lastOpened?.value(forKey: User.shared.uid ?? "") as? Timestamp{
-        if lastMsgDate > lastOpenDate.dateValue(){
-            if channels[indexPath.row].lastSentUser != User.shared.uid{
+    
+    let photoURL = channel.profilePics.value(forKey: id) as? String ?? ""
+    cell.profilePic.kf.setImage(with: URL(string: photoURL), placeholder: FollowersHelper().getUserProfilePicture())
+    
+    cell.message.text = channel.lastMesssageText
+    
+    cell.timeStamp.text = channel.lastMessageDate.getElapsedInterval()
+    
+    let timestamp = channel.lastOpened.value(forKey: User.shared.uid ?? "") as? Timestamp ?? Timestamp()
+    let lastRead = timestamp.dateValue()
+    
+    cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+    cell.displayName.textColor = .label
+    if lastRead > channel.lastMessageDate || channel.lastSentUser == User.shared.uid{
+        cell.readIndicator.isHidden = true
+        cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        cell.message.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        cell.timeStamp.textColor = .secondaryLabel
+        cell.message.textColor = .secondaryLabel
+    }else{
         cell.readIndicator.isHidden = false
-        cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        cell.message.textColor = .label
+        cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         cell.message.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         cell.timeStamp.textColor = .label
-        cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-            }    }
+        cell.message.textColor = .label
+
     }
     
+    cell.profilePic.layer.cornerRadius = cell.profilePic.frame.height/2
+    cell.profilePic.clipsToBounds = true
+    
+    
+
 
     
     return cell
@@ -345,6 +274,7 @@ extension ChannelsViewController {
     let vc = ChatViewController()
     
     vc.channel = channel
+    channelDelegate = vc
     navigationController?.pushViewController(vc, animated: true)
 
   }

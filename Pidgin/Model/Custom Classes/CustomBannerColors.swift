@@ -13,9 +13,9 @@ class CustomBannerColors: BannerColorsProtocol {
     internal func color(for style: BannerStyle) -> UIColor {
         switch style {
             case .info:        // Your custom .info color
-               return .systemPink
+                return .tertiarySystemBackground
             default:
-            return .systemPink
+            return .secondarySystemBackground
         }
     }
 

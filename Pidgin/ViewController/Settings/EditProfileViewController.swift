@@ -189,7 +189,5 @@ extension EditProfileViewController : CropViewControllerDelegate{
             // 'image' is the newly cropped version of the original image
         self.profileImage = image
         cellView.imageView.image = image
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadData"), object: nil)
-        cropViewController.dismiss(animated: true, completion: nil)
         }
 }

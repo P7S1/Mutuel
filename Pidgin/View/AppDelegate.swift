@@ -12,6 +12,7 @@ import Firebase
 import FirebaseFirestore
 import GiphyUISDK
 import FirebaseDatabase
+import NotificationBannerSwift
 let db = Firestore.firestore()
 
 var ref: DatabaseReference!
@@ -98,6 +99,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        if let uid = User.shared.uid{
+        let docRef = ref.child("/badgeCount/\(uid)")
+            
+        docRef.removeValue()
+        }
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 
@@ -162,6 +168,65 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let vc = storyboard.instantiateViewController(withIdentifier: "UsernameViewController") as! UsernameViewController
         let navBar = UINavigationController(rootViewController: vc)
         UIApplication.shared.windows.first?.rootViewController = navBar
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        if let aps = userInfo["aps"] as? NSDictionary {
+            if let alert = aps["alert"] as? NSDictionary {
+                
+                if let message = alert["body"] as? String{
+                    let title = alert["title"] as? String
+                    let banner = NotificationBanner(title: title, subtitle: message, style: .info, colors: CustomBannerColors())
+                    banner.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+                    banner.subtitleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+                    banner.subtitleLabel?.textColor = .secondaryLabel
+                    banner.titleLabel?.textColor = .label
+                    if let vc = getCurrentViewController() as? ChatViewController{
+                        print("chat vc in open")
+                    }else{
+                      banner.show()
+                    }
+                }
+                
+        }
+    }
+        completionHandler(.newData)
+    }
+    
+    // Returns the most recently presented UIViewController (visible)
+     func getCurrentViewController() -> UIViewController? {
+
+        // If the root view is a navigation controller, we can just return the visible ViewController
+        if let navigationController = getNavigationController() {
+
+            return navigationController.visibleViewController
+        }
+
+        // Otherwise, we must get the root UIViewController and iterate through presented views
+        if let rootController = UIApplication.shared.keyWindow?.rootViewController {
+
+            var currentController: UIViewController! = rootController
+
+            // Each ViewController keeps track of the view it has presented, so we
+            // can move from the head to the tail, which will always be the current view
+            while( currentController.presentedViewController != nil ) {
+
+                currentController = currentController.presentedViewController
+            }
+            return currentController
+        }
+        return nil
+    }
+
+    // Returns the navigation controller if it exists
+     func getNavigationController() -> UINavigationController? {
+
+        if let navigationController = UIApplication.shared.keyWindow?.rootViewController  {
+
+            return navigationController as? UINavigationController
+        }
+        return nil
     }
 
 }

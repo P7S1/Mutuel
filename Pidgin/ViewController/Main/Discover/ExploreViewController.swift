@@ -73,11 +73,11 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             appearance?.shadowColor = .clear
             navigationItem.standardAppearance = appearance
             
-            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 10)
+            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 25)
             originalQuery = query
             
         }else{
-            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 10)
+            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 25)
             originalQuery = query
         }
         getMorePosts(removeAll: false)
@@ -170,7 +170,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         query.getDocuments { (snapshot, error) in
             if error == nil{
-                if snapshot!.count < 10{
+                if snapshot!.count < 25{
                     self.loadedAllPosts = true
                     self.updateFooter()
                 }

@@ -17,6 +17,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         self.delegate = self
         self.tabBar.isTranslucent = true
         self.tabBar.backgroundColor = .none
+        self.tabBar.barTintColor = .systemBackground
         self.tabBar.itemPositioning = .centered
         let config = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
         let config2 = UIImage.SymbolConfiguration(pointSize: 19, weight: .medium)

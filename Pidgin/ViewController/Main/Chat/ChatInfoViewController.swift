@@ -24,7 +24,7 @@ class ChatInfoViewController: UIViewController {
     
     @IBOutlet weak var addMemberButton: UIButton!
     
-    var channel = Channel(name: "")
+    var channel : Channel!
     
     
     override func viewDidLoad() {
@@ -52,25 +52,25 @@ class ChatInfoViewController: UIViewController {
             addMemberButton.setTitleColor(.systemBlue, for: .normal)
         }
         
-        if channel.groupChat ?? false{
-            displayname = channel.name ?? ""
+        if channel.groupChat {
+            displayname = channel.name 
             leaveGroupButton.setTitle("Leave Group", for: .normal)
             addMemberButton.setTitle("Edit Group", for: .normal)
-            if let url = channel.profilePics?.value(forKey: channel.id ?? "") as? String{
+            if let url = channel.profilePics.value(forKey: channel.id ?? "") as? String{
                 image.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
                 image.heroID = url
             }else{
                 image.image = FollowersHelper().getGroupProfilePicture()
             }
         }else{
-            if let url = channel.profilePics?.value(forKey: channel.members[0]) as? String{
+            if let url = channel.profilePics.value(forKey: channel.members[0]) as? String{
                 image.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
                 image.heroID = url
             }else{
                 image.image = FollowersHelper().getUserProfilePicture()
             }
             if channel.members.count > 0{
-                displayname = channel.metaData?[channel.members[0]] as? String ?? ""
+                displayname = channel.metaData[channel.members[0]] as? String ?? ""
                 addMemberButton.setTitle("Start Group", for: .normal)
             }
             leaveGroupButton.setTitle("Block User", for: .normal)
@@ -85,9 +85,9 @@ class ChatInfoViewController: UIViewController {
     
     @objc func handleProfilePictureTap(){
         print("tap gesture profile picture")
-        if channel.groupChat ?? false{
+        if channel.groupChat {
             
-            if let string = channel.profilePics?.value(forKey: channel.id ?? "") as? String,
+            if let string = channel.profilePics.value(forKey: channel.id ?? "") as? String,
                 let url = URL(string: string){
                 let image = LightboxImage(imageURL: url)
                 presentLightBoxController(images: [image], goToIndex: nil)
@@ -95,7 +95,7 @@ class ChatInfoViewController: UIViewController {
             
         }else{
             
-            if let string = channel.profilePics?.value(forKey: channel.getSenderID() ?? "") as? String,
+            if let string = channel.profilePics.value(forKey: channel.getSenderID() ?? "") as? String,
                 let url = URL(string: string){
                 let image = LightboxImage(imageURL: url)
                 presentLightBoxController(images: [image], goToIndex: nil)
@@ -108,7 +108,7 @@ class ChatInfoViewController: UIViewController {
     @IBAction func leaveGroupButtonPressed(_ sender: Any) {
         print("leave group pressed")
         
-        if channel.groupChat ?? false{
+        if channel.groupChat {
             let alert = UIAlertController(title: "Leave \(displayname)", message: "Are you sure you want to leave \(displayname)?. You will have to be added again", preferredStyle: .alert)
             
             alert.addAction(UIAlertAction(title: "Leave", style: .default, handler: { (action) in
@@ -139,7 +139,7 @@ class ChatInfoViewController: UIViewController {
         print("add member button pressed")
        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "CreateGroupViewController") as! CreateGroupViewController
-        if channel.groupChat ?? false{
+        if channel.groupChat {
          vc.mode = "editing"
         }
         vc.channel = channel
@@ -167,10 +167,10 @@ extension ChatInfoViewController : UITableViewDelegate, UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchUserTableViewCell", for: indexPath) as! SearchUserTableViewCell
         
         
-        cell.displayName.text = channel.metaData?[channel.members[indexPath.row]] as? String
+        cell.displayName.text = channel.metaData[channel.members[indexPath.row]] as? String
         cell.username.removeFromSuperview()
         
-        if let url = channel.profilePics?.value(forKey: channel.members[indexPath.row]) as? String{
+        if let url = channel.profilePics.value(forKey: channel.members[indexPath.row]) as? String{
             cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
         }else{
             cell.profilePic.image = FollowersHelper().getUserProfilePicture()

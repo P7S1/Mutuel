@@ -138,8 +138,6 @@ class User : Account{
     
     func invalidateUser(){
         userListener?.remove()
-        channelListener?.remove()
-        channels.removeAll()
         username = nil
         phoneNumber = nil
         email = nil
@@ -151,8 +149,6 @@ class User : Account{
     func invalidateToken(completion: @escaping (Bool) -> Void){
         let user = User.shared
         userListener?.remove()
-        channelListener?.remove()
-        channels.removeAll()
         ProgressHUD.show()
         if  let userID = user.uid,
             let deviceID = UIDevice.current.identifierForVendor?.uuidString{

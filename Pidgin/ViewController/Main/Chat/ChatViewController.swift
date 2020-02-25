@@ -20,6 +20,10 @@ import GiphyCoreSDK
 import SafariServices
 import NotificationBannerSwift
 import DeepDiff
+
+public protocol MessageDelegate {
+func collectionViewScrolled(_ scrollView: UIScrollView)
+}
 class ChatViewController: MessagesViewController {
     
     var name = ""
@@ -32,7 +36,7 @@ class ChatViewController: MessagesViewController {
     
     var editingIndex = 0
 
-    var channel: Channel?
+    var channel: Channel!
     
     var activityIndicator : UIActivityIndicatorView!
     
@@ -42,8 +46,6 @@ class ChatViewController: MessagesViewController {
     
     let recievedSound: SystemSoundID = 1003
     
-    var listenerHasRan = false
-    
     var currentlyLoadingMessages = false
     
     var shouldScroll = true
@@ -52,6 +54,11 @@ class ChatViewController: MessagesViewController {
     
     
     static var lastMessage : NSMutableDictionary = NSMutableDictionary()
+    
+    deinit {
+        print("deinit")
+        chatListener?.remove()
+    }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -61,7 +68,6 @@ class ChatViewController: MessagesViewController {
     self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
     //self.navigationController?.navigationBar.topItem?.title = " "
     //messagesCollectionView.transform = CGAffineTransform(scaleX: 1, y: -1)
-    NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name:NSNotification.Name(rawValue: "reloadData"), object: nil)
     NotificationCenter.default.addObserver(self,
     selector: #selector(applicationWillEnterForeground),
     name: UIApplication.willEnterForegroundNotification,
@@ -109,9 +115,9 @@ class ChatViewController: MessagesViewController {
     
     layout?.emojiMessageSizeCalculator.messageLabelFont = UIFont.systemFont(ofSize: 52)
     layout?.sectionInset = UIEdgeInsets(top: 1, left: 8, bottom: 4, right: 8)
-    
+    layout?.minimumLineSpacing = 2
     layout?.setMessageOutgoingAvatarSize(.zero)
-    if channel?.groupChat == nil{
+    if !(channel?.groupChat ?? false){
         layout?.setMessageIncomingAvatarSize(.zero)
         layout?.setMessageIncomingMessageTopLabelAlignment(LabelAlignment(textAlignment: .left, textInsets: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)))
     }
@@ -121,13 +127,13 @@ class ChatViewController: MessagesViewController {
     
     if channel?.groupChat ?? false{
     name = channel?.name ?? "Unknown"
-    url = channel?.profilePics?.value(forKey: channel?.id ?? "") as? String ?? ""
+        url = channel?.profilePics.value(forKey: channel?.id ?? "") as? String ?? ""
     }else{
         for member in channel?.members ?? [String](){
             if member != User.shared.uid{
                 // the UIButton is simply there to capture touch up event on the entire bar button view.
-                name = channel?.metaData?.value(forKey: member) as? String ?? ""
-                url = channel?.profilePics?.value(forKey: member) as? String ?? ""
+                name = channel?.metaData.value(forKey: member) as? String ?? ""
+                url = channel?.profilePics.value(forKey: member) as? String ?? ""
             }
         }
     }
@@ -141,16 +147,11 @@ class ChatViewController: MessagesViewController {
     updateConstraints()
         setSetttingsButton()
     
+    getMessageArray()
   }
     
     @objc func reloadData(){
         if didViewAppear{
-        if let chan = channel, let index = channels.firstIndex(of: chan){
-            channel?.lastOpened = channels[index].lastOpened
-            channel?.lastMessageDate = channels[index].lastMessageDate
-            channel?.reading = channels[index].reading
-            
-        }
         if let messages = channel?.messages{
         for message in messages{
             guard let index = channel?.messages.firstIndex(of: message) else{
@@ -199,7 +200,6 @@ class ChatViewController: MessagesViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        getMessageArray()
         writeLastOpened()
     }
     
@@ -209,7 +209,6 @@ class ChatViewController: MessagesViewController {
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        chatListener?.remove()
     }
     func updateConstraints(){
         NSLayoutConstraint.activate([
@@ -220,7 +219,6 @@ class ChatViewController: MessagesViewController {
         ])
     }
     func removeLastOpened(){
-       print("writing last opened...")
         if let id = channel?.id, let uid = User.shared.uid{
         let docRef = db.collection("channels").document(id)
              docRef.updateData(["lastOpened.\(uid)" : Timestamp(date: Date()),
@@ -232,7 +230,6 @@ class ChatViewController: MessagesViewController {
         writeLastOpened()
     }
     func writeLastOpened(){
-        print("writing last opened...")
         if let id = channel?.id, let uid = User.shared.uid{
        let docRef = db.collection("channels").document(id)
             docRef.updateData(["lastOpened.\(uid)" : Timestamp(date: Date()),
@@ -315,7 +312,7 @@ class ChatViewController: MessagesViewController {
     
     func getMessageArray(){
         let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages")
-        let query = docRef.order(by: "sentDate", descending: true).limit(to: 16)
+        let query = docRef.order(by: "sentDate", descending: true).limit(to: 20)
         
         
         chatListener = query.addSnapshotListener { (snapshot, error) in
@@ -346,10 +343,10 @@ class ChatViewController: MessagesViewController {
             currentlyLoadingMessages = true
         if let doc = lastDocument{
        let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages")
-        let query = docRef.order(by: "sentDate", descending: true).limit(to: 16).start(afterDocument: doc)
+        let query = docRef.order(by: "sentDate", descending: true).limit(to: 30).start(afterDocument: doc)
             query.getDocuments { (snapshot, error) in
                 if error == nil{
-                    if snapshot!.count < 16{
+                    if snapshot!.count < 30{
                         self.loadedAllMessages = true
                     }
                //     self.handleDocumentChange(snapshot!.documents, scrollToBottom: false)
@@ -358,7 +355,7 @@ class ChatViewController: MessagesViewController {
                     let message = Message(sender: self.currentSender(), messageId: "", sentDate: Date(), kind: .text(""))
                     message.convertFrom(dictionary: document)
                         if !(self.channel?.messages.contains(message) ?? false){
-                        self.channel?.messages.append(message)
+                        self.channel?.messages.insert(message, at: 0)
                         }
                     }
                     self.channel?.messages.sort()
@@ -373,7 +370,6 @@ class ChatViewController: MessagesViewController {
     }
     
     private func handleDocumentChange(_ documents: [QueryDocumentSnapshot], scrollToBottom : Bool) {
-      print("handle doc change channel")
          let old = channel?.messages ?? [Message]()
          var newItems = channel?.messages ?? [Message]()
         
@@ -383,19 +379,23 @@ class ChatViewController: MessagesViewController {
         lastDocument = document
         msg.convertFrom(dictionary: document)
         if !(newItems.contains(msg) ){
-            newItems.append(msg)
+            newItems.insert(msg, at: 0)
+        }else{
+            let index = channel.messages.firstIndex(of: msg)!
+            
+            newItems.remove(at: index)
+            newItems.insert(msg, at: index)
+            }
         }
-        }
-        newItems.sort()
         let changes = diff(old: old, new: newItems)
-        if let ch = self.channel, let index = channels.firstIndex(of: ch){
-        self.channel = channels[index]
-        }
         self.channel?.messages = newItems
-        messagesCollectionView.reload(changes: changes, section: 0, updateData: {
-        self.channel?.messages = newItems
+        
+        DispatchQueue.main.async(execute: {
+            self.messagesCollectionView.reload(changes: changes, section: 0, updateData: {
+            self.channel?.messages = newItems
+            })
+            self.messagesCollectionView.scrollToBottom(animated: self.didViewAppear)
         })
-        self.messagesCollectionView.scrollToBottom(animated: true)
     }
     
     func isPreviousMessageSameSender(at indexPath: IndexPath) -> Bool {
@@ -409,6 +409,9 @@ class ChatViewController: MessagesViewController {
     
     func isNextMessageSameSender(at indexPath: IndexPath) -> Bool {
         guard indexPath.row + 1 < (channel!.messages.count) else { return false }
+        
+        
+        
         return channel?.messages[indexPath.row].sender.senderId == channel?.messages[indexPath.row + 1].sender.senderId
     }
     
@@ -463,7 +466,6 @@ class ChatViewController: MessagesViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print("loading more messages")
         if indexPath.row == 0{
             self.loadMoreMessages()
         
@@ -484,7 +486,7 @@ class ChatViewController: MessagesViewController {
 
 extension ChatViewController: MessagesDataSource {
     func currentSender() -> SenderType {
-        return Sender(id: User.shared.uid ?? "", displayName: channel?.metaData?.value(forKey: User.shared.uid ?? "") as? String ?? (User.shared.name ?? ""))
+        return Sender(id: User.shared.uid ?? "", displayName: channel?.metaData.value(forKey: User.shared.uid ?? "") as? String ?? (User.shared.name ?? ""))
     }
 
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
@@ -557,7 +559,7 @@ extension ChatViewController : MessageCellDelegate{
             }
             if message.sender.senderId == User.shared.uid{
             alertController.addAction(UIAlertAction(title: "Unsave Message", style: .destructive, handler: { (action) in
-                let ref = db.collection("channels").document(self.channel!.id ?? "").collection("messages").document(message.messageId)
+                let ref = db.collection("channels").document(self.channel!.id ).collection("messages").document(message.messageId)
               /*  if (self.channel?.messages.contains(message))!{
                     self.channel?.messages.remove(at: indexPath.row)
                     self.messagesCollectionView.deleteItems(at: [indexPath])
@@ -587,8 +589,6 @@ extension ChatViewController : MessageCellDelegate{
             alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 
             }))
-            
-            alertController.view.tintColor = .systemBlue
             alertController.modalPresentationStyle = .popover
             shouldScroll = false
             self.present(alertController, animated: true, completion: nil)
@@ -664,18 +664,16 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
             batch.setData(["content" : text as Any,
                                       "messageKind":kind,
                                       "sender" : User.shared.name ?? "",
-                                      "sentDate" : Timestamp.init(date: Date()),
                                       "uid" : User.shared.uid ?? "",
                                       "messageID" : docRef2.documentID,
                                       "photoURL" : photoURL as Any,
-                                        "placeHolderURL" : placeHolderURL as Any
+                                        "placeHolderURL" : placeHolderURL as Any,
+                                        "members" : self.channel.members,
+                                        "isGroup" : self.channel.groupChat,
+                                        "groupName": self.channel.name,
+                                        "sentDate" : Timestamp(date: Date())
             ], forDocument: docRef2)
-            
-            batch.updateData(["lastSentDate" : Timestamp(date: Date()),
-            "lastSentMessage" : "Sent a message",
-            "lastSentMessageID" : docRef2.documentID,
-            "lastSentUser" : User.shared.uid ?? "",
-            "active" : true], forDocument: docRef)
+
             
         //let index = IndexPath(row: self.channel!.messages.count - 1, section: 0)
         DispatchQueue.main.async { [weak self] in
@@ -683,22 +681,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
                 
                 if error == nil{
                     print("write batch successful")
-                    if let tokens = self?.channel?.tokens {
-                    for token in tokens{
-                    let notify = PushNotificationSender()
-                     if !User.shared.tokens.contains(token){
-                        if self?.channel?.groupChat == nil{
-                            notify.sendPushNotification(to: token , title: User.shared.name ?? "", body: "New Message", tag: self?.channel?.id, badge: nil)
-                     }else{
-                            notify.sendPushNotification(to: token , title: self?.channel?.name ?? "", body: "from \(User.shared.name ?? "")", tag: self?.channel?.id, badge: nil)
-                     }
-                     }else{
-                         print("not senidng it to myself")
-                     }
-                     
-                    }
-                    }
-                    
+
                     self?.messageInputBar.inputTextView.text = String()
                     self?.messageInputBar.invalidatePlugins()
                     self?.messageInputBar.inputTextView.placeholder = "Say something..."
@@ -714,10 +697,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
     
     func uploadImage(_ image: UIImage?, to channel: Channel, completion: @escaping (URL?) -> Void) {
      let storage = Storage.storage().reference()
-      guard let channelID = channel.id else {
-        completion(nil)
-        return
-      }
+       let channelID = channel.id
       
         guard let data = image?.jpegData(compressionQuality: 0.5) else {
         completion(nil)
@@ -746,9 +726,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
     }
     
     func uploadVideo(url: URL, channel : Channel, success : @escaping (String) -> Void,failure : @escaping (Error) -> Void) {
-        guard let channelID = channel.id else {
-          return
-        }
+        let channelID = channel.id
         let name = "\(UUID().uuidString)#\(Int(Date().timeIntervalSince1970)).mp4"
         let path = NSTemporaryDirectory() + name
 
@@ -816,10 +794,12 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
         avatarView.set(avatar: avatar)
         if channel?.groupChat == true{
         avatarView.isHidden = isNextMessageSameSender(at: indexPath)
+        }else{
+            avatarView.isHidden = true
         }
         //avatarView.layer.borderWidth = 2
         //avatarView.layer.borderColor = UIColor.systemPink.cgColor
-        if let url = channel?.profilePics?.value(forKey: message.sender.senderId) as? String{
+        if let url = channel?.profilePics.value(forKey: message.sender.senderId) as? String{
             DispatchQueue.main.async {
                 avatarView.kf.setImage(with: URL(string: url), placeholder: UIImage.init(named: "icons8-male-user-96"))
             }
@@ -841,8 +821,9 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
     }
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         if !isNextMessageSameSender(at: indexPath){
-        let tail: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
-        return .bubbleTail(tail, .curved)
+       // let tail: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
+       // return .bubbleTail(tail, .curved)
+            return .bubble
         }else{
             return .bubble
         }
@@ -863,7 +844,7 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
                 channel?.messages[indexPath.row].content?.count ?? 0<=3){
             return UIColor.clear
         }else if isFromCurrentSender(message: message){
-            return .systemBlue
+            return .systemPink
         }else{
             if #available(iOS 13.0, *) {
                 return UIColor.systemGray5
@@ -912,28 +893,24 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
     
     func messageBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if !isNextMessageSameSender(at: indexPath) && isFromCurrentSender(message: message) && isLastMessage(at: indexPath){
-            if #available(iOS 13.0, *) {
+            
                 var string = "Delivered"
+            
+            if !(channel.messages[indexPath.row].isDelivered){
+                string = "Sending..."
+            }
                 
-                if let uid = channel?.getSenderID(),
-                    let lastOpened = channel?.lastOpened?.value(forKey: uid) as? Timestamp,
-                    let lastSent = channel?.lastMessageDate{
-                    if lastOpened.dateValue() > lastSent && !(channel?.groupChat ?? false){
-                        let time = lastOpened.dateValue().getElapsedInterval()
-                        string = "Read \(time)"
-                    }else if (channel?.reading?.value(forKey: uid) as? Bool) ==  true{
-                        if !(channel?.groupChat ?? false){
-                            let time = Date().getElapsedInterval()
-                            string = "Read \(time)"
-                        }
+                if channel.isUserReading(uid: channel.getSenderID()){
+                    string = "Reading..."
+                }else if channel.getLastOpened(uid: channel.getSenderID()) != nil{
+                    let lastOpened = (channel.getLastOpened(uid: channel.getSenderID()))!
+                    if lastOpened > channel.lastMessageDate{
+                        string = "Last read \(lastOpened.getElapsedInterval())"
                     }
                 }
                 
                 return NSAttributedString(string: string, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
-            } else {
-                // Fallback on earlier versions
-                return NSAttributedString(string: "Delivered", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
-            }
+            
         }
         return nil
     }
@@ -1072,7 +1049,7 @@ extension ChatViewController: LightboxControllerPageDelegate, LightboxController
             for message in messages{
                 if let url = message.photoURL, let output = URL(string: url){
                     print("appending image index \(images.count-1)")
-                    let sender = channel?.metaData?.value(forKey: message.sender.senderId) as? String
+                    let sender = channel?.metaData.value(forKey: message.sender.senderId) as? String
                     let date = message.sentDate.getElapsedInterval()
                     let text = "Sent by \(sender ?? "Unknown"), \(date)"
                     var lightboxImage = LightboxImage(imageURL: output,text:text)
@@ -1107,4 +1084,20 @@ extension ChatViewController: GiphyDelegate {
    func didDismiss(controller: GiphyViewController?) {
         // your user dismissed the controller without selecting a GIF.
    }
+}
+
+extension ChatViewController : ChannelDelegate{
+    func updateChannel(channel: Channel) {
+        
+        if self.channel.id == channel.id{
+        self.channel.reading = channel.reading
+        self.channel.lastOpened = channel.lastOpened
+        self.channel.lastMessageDate = channel.lastMessageDate
+        self.channel.lastSentMessageID = channel.lastSentMessageID
+            
+            self.reloadData()
+        }
+    }
+    
+    
 }
