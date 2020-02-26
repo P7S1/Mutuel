@@ -32,5 +32,6 @@ target 'Pidgin' do
   pod "SwipeTransition"
   pod "SwipeTransitionAutoSwipeBack"      # if needed
   pod "SwipeTransitionAutoSwipeToDismiss" # if needed
+  pod 'CarbonKit'
 
 end

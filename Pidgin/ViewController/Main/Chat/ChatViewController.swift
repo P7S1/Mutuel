@@ -149,7 +149,7 @@ class ChatViewController: MessagesViewController {
     
     getMessageArray()
   }
-    
+
     @objc func reloadData(){
         if didViewAppear{
         if let messages = channel?.messages{
@@ -317,7 +317,7 @@ class ChatViewController: MessagesViewController {
         
         chatListener = query.addSnapshotListener { (snapshot, error) in
             if error == nil{
-                self.handleDocumentChange(snapshot!.documents, scrollToBottom: true)
+                self.handleDocumentChange(snapshot!, scrollToBottom: true)
                 self.activityIndicator.stopAnimating()
                 
                 print(self.didViewAppear)
@@ -358,10 +358,11 @@ class ChatViewController: MessagesViewController {
                         self.channel?.messages.insert(message, at: 0)
                         }
                     }
-                    self.channel?.messages.sort()
                     self.messagesCollectionView.reloadDataAndKeepOffset()
                     self.activityIndicator.stopAnimating()
                     self.currentlyLoadingMessages = false
+                }else{
+                    print("ther was an error \(error)")
                 }
             }
 
@@ -369,33 +370,51 @@ class ChatViewController: MessagesViewController {
     }
     }
     
-    private func handleDocumentChange(_ documents: [QueryDocumentSnapshot], scrollToBottom : Bool) {
+    private func handleDocumentChange(_ snapshot: QuerySnapshot, scrollToBottom : Bool) {
          let old = channel?.messages ?? [Message]()
          var newItems = channel?.messages ?? [Message]()
         
-        
-        for document in documents{
-      let msg = Message(sender: Sender(id: "", displayName: ""), messageId: "", sentDate: Date(), kind: MessageKind.text(""))
-        lastDocument = document
-        msg.convertFrom(dictionary: document)
-        if !(newItems.contains(msg) ){
-            newItems.insert(msg, at: 0)
-        }else{
-            let index = channel.messages.firstIndex(of: msg)!
+        var scrollToBottom = false
+        snapshot.documentChanges.forEach { (change) in
+            let message = Message(sender: currentSender(), messageId: "", sentDate: Date(), kind: .text(""))
             
+            message.convertFrom(dictionary: change.document)
+            
+            switch change.type{
+            case .added:
+            scrollToBottom = true
+            newItems.append(message)
+            lastDocument = change.document
+            case .modified:
+            guard let index = newItems.firstIndex(of: message) else { return }
             newItems.remove(at: index)
-            newItems.insert(msg, at: index)
+            newItems.insert(message, at: index)
+            case .removed:
+            return
+           // guard let index = newItems.firstIndex(of: message) else { return }
+           // newItems.remove(at: index)
+            default:
+                return
             }
         }
+        newItems.sort()
         let changes = diff(old: old, new: newItems)
-        self.channel?.messages = newItems
+        
         
         DispatchQueue.main.async(execute: {
-            self.messagesCollectionView.reload(changes: changes, section: 0, updateData: {
-            self.channel?.messages = newItems
-            })
-            self.messagesCollectionView.scrollToBottom(animated: self.didViewAppear)
-        })
+                self.messagesCollectionView.reload(changes: changes, section: 0, updateData: {
+                self.channel?.messages = newItems
+            }) { (completion) in
+                if completion && scrollToBottom{
+
+                    self.messagesCollectionView.scrollToBottom(animated:true)
+                    
+                }
+            }
+ 
+        
+    })
+        
     }
     
     func isPreviousMessageSameSender(at indexPath: IndexPath) -> Bool {
@@ -558,12 +577,12 @@ extension ChatViewController : MessageCellDelegate{
                 }
             }
             if message.sender.senderId == User.shared.uid{
-            alertController.addAction(UIAlertAction(title: "Unsave Message", style: .destructive, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: "Delete Message", style: .destructive, handler: { (action) in
                 let ref = db.collection("channels").document(self.channel!.id ).collection("messages").document(message.messageId)
-              /*  if (self.channel?.messages.contains(message))!{
-                    self.channel?.messages.remove(at: indexPath.row)
+                if (self.channel.messages.contains(message)){
+                    self.channel.messages.remove(at: indexPath.row)
                     self.messagesCollectionView.deleteItems(at: [indexPath])
-                } */
+                }
                 ref.delete()
                 if let url = message.photoURL{
                 FollowersHelper.deleteImage(at: url)
@@ -571,18 +590,7 @@ extension ChatViewController : MessageCellDelegate{
                 if let url = message.placeHolderURL{
                                FollowersHelper.deleteImage(at: url)
                                }
-                    let leftView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-                leftView.image = UIImage(systemName: "checkmark.circle.fill")
-                    leftView.contentMode = .scaleAspectFill
-                    leftView.clipsToBounds = true
-                    leftView.layer.cornerRadius = leftView.frame.height/2
-                leftView.tintColor = .white
-                    
-                    let banner = NotificationBanner(title: "Message Unsaved", subtitle: "Message will disappear after you exit the chat", leftView: leftView, rightView: nil, style: .info, colors: CustomBannerColors())
-                banner.duration = 2.5
-                banner.show()
                            
-                
             }))
             }
 

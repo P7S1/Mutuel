@@ -170,6 +170,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.windows.first?.rootViewController = navBar
     }
     
+    
+    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
         if let aps = userInfo["aps"] as? NSDictionary {
@@ -179,14 +181,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let title = alert["title"] as? String
                     let banner = NotificationBanner(title: title, subtitle: message, style: .info, colors: CustomBannerColors())
                     banner.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-                    banner.subtitleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+                    banner.subtitleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
                     banner.subtitleLabel?.textColor = .secondaryLabel
                     banner.titleLabel?.textColor = .label
-                    if let vc = getCurrentViewController() as? ChatViewController{
-                        print("chat vc in open")
-                    }else{
-                      banner.show()
-                    }
+                    
+                    banner.show(queuePosition: .front, bannerPosition: .top, queue: NotificationBannerQueue(maxBannersOnScreenSimultaneously: 3))
                 }
                 
         }
@@ -194,40 +193,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(.newData)
     }
     
-    // Returns the most recently presented UIViewController (visible)
-     func getCurrentViewController() -> UIViewController? {
-
-        // If the root view is a navigation controller, we can just return the visible ViewController
-        if let navigationController = getNavigationController() {
-
-            return navigationController.visibleViewController
-        }
-
-        // Otherwise, we must get the root UIViewController and iterate through presented views
-        if let rootController = UIApplication.shared.keyWindow?.rootViewController {
-
-            var currentController: UIViewController! = rootController
-
-            // Each ViewController keeps track of the view it has presented, so we
-            // can move from the head to the tail, which will always be the current view
-            while( currentController.presentedViewController != nil ) {
-
-                currentController = currentController.presentedViewController
-            }
-            return currentController
-        }
-        return nil
-    }
-
-    // Returns the navigation controller if it exists
-     func getNavigationController() -> UINavigationController? {
-
-        if let navigationController = UIApplication.shared.keyWindow?.rootViewController  {
-
-            return navigationController as? UINavigationController
-        }
-        return nil
-    }
+   
 
 }
 
