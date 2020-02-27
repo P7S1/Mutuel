@@ -49,33 +49,8 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
  
         viewControllers = [homeViewController, actionViewController, secondViewController]
         
-        NotificationCenter.default.addObserver(self,
-        selector: #selector(applicationWillEnterBackground),
-        name: UIApplication.willResignActiveNotification,
-        object: nil)
     }
     
-    @objc func applicationWillEnterBackground(){
-        if self.tabBar.isHidden{
-        changeTabBar(hidden: false
-            , animated: true)
-        }
-    }
-    
-    func changeTabBar(hidden:Bool, animated: Bool){
-        if tabBar.isHidden == hidden{ return }
-        let frame = tabBar.frame
-        print(frame.size.height)
-        let offset = hidden ? frame.size.height : -frame.size.height
-        let duration:TimeInterval = (animated ? 0.2 : 0.0)
-        tabBar.isHidden = false
-
-        UIView.animate(withDuration: duration, animations: {
-            self.tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
-        }, completion: { (true) in
-            self.tabBar.isHidden = hidden
-        })
-    }
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 

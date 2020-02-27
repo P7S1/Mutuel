@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         FirebaseApp.configure()
         ref = Database.database().reference()
-        GiphyUISDK.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
+        Giphy.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
         if #available(iOS 13.0, *) {
             configureNavBariOS13()
         }

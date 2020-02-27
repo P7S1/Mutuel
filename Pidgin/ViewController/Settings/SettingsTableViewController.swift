@@ -31,7 +31,6 @@ class SettingsTableViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         checkIfSignedIn()
-        changeTabBar(hidden: false, animated: true)
     }
     
     @IBAction func logOutButtonPressed(_ sender: Any) {
@@ -135,20 +134,5 @@ class SettingsTableViewController: UITableViewController {
             else { fatalError("Expected a valid URL") }
         UIApplication.shared.open(writeReviewURL, options: [:], completionHandler: nil)
     }
-
-       func changeTabBar(hidden:Bool, animated: Bool){
-           guard let tabBar = self.tabBarController?.tabBar else { return; }
-           if tabBar.isHidden == hidden{ return }
-           let frame = tabBar.frame
-           let offset = hidden ? frame.size.height : -frame.size.height
-           let duration:TimeInterval = (animated ? 0.2 : 0.0)
-           tabBar.isHidden = false
-
-           UIView.animate(withDuration: duration, animations: {
-               tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
-           }, completion: { (true) in
-               tabBar.isHidden = hidden
-           })
-       }
 
 }

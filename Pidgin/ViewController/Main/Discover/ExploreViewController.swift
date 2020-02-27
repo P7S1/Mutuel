@@ -23,8 +23,6 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var exploreDelegate : ExploreViewControllerDelegate?
     
-     var adjustInsets = false
-    
     var willPresentAView = false
     
     var lastDocument : DocumentSnapshot?
@@ -57,11 +55,6 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-        if adjustInsets{
-        collectionView.contentInset = UIEdgeInsets(top: 42, left: 0, bottom: 0, right: 0)
-        }else{
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        }
         
         if isUserProfile{
             navigationItem.largeTitleDisplayMode = .never
@@ -296,30 +289,6 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         exploreDelegate?.collectionViewScrolled(scrollView)
-    }
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
-            changeTabBar(hidden: true, animated: true)
-        }
-        else{
-            changeTabBar(hidden: false, animated: true)
-        }
-    }
-
-    func changeTabBar(hidden:Bool, animated: Bool){
-        guard let tabBar = self.tabBarController?.tabBar else { return; }
-        if tabBar.isHidden == hidden{ return }
-        let frame = tabBar.frame
-        print(frame.size.height)
-        let offset = hidden ? frame.size.height : -frame.size.height
-        let duration:TimeInterval = (animated ? 0.2 : 0.0)
-        tabBar.isHidden = false
-
-        UIView.animate(withDuration: duration, animations: {
-            tabBar.frame = frame.offsetBy(dx: 0, dy: offset)
-        }, completion: { (true) in
-            tabBar.isHidden = hidden
-        })
     }
     /*
     @objc func settingsBarButtonPressed(){
