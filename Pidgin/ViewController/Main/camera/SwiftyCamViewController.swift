@@ -16,7 +16,6 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 import UIKit
 import AVFoundation
-import ARKit
 
 // MARK: View Controller Declaration
 
@@ -268,12 +267,12 @@ open class SwiftyCamViewController: UIViewController {
 
 	override open func viewDidLoad() {
 		super.viewDidLoad()
+        session.automaticallyConfiguresApplicationAudioSession = false
         previewLayer = PreviewView(frame: view.frame, videoGravity: videoGravity)
         view.addSubview(previewLayer)
         view.sendSubviewToBack(previewLayer)
 
-        
-        
+
 		// Add Gesture Recognizers
 
         addGestureRecognizers()
@@ -380,8 +379,8 @@ open class SwiftyCamViewController: UIViewController {
 
 		// Set background audio preference
 
-		setBackgroundAudioPreference()
-
+		//setBackgroundAudioPreference()
+        
 		sessionQueue.async {
 			switch self.setupResult {
 			case .success:
@@ -977,22 +976,22 @@ open class SwiftyCamViewController: UIViewController {
 
     /// Sets whether SwiftyCam should enable background audio from other applications or sources
     fileprivate func setBackgroundAudioPreference() {
-        guard allowBackgroundAudio == true else {
+       /* guard allowBackgroundAudio == true else {
             return
         }
         
         guard audioEnabled == true else {
             return
-        }
+        } */
         
         do{
             if #available(iOS 10.0, *) {
                 
-                try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.mixWithOthers, .allowBluetooth, .allowAirPlay, .allowBluetoothA2DP,.defaultToSpeaker])
+                try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
                 
             } else {
             
-                try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.mixWithOthers, .allowBluetooth, .allowAirPlay, .allowBluetoothA2DP,.defaultToSpeaker])
+                try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
                 
             }
             session.automaticallyConfiguresApplicationAudioSession = false

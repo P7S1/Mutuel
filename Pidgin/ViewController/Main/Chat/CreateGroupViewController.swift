@@ -18,7 +18,7 @@ class CreateGroupViewController: UIViewController{
     @IBOutlet weak var image: UIButton!
     
     
-    var channel : Channel!
+    var channel : Channel =  Channel(id: "", name: "")
     
     var mode = ""
     
@@ -35,6 +35,7 @@ class CreateGroupViewController: UIViewController{
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         errorLabel.isHidden = true
+   
         createGroupButton.roundCorners()
         tableView.delegate = self
         tableView.dataSource = self

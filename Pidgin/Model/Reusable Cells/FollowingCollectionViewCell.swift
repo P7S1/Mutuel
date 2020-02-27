@@ -59,7 +59,7 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     func setUpPlayer(post : Post){
         playerContainerView.backgroundColor = .clear
         if post.isVideo{
-            playerContainerView.initialize(post: post, shouldPlay: true)
+            playerContainerView.play()
         }else{
             playerContainerView.isHidden = true
         }

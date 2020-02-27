@@ -32,10 +32,6 @@ struct Post{
     
     var repostsCount : Int
     
-    var hasQueriedForUser = false
-    
-    var naturalSize : CGSize
-    
     var isGIF : Bool
     
     var creatorDisplayName : String
@@ -56,10 +52,8 @@ struct Post{
         repostsCount = data?["repostsCount"] as? Int ?? 0
         commentsCount = data?["commentsCount"] as? Int ?? 0
         
-        let width = data?["width"] as? Int ?? 200
-        let height = data?["height"] as? Int ?? 200
-        
-        naturalSize = CGSize(width: width, height: height)
+        let width = data?["width"] as? CGFloat ?? 200
+        let height = data?["height"] as? CGFloat ?? 200
 
         photoSize = CGSize(width: width, height: height)
         postID = data?["postID"] as? String ?? ""
@@ -78,12 +72,10 @@ struct Post{
         self.isVideo = isVideo
         self.videoURL = videoURL
         self.photoSize = photoSize
-        self.naturalSize = photoSize
         self.postID = postID
         self.commentsCount = 0
         self.repostsCount = 0
         self.isGIF = isGIF
-        
         self.creatorDisplayName = User.shared.name ?? ""
         self.creatorPhotoURL = User.shared.profileURL ?? ""
         self.creatorUsername = User.shared.username ?? ""

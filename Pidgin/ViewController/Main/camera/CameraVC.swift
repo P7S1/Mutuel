@@ -35,11 +35,12 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         captureButton.delegate = self
         shouldPrompToAppSettings = true
         cameraDelegate = self
-        maximumVideoDuration = 60.0
+        maximumVideoDuration = 15.0
         shouldUseDeviceOrientation = false
-        allowAutoRotate = true
+        allowAutoRotate = false
         audioEnabled = true
         allowBackgroundAudio = true
+        
         captureButton.layer.addButtonShadows()
         flipCameraButton.layer.addButtonShadows()
         flashButton.layer.addButtonShadows()
@@ -107,7 +108,8 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         picker.delegate = self
         picker.mediaTypes = ["public.image", "public.movie"]
         picker.sourceType = .photoLibrary
-
+        picker.videoMaximumDuration = 30
+        picker.allowsEditing = true
         self.present(picker, animated: true, completion: nil)
     }
     
@@ -363,7 +365,6 @@ extension CameraVC : RecordingButtonDelegate{
 extension CameraVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-      picker.dismiss(animated: true, completion: nil)
         
         let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
@@ -387,6 +388,8 @@ extension CameraVC : UIImagePickerControllerDelegate, UINavigationControllerDele
                     vc.checkVideoOrIamge = false
                 }
             }
+            
+            picker.dismiss(animated: true, completion: nil)
             present(vc, animated: true, completion: nil)
         }
       print("uploading image")

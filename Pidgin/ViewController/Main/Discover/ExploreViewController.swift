@@ -246,11 +246,11 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreCollectionViewCell", for: indexPath) as! ExploreCollectionViewCell
         let post = posts[indexPath.row]
+        
         cell.imageView.clipsToBounds = true
         cell.imageView.layer.cornerRadius = 10
         cell.backgroundColor = .clear
         cell.contentView.backgroundColor = .clear
-        cell.imageView.heroID = posts[indexPath.row].postID
         cell.imageView.isSkeletonable = true
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
         cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
@@ -261,8 +261,6 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
             }
         }
         cell.playButton.isHidden = !(post.isVideo)
-        cell.playButton.heroModifiers = [.useNormalSnapshot]
-        cell.playButton.heroID = "\(post.postID).playButton"
         cell.playButton.shouldBlink = false
         return cell
     }
@@ -341,6 +339,19 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
         }
         
     }
+    
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+           if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
+               changeNabBar(hidden: true, animated: true)
+           }
+           else{
+               changeNabBar(hidden: false, animated: true)
+           }
+       }
+       
+       func changeNabBar(hidden:Bool, animated: Bool){
+           navigationController?.setNavigationBarHidden(hidden, animated: animated)
+       }
     
 }
 

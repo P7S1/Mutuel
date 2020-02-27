@@ -22,9 +22,6 @@ extension PhotoEditorViewController {
         else if bottomSheetIsVisible == true {
             if let touch = touches.first {
                 let location = touch.location(in: self.view)
-                if !bottomSheetVC.view.frame.contains(location) {
-                    removeBottomSheetView()
-                }
             }
         }
         

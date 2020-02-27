@@ -189,5 +189,6 @@ extension EditProfileViewController : CropViewControllerDelegate{
             // 'image' is the newly cropped version of the original image
         self.profileImage = image
         cellView.imageView.image = image
+        cropViewController.dismiss(animated: true, completion: nil)
         }
 }

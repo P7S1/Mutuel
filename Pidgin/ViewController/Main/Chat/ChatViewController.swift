@@ -40,7 +40,7 @@ class ChatViewController: MessagesViewController {
     
     var activityIndicator : UIActivityIndicatorView!
     
-    var lastDocument : DocumentSnapshot?
+    var lastDate : Date?
     
     let sentSound: SystemSoundID = 1004
     
@@ -299,7 +299,8 @@ class ChatViewController: MessagesViewController {
             picker.delegate = self
             picker.mediaTypes = ["public.image", "public.movie"]
             picker.sourceType = .photoLibrary
-
+            picker.videoMaximumDuration = 30
+            picker.allowsEditing = true
 
             self.present(picker, animated: true, completion: nil)
         }))
@@ -341,9 +342,9 @@ class ChatViewController: MessagesViewController {
         if didViewAppear && !loadedAllMessages && !currentlyLoadingMessages{
             activityIndicator.startAnimating()
             currentlyLoadingMessages = true
-        if let doc = lastDocument{
+        if let date = lastDate{
        let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages")
-        let query = docRef.order(by: "sentDate", descending: true).limit(to: 30).start(afterDocument: doc)
+        let query = docRef.order(by: "sentDate", descending: true).limit(to: 30).start(after: [Timestamp(date: date)])
             query.getDocuments { (snapshot, error) in
                 if error == nil{
                     if snapshot!.count < 30{
@@ -351,9 +352,9 @@ class ChatViewController: MessagesViewController {
                     }
                //     self.handleDocumentChange(snapshot!.documents, scrollToBottom: false)
                     for document in snapshot!.documents{
-                        self.lastDocument = document
                     let message = Message(sender: self.currentSender(), messageId: "", sentDate: Date(), kind: .text(""))
                     message.convertFrom(dictionary: document)
+                        self.checkLastDate(date: message.sentDate)
                         if !(self.channel?.messages.contains(message) ?? false){
                         self.channel?.messages.insert(message, at: 0)
                         }
@@ -362,12 +363,18 @@ class ChatViewController: MessagesViewController {
                     self.activityIndicator.stopAnimating()
                     self.currentlyLoadingMessages = false
                 }else{
-                    print("ther was an error \(error)")
+                    print("ther was an error \(error!)")
                 }
             }
 
         }
     }
+    }
+    
+    private func checkLastDate(date : Date){
+        if date < self.lastDate ?? Date(){
+            lastDate = date
+        }
     }
     
     private func handleDocumentChange(_ snapshot: QuerySnapshot, scrollToBottom : Bool) {
@@ -384,7 +391,7 @@ class ChatViewController: MessagesViewController {
             case .added:
             scrollToBottom = true
             newItems.append(message)
-            lastDocument = change.document
+            self.checkLastDate(date: message.sentDate)
             case .modified:
             guard let index = newItems.firstIndex(of: message) else { return }
             newItems.remove(at: index)
@@ -521,10 +528,10 @@ extension ChatViewController: MessagesDataSource {
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if isTimeLabelVisible(at: indexPath) {
             if #available(iOS 13.0, *) {
-                return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
+                return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 11), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
             } else {
                 // Fallback on earlier versions
-                return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+                return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 11), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
             }
         }
         return nil
@@ -689,16 +696,15 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
                 
                 if error == nil{
                     print("write batch successful")
-
-                    self?.messageInputBar.inputTextView.text = String()
-                    self?.messageInputBar.invalidatePlugins()
-                    self?.messageInputBar.inputTextView.placeholder = "Say something..."
-                    self?.messageInputBar.sendButton.stopAnimating()
                 }else{
                     ProgressHUD.showError("Message failed")
                     print("wirte batch errorr: \(error!)")
                 }
             }
+            self?.messageInputBar.inputTextView.text = String()
+            self?.messageInputBar.invalidatePlugins()
+            self?.messageInputBar.inputTextView.placeholder = "Say something..."
+            self?.messageInputBar.sendButton.stopAnimating()
             }
         }
     }
@@ -817,15 +823,8 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
     }
 
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        let name = message.sender.displayName
-        
-        if #available(iOS 13.0, *) {
+        let name = channel.metaData.value(forKey: message.sender.senderId) as? String ?? message.sender.displayName
             return NSAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 11, weight: .medium), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
-        } else {
-                return NSAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .caption1)])
-            
-            // Fallback on earlier versions
-        }
     }
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         if !isNextMessageSameSender(at: indexPath){
@@ -1106,6 +1105,8 @@ extension ChatViewController : ChannelDelegate{
             self.reloadData()
         }
     }
+    
+    
     
     
 }

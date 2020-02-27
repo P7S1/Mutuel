@@ -11,13 +11,10 @@ import AVFoundation
 import Photos
 import FirebaseAuth
 import FirebaseFirestore
-import FirebaseStorage
 import CollectionViewWaterfallLayout
 import CarbonKit
 class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate, UICollectionViewDelegate, CarbonTabSwipeNavigationDelegate {
-    
-    
-    @IBOutlet weak var containerView: UIView!
+
     
     var exploreVC : ExploreViewController!
     
@@ -34,6 +31,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         exploreVC = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as? ExploreViewController
         exploreVC.exploreDelegate = self
+        
         followingVC  = storyboard.instantiateViewController(withIdentifier: "FollowingViewController") as? FollowingViewController
         followingVC.followingDelegate = self
         navigationItem.largeTitleDisplayMode = .never
@@ -48,7 +46,10 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         carbonTabSwipeNavigation.carbonSegmentedControl?.backgroundColor = .systemBackground
         carbonTabSwipeNavigation.toolbar.barTintColor = .systemBackground
         carbonTabSwipeNavigation.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
-        carbonTabSwipeNavigation.setTabExtraWidth((self.view.frame.width/CGFloat(items.count))/2)
+        
+        for i in 0...items.count-1{
+     carbonTabSwipeNavigation.carbonSegmentedControl?.setWidth((self.view.frame.width/CGFloat(items.count)), forSegmentAt: i)
+        }
         
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
@@ -75,7 +76,6 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
                 } else {}
             })
         }
-
         // Do any additional setup after loading the view.
     }
     
@@ -93,26 +93,20 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
 
-    
-     func addConstraints(view : UIView){
-        let safeLayoutGuide = self.view.safeAreaLayoutGuide
-       view.frame = containerView.bounds
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.topAnchor.constraint(equalTo: safeLayoutGuide.topAnchor).isActive = true
-        view.rightAnchor.constraint(equalTo: safeLayoutGuide.rightAnchor).isActive = true
-        view.leftAnchor.constraint(equalTo: safeLayoutGuide.leftAnchor).isActive = true
-        view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-    }
+
     
     func collectionViewScrolled(_ scrollView: UIScrollView) {
         self.scrollViewDidScroll(scrollView)
@@ -127,6 +121,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         }
         // return viewController at index
     }
+
 
     /*
     // MARK: - Navigation

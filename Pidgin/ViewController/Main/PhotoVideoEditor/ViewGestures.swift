@@ -91,14 +91,7 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return false
     }
-    
-   @objc func screenEdgeSwiped(_ recognizer: UIScreenEdgePanGestureRecognizer) {
-        if recognizer.state == .recognized {
-            if !bottomSheetIsVisible {
-                addBottomSheetView()
-            }
-        }
-    }
+
     
     // to Override Control Center screen edge pan from bottom
     override public var prefersStatusBarHidden: Bool {

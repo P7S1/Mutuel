@@ -36,7 +36,7 @@ class SendToUserViewController: UIViewController {
         if isGIF{
             if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString) {
                 imageView.kf.setImage(with: gifURL)
-                photoSize = CGSize(width: self.view.frame.width, height: self.view.frame.width * (1/media.aspectRatio))
+                photoSize = CGSize(width: 400, height: 400 * (1/media.aspectRatio))
             } else{
              self.dismiss(animated: true, completion: nil)
             }
@@ -53,6 +53,7 @@ class SendToUserViewController: UIViewController {
         textView.layer.cornerRadius = 10
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         setUpSendButton()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -164,7 +165,6 @@ class SendToUserViewController: UIViewController {
         }
         }
         
-        print("photosize \(photoSize)")
         let post = Post(photoURL: photoURL.absoluteString,
                         caption: self.textView.text,
                         publishDate: Date(),

@@ -129,6 +129,15 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
             self.imageView.alpha = show ? 1.0 : 0.0
         }
     }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView) {
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+        else{
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+    }
     
     func configureNavItem(name : String){
         
@@ -212,5 +221,7 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
             self.blurEffectView.removeFromSuperview()
         }
     }
+    
+    
 
 }

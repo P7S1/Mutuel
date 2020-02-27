@@ -205,7 +205,7 @@
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="gFw-hE-f2P"/>
                                                                 <constraint firstAttribute="height" constant="40" id="gut-Wc-zfc"/>
                                                             </constraints>
-                                                            <color key="tintColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <color key="tintColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <state key="normal" image="ellipsis" catalog="system">
                                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="21" weight="semibold"/>
                                                             </state>
@@ -508,10 +508,10 @@
                                                         <constraint firstAttribute="width" constant="40" id="Yht-vt-mUk"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="17"/>
-                                                    <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="tintColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <state key="normal" image="paperplane" catalog="system">
                                                         <color key="titleColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25" scale="medium" weight="semibold"/>
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25" scale="medium" weight="medium"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="sendButtonPressed:" destination="90H-3A-UpI" eventType="touchUpInside" id="Ymd-8w-i7m"/>
@@ -705,20 +705,20 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-male-user-96" translatesAutoresizingMaskIntoConstraints="NO" id="cCv-ca-Y5z">
-                                <rect key="frame" x="16" y="44" width="30.666666666666671" height="30"/>
+                                <rect key="frame" x="16" y="44" width="30" height="30"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="cCv-ca-Y5z" secondAttribute="height" multiplier="40:39" id="6s7-8X-Gzy"/>
                                     <constraint firstAttribute="height" constant="30" id="oCx-bu-Di3"/>
+                                    <constraint firstAttribute="width" constant="30" id="zYY-e5-ePg"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="this is the test reply text" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UHP-rH-CDM">
-                                <rect key="frame" x="62.666666666666657" y="44" width="335.33333333333337" height="20.333333333333329"/>
+                                <rect key="frame" x="62" y="44" width="336" height="20.333333333333329"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="7 days ago" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rSz-fL-qQT">
-                                <rect key="frame" x="62.666666666666657" y="64.333333333333329" width="74" height="21"/>
+                                <rect key="frame" x="62" y="64.333333333333329" width="74" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="RuN-VM-bqx"/>
                                 </constraints>

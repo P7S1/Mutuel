@@ -53,7 +53,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-        self.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         self.activityIndicator = UIActivityIndicatorView(style: .large)
         self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
@@ -65,7 +64,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         
         activityIndicator.startAnimating()
         
-        collectionView.contentInsetAdjustmentBehavior = .never
+       // collectionView.contentInsetAdjustmentBehavior = .never
    
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -120,13 +119,8 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         
         super.viewWillDisappear(animated)
         
-        if self.isMovingFromParent{
-            print("is moving from parenr")
+        if !shouldContinuePlaying{
             self.stopAllVideoCells()
-        }else{
-            if !shouldContinuePlaying{
-                self.stopAllVideoCells()
-            }
         }
         
         
@@ -415,13 +409,7 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let newCell = cell as? FollowingCollectionViewCell, let player = newCell.playerContainerView {
-            guard let visibleIndex = self.getVisibleCellsIndexPath() else {
-                player.pause()
-                return
-            }
-            if indexPath != visibleIndex{
             player.pause()
-            }
             
         }
     }

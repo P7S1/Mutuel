@@ -13,6 +13,8 @@ import FirebaseFirestore
 import GiphyUISDK
 import FirebaseDatabase
 import NotificationBannerSwift
+import AVFoundation
+
 let db = Firestore.firestore()
 
 var ref: DatabaseReference!
@@ -66,6 +68,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ProgressHUD.statusColor(.label)
         }
         
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: .mixWithOthers)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.videoRecording, options: .mixWithOthers)
+             try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+             print(error)
+        }
+        
   
        /* guard let customFont = UIFont(name: "OpenSans-SemiBold", size: UIFont.labelFontSize) else {
             fatalError("""
@@ -83,6 +93,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillResignActive(_ application: UIApplication) {
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        
+        if let uid = User.shared.uid{
+        let docRef = ref.child("/badgeCount/\(uid)")
+            
+        docRef.removeValue()
+        }
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
@@ -104,6 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
         docRef.removeValue()
         }
+        application.applicationIconBadgeNumber = 0
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 
@@ -169,7 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navBar = UINavigationController(rootViewController: vc)
         UIApplication.shared.windows.first?.rootViewController = navBar
     }
-    
+
     
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -185,7 +202,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     banner.subtitleLabel?.textColor = .secondaryLabel
                     banner.titleLabel?.textColor = .label
                     
-                    banner.show(queuePosition: .front, bannerPosition: .top, queue: NotificationBannerQueue(maxBannersOnScreenSimultaneously: 3))
+                    guard let tabbarController = self.window?.rootViewController as? TabBarController else {
+                        // your rootViewController is no UITabbarController
+                        return
+                    }
+                    guard let selectedNavigationController = tabbarController.selectedViewController as? UINavigationController else {
+                        // the selected viewController in your tabbarController is no navigationController!
+                        return
+                    }
+                    
+                    if selectedNavigationController.visibleViewController is ChatViewController{
+                        
+                    }else{
+                        banner.show()
+                    }
+                   
                 }
                 
         }

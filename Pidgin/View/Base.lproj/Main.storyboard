@@ -357,13 +357,13 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="Ct4-qe-NQE">
                                                     <rect key="frame" x="59" y="10.5" width="89" height="39.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FeR-lv-cu8">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FeR-lv-cu8">
                                                             <rect key="frame" x="0.0" y="0.0" width="89" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@jaclyndavis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clq-Sd-vIY">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="@jaclyndavis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clq-Sd-vIY">
                                                             <rect key="frame" x="0.0" y="21.5" width="89" height="18"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
@@ -585,25 +585,11 @@
                     <view key="view" contentMode="scaleToFill" id="Y21-7S-siw">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UEX-wG-b9C">
-                                <rect key="frame" x="0.0" y="8" width="375" height="659"/>
-                            </view>
-                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="UEX-wG-b9C" firstAttribute="bottom" secondItem="H86-cT-XIj" secondAttribute="bottom" id="cPk-Te-mkk"/>
-                            <constraint firstItem="UEX-wG-b9C" firstAttribute="trailing" secondItem="H86-cT-XIj" secondAttribute="trailing" id="jHm-qc-OlB"/>
-                            <constraint firstItem="UEX-wG-b9C" firstAttribute="top" secondItem="H86-cT-XIj" secondAttribute="top" constant="8" id="qpe-Kc-aXK"/>
-                            <constraint firstItem="UEX-wG-b9C" firstAttribute="leading" secondItem="H86-cT-XIj" secondAttribute="leading" id="xJJ-6L-oNK"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="H86-cT-XIj"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="J9d-oD-nK5"/>
                     <navigationItem key="navigationItem" id="iAc-ma-51t"/>
-                    <connections>
-                        <outlet property="containerView" destination="UEX-wG-b9C" id="jIT-dU-BY5"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hUO-m2-HiU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

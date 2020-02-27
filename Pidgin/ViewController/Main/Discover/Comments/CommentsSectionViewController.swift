@@ -18,9 +18,9 @@ class CommentsSectionViewController: UIViewController, UIScrollViewDelegate {
     var post : Post!
     
     private enum Constants {
-        static let segmentedControlHeight: CGFloat = 35
+        static let segmentedControlHeight: CGFloat = 40
         static let underlineViewColor: UIColor = .systemPink
-        static let underlineViewHeight: CGFloat = 2
+        static let underlineViewHeight: CGFloat = 3
     }
     
     private lazy var segmentedControlContainerView: UIView = {
@@ -49,12 +49,12 @@ class CommentsSectionViewController: UIViewController, UIScrollViewDelegate {
         // Change text color and the font of the NOT selected (normal) segment
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)], for: .normal)
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .medium)], for: .normal)
 
         // Change text color and the font of the selected segment
         segmentedControl.setTitleTextAttributes([
             NSAttributedString.Key.foregroundColor: UIColor.label,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)], for: .selected)
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .semibold)], for: .selected)
 
         // Set up event handler to get notified when the selected segment changes
         segmentedControl.addTarget(self, action: #selector(indexChanged(_:)), for: .valueChanged)

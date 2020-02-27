@@ -29,7 +29,7 @@ class RecordingButton: UIButton {
     var innerCircleColor: UIColor = UIColor.white;
     var progessColor: UIColor = .systemRed;
     var isContinue :Bool = false;
-    var recordingDuration: CGFloat = 60;
+    var recordingDuration: CGFloat = 15;
     var delegate: RecordingButtonDelegate?;
     
     var isCompleteMode :Bool = false;

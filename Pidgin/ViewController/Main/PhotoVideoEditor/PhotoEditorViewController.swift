@@ -92,7 +92,6 @@ public final class PhotoEditorViewController: UIViewController {
     
     //Register Custom font before we load XIB
     public override func loadView() {
-        registerFont()
         super.loadView()
     }
     
@@ -135,9 +134,6 @@ public final class PhotoEditorViewController: UIViewController {
         }
         
         */
-        
-        canvasView.layer.cornerRadius = 20
-        canvasView.clipsToBounds = true
   
         if checkVideoOrIamge {
 
@@ -163,8 +159,9 @@ public final class PhotoEditorViewController: UIViewController {
             imageView.isHidden = true
             
             //imageView.image = (UIImage(named: "pic")!)
-     
-            player = AVPlayer(url: videoURL!)
+            if videoURL != nil{
+                player = AVPlayer(url: videoURL!)
+            }
             playerController = AVPlayerViewController()
             
             guard player != nil && playerController != nil else {
@@ -194,11 +191,7 @@ public final class PhotoEditorViewController: UIViewController {
         deleteView.layer.borderWidth = 2.0
         deleteView.layer.borderColor = UIColor.white.cgColor
         deleteView.clipsToBounds = true
-        
-        let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(screenEdgeSwiped))
-        edgePan.edges = .bottom
-        edgePan.delegate = self
-        self.view.addGestureRecognizer(edgePan)
+
         
 
         
@@ -216,7 +209,6 @@ public final class PhotoEditorViewController: UIViewController {
     
         
         configureCollectionView()
-        bottomSheetVC = BottomSheetViewController(nibName: "BottomSheetViewController", bundle: Bundle(for: BottomSheetViewController.self))
         
     }
     
@@ -410,6 +402,31 @@ public final class PhotoEditorViewController: UIViewController {
         addGestures(view: textView)
         textView.becomeFirstResponder()
     }
+    func addGestures(view: UIView) {
+        //Gestures
+        view.isUserInteractionEnabled = true
+        
+        let panGesture = UIPanGestureRecognizer(target: self,
+                                                action: #selector(PhotoEditorViewController.panGesture))
+        panGesture.minimumNumberOfTouches = 1
+        panGesture.maximumNumberOfTouches = 1
+        panGesture.delegate = self
+        view.addGestureRecognizer(panGesture)
+        
+        let pinchGesture = UIPinchGestureRecognizer(target: self,
+                                                    action: #selector(PhotoEditorViewController.pinchGesture))
+        pinchGesture.delegate = self
+        view.addGestureRecognizer(pinchGesture)
+        
+        let rotationGestureRecognizer = UIRotationGestureRecognizer(target: self,
+                                                                    action:#selector(PhotoEditorViewController.rotationGesture) )
+        rotationGestureRecognizer.delegate = self
+        view.addGestureRecognizer(rotationGestureRecognizer)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(PhotoEditorViewController.tapGesture))
+        view.addGestureRecognizer(tapGesture)
+        
+    }
     
     @IBAction func pencilButtonTapped(_ sender: Any) {
         isDrawing = true
@@ -419,45 +436,6 @@ public final class PhotoEditorViewController: UIViewController {
         hideToolbar(hide: true)
     }
     
-    
-    var bottomSheetVC: BottomSheetViewController!
-    
-    func addBottomSheetView() {
-        bottomSheetIsVisible = true
-        hideToolbar(hide: true)
-        self.tempImageView.isUserInteractionEnabled = false
-        bottomSheetVC.stickerDelegate = self
-        
-        for image in self.stickers {
-            bottomSheetVC.stickers.append(image)
-        }
-        
-       
-        self.addChild(bottomSheetVC)
-        self.view.addSubview(bottomSheetVC.view)
-        bottomSheetVC.didMove(toParent: self)
-        let height = view.frame.height
-        let width  = view.frame.width
-        bottomSheetVC.view.frame = CGRect(x: 0, y: self.view.frame.maxY , width: width, height: height)
-    }
-    
-    func removeBottomSheetView() {
-        bottomSheetIsVisible = false
-        self.tempImageView.isUserInteractionEnabled = true
-        UIView.animate(withDuration: 0.3,
-                       delay: 0,
-                       options: UIView.AnimationOptions.curveEaseIn,
-                       animations: { () -> Void in
-                        var frame = self.bottomSheetVC.view.frame
-                        frame.origin.y = UIScreen.main.bounds.maxY
-                        self.bottomSheetVC.view.frame = frame
-                        
-        }, completion: { (finished) -> Void in
-            self.bottomSheetVC.view.removeFromSuperview()
-            self.bottomSheetVC.removeFromParent()
-            self.hideToolbar(hide: false)
-        })
-    }
     
     func hideToolbar(hide: Bool) {
         topToolbar.isHidden = hide
@@ -746,79 +724,8 @@ extension PhotoEditorViewController: UITextViewDelegate {
     
 }
 
-extension PhotoEditorViewController: StickerDelegate {
-    
-    func viewTapped(view: UIView) {
-        self.removeBottomSheetView()
-        view.center = tempImageView.center
-        
-        self.tempImageView.addSubview(view)
-        //Gestures
-        addGestures(view: view)
-    }
-    
-    func imageTapped(image: UIImage) {
-        self.removeBottomSheetView()
-        
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFit
-        imageView.frame.size = CGSize(width: 150, height: 150)
-        imageView.center = tempImageView.center
-        
-        self.tempImageView.addSubview(imageView)
-        //Gestures
-        addGestures(view: imageView)
-    }
-    
-    func bottomSheetDidDisappear() {
-        
-        bottomSheetIsVisible = false
-        hideToolbar(hide: false)
-    }
-    
-    func addGestures(view: UIView) {
-        //Gestures
-        view.isUserInteractionEnabled = true
-        
-        let panGesture = UIPanGestureRecognizer(target: self,
-                                                action: #selector(PhotoEditorViewController.panGesture))
-        panGesture.minimumNumberOfTouches = 1
-        panGesture.maximumNumberOfTouches = 1
-        panGesture.delegate = self
-        view.addGestureRecognizer(panGesture)
-        
-        let pinchGesture = UIPinchGestureRecognizer(target: self,
-                                                    action: #selector(PhotoEditorViewController.pinchGesture))
-        pinchGesture.delegate = self
-        view.addGestureRecognizer(pinchGesture)
-        
-        let rotationGestureRecognizer = UIRotationGestureRecognizer(target: self,
-                                                                    action:#selector(PhotoEditorViewController.rotationGesture) )
-        rotationGestureRecognizer.delegate = self
-        view.addGestureRecognizer(rotationGestureRecognizer)
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(PhotoEditorViewController.tapGesture))
-        view.addGestureRecognizer(tapGesture)
-        
-    }
-}
-
 extension PhotoEditorViewController {
     
-    //Resources don't load in main bundle we have to register the font
-    func registerFont(){
-        let bundle = Bundle(for: PhotoEditorViewController.self)
-        let url =  bundle.url(forResource: "Eventtus-Icons", withExtension: "ttf")
-        
-        guard let fontDataProvider = CGDataProvider(url: url! as CFURL) else {
-            return
-        }
-        let font = CGFont(fontDataProvider)
-        var error: Unmanaged<CFError>?
-        guard CTFontManagerRegisterGraphicsFont(font!, &error) else {
-            return
-        }
-    }
     
     func presentSendToUserViewController(image : UIImage?, video : URL?, size : CGSize){
        let storyboard = UIStoryboard(name: "Main", bundle: nil)

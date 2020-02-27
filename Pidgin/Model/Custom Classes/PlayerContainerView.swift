@@ -30,11 +30,6 @@ class PlayerContainerView: UIView {
         self.backgroundColor = .clear
         VideoManager().requestPlayer(post: post) { (completion, playerController) in
             if completion{
-                do {
-                   try AVAudioSession.sharedInstance().setCategory(.playback)
-                } catch(let error) {
-                    print(error.localizedDescription)
-                }
                 let player = playerController?.player
                 (self.layer as! AVPlayerLayer).player = player
                (self.layer as! AVPlayerLayer).videoGravity = AVLayerVideoGravity.resizeAspectFill
@@ -74,11 +69,11 @@ class PlayerContainerView: UIView {
         }
         } */
         DispatchQueue.main.async {
-            do {
+        /*    do {
                 try AVAudioSession.sharedInstance().setCategory(.multiRoute)
             } catch(let error) {
                 print(error.localizedDescription)
-            }
+            } */
             (self.layer as! AVPlayerLayer).player?.isMuted = self.isMuted
             (self.layer as! AVPlayerLayer).player?.play()
         }

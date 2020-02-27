@@ -133,7 +133,7 @@ class ProfileViewController: UIViewController{
         
         }else{
             followButton.setTitle("ACTIVITY", for: .normal)
-            followButton.setTitleColor(.systemPurple, for: .normal)
+            followButton.setTitleColor(.systemGreen, for: .normal)
             followButton.backgroundColor = .systemGray6
             followButton.isEnabled = true
         }
