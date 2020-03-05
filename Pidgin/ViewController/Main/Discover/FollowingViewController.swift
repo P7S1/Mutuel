@@ -11,6 +11,7 @@ import DeepDiff
 import FirebaseFirestore
 import AVKit
 import SkeletonView
+
  protocol PostViewDelegate {
     func preparePostsFor(indexPath: IndexPath, posts : [Post], lastDocument : DocumentSnapshot?, loadedAllPosts : Bool)
 }
@@ -36,9 +37,9 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var lastDocument : DocumentSnapshot?
     
-    var query : Query!
+    var query : Query?
     
-    var originalQuery : Query!
+    var originalQuery : Query?
     
     var loadedAllPosts = false
     
@@ -68,10 +69,10 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
    
         collectionView.delegate = self
         collectionView.dataSource = self
-        if shouldQuery && User.shared.following.count > 0{
+        if shouldQuery{
+            
             guard let uid = User.shared.uid else{
-                self.dismiss(animated: true, completion: nil)
-                return
+                fatalError("NO USER ID FOUND")
             }
         query = db.collection("users").document(uid).collection("feed").limit(to: 10).order(by: "publishDate", descending: true) 
         originalQuery = query
@@ -157,10 +158,10 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     func getMorePosts(removeAll : Bool){
         
                 if let lastDoc = lastDocument{
-                    query = query.start(afterDocument: lastDoc)
+                    query = query?.start(afterDocument: lastDoc)
                 }
         
-            query.getDocuments { (snapshot, error) in
+        query?.getDocuments { (snapshot, error) in
                 if error == nil{
                     if snapshot!.count < 10{
                         self.loadedAllPosts = true
@@ -276,6 +277,7 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         cell.contentView.setNeedsUpdateConstraints()
         
         cell.gradientView.isHidden = true
+        cell.imageView.isSkeletonable = true
         cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
         cell.imageView.layer.cornerRadius = 20.0
         cell.imageView.clipsToBounds = true

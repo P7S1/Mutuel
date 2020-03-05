@@ -11,6 +11,8 @@
 		DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */; };
 		DF0002DF2385E0CD00654EAC /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */; };
 		DF086D8423C4197B00D3CCA0 /* FredokaOne-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */; };
+		DF14F8B2240F1E6B00E95E39 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */; };
+		DF14F8B42410188900E95E39 /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8B32410188800E95E39 /* CALayer.swift */; };
 		DF209AC523F701DC00E031DB /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF209AC423F701DC00E031DB /* UIView.swift */; };
 		DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */; };
 		DF215B092356673700EE67D3 /* SwiftyCamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */; };
@@ -57,6 +59,10 @@
 		DF7D0AC523B83D9A00B33E40 /* DatabaseRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7D0AC423B83D9A00B33E40 /* DatabaseRepresentation.swift */; };
 		DF7D0AC923B9B63900B33E40 /* FollowingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */; };
 		DF7D0ACB23BA3AAF00B33E40 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */; };
+		DF7F05BF240CAFAC0016F58A /* PhotoPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7F05BE240CAFAC0016F58A /* PhotoPickerViewController.swift */; };
+		DF8608A02409AE70003E1C77 /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF86089F2409AE70003E1C77 /* UISearchBar.swift */; };
+		DF8608A3240BA946003E1C77 /* CarbonSwipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8608A2240BA945003E1C77 /* CarbonSwipe.swift */; };
+		DF8608A5240BB408003E1C77 /* RelationshipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8608A4240BB408003E1C77 /* RelationshipViewController.swift */; };
 		DF9510122360D945006B3B44 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9510112360D945006B3B44 /* Account.swift */; };
 		DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9510152360DAB4006B3B44 /* LoginViewController.swift */; };
 		DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */; };
@@ -79,6 +85,8 @@
 		DFDE0815234D248E0017BFDA /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0814234D248E0017BFDA /* ChannelsViewController.swift */; };
 		DFDE0817234D292D0017BFDA /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0816234D292D0017BFDA /* TabBarController.swift */; };
 		DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE792C123B650FF003F2456 /* RecordingButton.swift */; };
+		DFE9E6ED240EEFE100131CBF /* GiphyHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */; };
+		DFE9E6EF240EF06300131CBF /* GifViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE9E6EE240EF06200131CBF /* GifViewController.swift */; };
 		DFEB2929236DAF7C006FC6BB /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */; };
 		DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */; };
 		DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */; };
@@ -90,6 +98,7 @@
 		DFEFCAC923F38C5B00397091 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCAC823F38C5B00397091 /* Date.swift */; };
 		DFEFCACB23F38CB000397091 /* CustomBannerColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCACA23F38CB000397091 /* CustomBannerColors.swift */; };
 		DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */; };
+		DFF2D227240C9867004A1AF4 /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF2D226240C9867004A1AF4 /* UploadViewController.swift */; };
 		DFF346262367A3FF006AA467 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346232367A3FC006AA467 /* Channel.swift */; };
 		DFF346292367AE0D006AA467 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF346282367AE0D006AA467 /* Message.swift */; };
 		DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */; };
@@ -104,6 +113,8 @@
 		DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfoViewController.swift; sourceTree = "<group>"; };
 		DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FredokaOne-Regular.otf"; sourceTree = "<group>"; };
+		DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
+		DF14F8B32410188800E95E39 /* CALayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayer.swift; sourceTree = "<group>"; };
 		DF209AC423F701DC00E031DB /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyCamViewControllerDelegate.swift; sourceTree = "<group>"; };
 		DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyCamViewController.swift; sourceTree = "<group>"; };
@@ -152,6 +163,10 @@
 		DF7D0AC423B83D9A00B33E40 /* DatabaseRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseRepresentation.swift; sourceTree = "<group>"; };
 		DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingCollectionViewCell.swift; sourceTree = "<group>"; };
 		DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
+		DF7F05BE240CAFAC0016F58A /* PhotoPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerViewController.swift; sourceTree = "<group>"; };
+		DF86089F2409AE70003E1C77 /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
+		DF8608A2240BA945003E1C77 /* CarbonSwipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarbonSwipe.swift; sourceTree = "<group>"; };
+		DF8608A4240BB408003E1C77 /* RelationshipViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationshipViewController.swift; sourceTree = "<group>"; };
 		DF9510112360D945006B3B44 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		DF9510152360DAB4006B3B44 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DF9510172360DAC2006B3B44 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
@@ -174,6 +189,8 @@
 		DFDE0814234D248E0017BFDA /* ChannelsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		DFDE0816234D292D0017BFDA /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		DFE792C123B650FF003F2456 /* RecordingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingButton.swift; sourceTree = "<group>"; };
+		DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyHelper.swift; sourceTree = "<group>"; };
+		DFE9E6EE240EF06200131CBF /* GifViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifViewController.swift; sourceTree = "<group>"; };
 		DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		DFEB292A236DB082006FC6BB /* Pidgin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pidgin.entitlements; sourceTree = "<group>"; };
 		DFEE6F40239BA8FA0097EA52 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
@@ -188,6 +205,7 @@
 		DFEFCAC823F38C5B00397091 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		DFEFCACA23F38CB000397091 /* CustomBannerColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBannerColors.swift; sourceTree = "<group>"; };
 		DFF084FA23AF3A3F00C4E2FD /* SendToUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendToUserViewController.swift; sourceTree = "<group>"; };
+		DFF2D226240C9867004A1AF4 /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
 		DFF346232367A3FC006AA467 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		DFF346282367AE0D006AA467 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTableViewCell.swift; sourceTree = "<group>"; };
@@ -232,6 +250,7 @@
 				DF6A20AD23B1EF0400949CED /* VideoHelper.swift */,
 				DF7D0AC423B83D9A00B33E40 /* DatabaseRepresentation.swift */,
 				DFDCA0A423C93D7700240CE7 /* VideoManager.swift */,
+				DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -250,7 +269,6 @@
 		DF469B7C23790FEE00CDB540 /* Discover */ = {
 			isa = PBXGroup;
 			children = (
-				DFEFCABE23F341A400397091 /* Comments */,
 				DFDE080D234D23880017BFDA /* DiscoverViewController.swift */,
 				DF469B7D237910E400CDB540 /* ProfileViewController.swift */,
 				DF7D0ABC23B7104900B33E40 /* ExploreViewController.swift */,
@@ -330,17 +348,31 @@
 			path = Pidgin;
 			sourceTree = "<group>";
 		};
+		DF8608A1240BA912003E1C77 /* CustomClasses */ = {
+			isa = PBXGroup;
+			children = (
+				DFDE0816234D292D0017BFDA /* TabBarController.swift */,
+				DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */,
+				DF8608A4240BB408003E1C77 /* RelationshipViewController.swift */,
+				DF3C1A0D2398138000106964 /* HomeViewController.swift */,
+				DF8608A2240BA945003E1C77 /* CarbonSwipe.swift */,
+				DFF2D226240C9867004A1AF4 /* UploadViewController.swift */,
+				DF7F05BE240CAFAC0016F58A /* PhotoPickerViewController.swift */,
+				DFE9E6EE240EF06200131CBF /* GifViewController.swift */,
+			);
+			path = CustomClasses;
+			sourceTree = "<group>";
+		};
 		DF9510132360DA70006B3B44 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				DF8608A1240BA912003E1C77 /* CustomClasses */,
+				DFEFCABE23F341A400397091 /* Comments */,
 				DF469B7C23790FEE00CDB540 /* Discover */,
 				DF469B7B23790FC100CDB540 /* Chat */,
 				DFDD9EC2234FC556007A3177 /* VirtualFaceContent */,
 				DF4BC3ED234D8266001AD00D /* camera */,
 				DF4BC3E7234D8266001AD00D /* PhotoVideoEditor */,
-				DFDE0816234D292D0017BFDA /* TabBarController.swift */,
-				DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */,
-				DF3C1A0D2398138000106964 /* HomeViewController.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -456,6 +488,9 @@
 				DFEFCAC423F38BB300397091 /* String.swift */,
 				DFEFCAC823F38C5B00397091 /* Date.swift */,
 				DF209AC423F701DC00E031DB /* UIView.swift */,
+				DF86089F2409AE70003E1C77 /* UISearchBar.swift */,
+				DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */,
+				DF14F8B32410188800E95E39 /* CALayer.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -617,6 +652,7 @@
 				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
 				DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */,
 				DF5A223723D67F8200BA053F /* ForgotPasswordViewController.swift in Sources */,
+				DF14F8B42410188900E95E39 /* CALayer.swift in Sources */,
 				DF9510122360D945006B3B44 /* Account.swift in Sources */,
 				DF7D0AC323B83ABE00B33E40 /* Post.swift in Sources */,
 				DFEFCAC523F38BB300397091 /* String.swift in Sources */,
@@ -625,11 +661,13 @@
 				DFEFCAC123F38A9D00397091 /* UIViewController.swift in Sources */,
 				DF4BC41B234D8267001AD00D /* Pencil.swift in Sources */,
 				DF5A223323D5F35D00BA053F /* ReAuthenticationViewController.swift in Sources */,
+				DF7F05BF240CAFAC0016F58A /* PhotoPickerViewController.swift in Sources */,
 				DF4BC420234D8267001AD00D /* UIImageExtensions.swift in Sources */,
 				DFF3DBD323DD163200557BC8 /* CommentsSectionViewController.swift in Sources */,
 				DF4BC40C234D8267001AD00D /* ColorsCollectionViewDelegate.swift in Sources */,
 				DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */,
 				DFEFCAC923F38C5B00397091 /* Date.swift in Sources */,
+				DFE9E6ED240EEFE100131CBF /* GiphyHelper.swift in Sources */,
 				DFDD9ECE234FDD5D007A3177 /* VirtualFaceContent.swift in Sources */,
 				DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */,
 				DF4BC427234D8267001AD00D /* ColorCollectionViewCell.swift in Sources */,
@@ -639,19 +677,23 @@
 				DFDD9ED0234FDD5D007A3177 /* VirtualContentUpdater.swift in Sources */,
 				DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */,
 				DF73728A23C1899D003ED359 /* CommentsViewController.swift in Sources */,
+				DFE9E6EF240EF06300131CBF /* GifViewController.swift in Sources */,
 				DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */,
 				DF4BC429234D8267001AD00D /* UIImageViewExtensions.swift in Sources */,
 				DFDE0815234D248E0017BFDA /* ChannelsViewController.swift in Sources */,
 				DF3C1A0E2398138000106964 /* HomeViewController.swift in Sources */,
+				DF8608A3240BA946003E1C77 /* CarbonSwipe.swift in Sources */,
 				DFEB2929236DAF7C006FC6BB /* PushNotificationManager.swift in Sources */,
 				DF4BC41F234D8267001AD00D /* UIView+Image.swift in Sources */,
 				DF7D0AC923B9B63900B33E40 /* FollowingCollectionViewCell.swift in Sources */,
 				DF7D0AC123B8278E00B33E40 /* ExploreCollectionViewCell.swift in Sources */,
 				DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */,
+				DFF2D227240C9867004A1AF4 /* UploadViewController.swift in Sources */,
 				DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */,
 				DFEFCAC323F38B9800397091 /* Character.swift in Sources */,
 				DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */,
 				DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */,
+				DF14F8B2240F1E6B00E95E39 /* TimeInterval.swift in Sources */,
 				DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */,
 				DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */,
 				DF469B84237B47B600CDB540 /* FollowersTableViewController.swift in Sources */,
@@ -669,6 +711,7 @@
 				DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */,
 				DF209AC523F701DC00E031DB /* UIView.swift in Sources */,
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
+				DF8608A02409AE70003E1C77 /* UISearchBar.swift in Sources */,
 				DFEFCAC723F38BF700397091 /* BackGradientView.swift in Sources */,
 				DF70721823C695A500F00DF0 /* UsernameViewController.swift in Sources */,
 				DF7D0ACB23BA3AAF00B33E40 /* PostViewController.swift in Sources */,
@@ -679,6 +722,7 @@
 				DF5A223523D5FAF000BA053F /* ChangePasswordViewController.swift in Sources */,
 				DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */,
 				DF562A3323BE3E9F00CC43D3 /* Comment.swift in Sources */,
+				DF8608A5240BB408003E1C77 /* RelationshipViewController.swift in Sources */,
 				DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */,
 				DF7D0ABD23B7104900B33E40 /* ExploreViewController.swift in Sources */,
 				DF469B7E237910E400CDB540 /* ProfileViewController.swift in Sources */,
@@ -841,7 +885,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/Pidgin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -869,7 +913,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/Pidgin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

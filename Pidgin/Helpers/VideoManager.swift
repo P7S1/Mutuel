@@ -10,14 +10,33 @@ import Foundation
 import AVKit
 class VideoManager{
     static var shared = NSMutableDictionary()
+    var observer: NSKeyValueObservation?
     
      func requestPlayer(post : Post, completion: @escaping (Bool,AVPlayerViewController?) -> Void){
         if let player = VideoManager.shared[post.postID] as? AVPlayerViewController{
             completion(true,player)
         }else{
             if let stringUrl = post.videoURL, let url = URL(string: stringUrl){
-                let player = AVPlayer(url: url)
-                player.automaticallyWaitsToMinimizeStalling = false
+                let asset = AVAsset(url: url)
+                
+                let assetKeys = [
+                    "playable",
+                    "hasProtectedContent"
+                ]
+                let playerItem = AVPlayerItem(asset: asset,
+                                             automaticallyLoadedAssetKeys: assetKeys)
+            
+                
+                // Register as an observer of the player item's status property
+                self.observer = playerItem.observe(\.status, options:  [.new, .old], changeHandler: { (playerItem, change) in
+                    if playerItem.status == .readyToPlay {
+                        //Do your work here
+                        print("ready to play")
+                    }
+                })
+                
+                let player = AVPlayer(playerItem: playerItem)
+                
                 player.actionAtItemEnd = .none
                 player.externalPlaybackVideoGravity = .resizeAspectFill
                 let playerController = AVPlayerViewController()

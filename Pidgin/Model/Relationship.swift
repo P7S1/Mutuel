@@ -8,7 +8,7 @@
 
 import Foundation
 import FirebaseFirestore
-
+import DeepDiff
 class Relationship {
     var followed : String
     var follower : String
@@ -19,6 +19,8 @@ class Relationship {
     
     var followerUsername : String
     var followerProfileURL : String
+    
+    var id : String
     
     init(document : DocumentSnapshot) {
         let data = document.data()
@@ -31,9 +33,11 @@ class Relationship {
         
         followerUsername = data?["followerUsername"] as? String ?? ""
         followerProfileURL = data?["followerProfileURL"] as? String ?? ""
+        
+        self.id = document.documentID
     }
     
-    init(followedUser : Account) {
+    init(followedUser : Account, id : String) {
         follower = User.shared.uid ?? ""
         followerUsername = User.shared.username ?? ""
         followerProfileURL = User.shared.profileURL ?? ""
@@ -41,6 +45,7 @@ class Relationship {
         followed = followedUser.uid ?? ""
         followedUsername = followedUser.username ?? ""
         followedProfileURL = followedUser.profileURL ?? ""
+        self.id = id
     }
     
     func getFollowerAccount() -> Account{
@@ -82,5 +87,23 @@ extension Relationship : DatabaseRepresentation{
         
         return rep
     }
+    
+}
+
+extension Relationship : DiffAware{
+    
+    static func compareContent(_ a: Relationship, _ b: Relationship) -> Bool {
+        return a.id == b.id
+       }
+       
+
+       
+       var diffId: UUID? {
+        let id = UUID(uuidString: self.id)
+           return id
+       }
+       
+       typealias DiffId = UUID?
+    
     
 }

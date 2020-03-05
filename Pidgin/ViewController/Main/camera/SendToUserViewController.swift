@@ -11,37 +11,46 @@ import FirebaseStorage
 import AVFoundation
 import SkeletonView
 import GiphyCoreSDK
+import Lightbox
 class SendToUserViewController: UIViewController {
     var video : URL?
     var image = UIImage()
     var photoSize : CGSize!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var containerView: UIView!
     
     let sendButton = UIButton.init(type: .custom)
     
     var isGIF = false
     
     var media = GPHMedia()
+
     
+    @IBOutlet weak var widthConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
         textView.delegate = self
-        navigationItem.title = "New Post"
-        setDismissButton()
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 10
+        navigationItem.title = "Share"
+       //  setDismissButton()
+        addImageShadow()
         if isGIF{
             if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString) {
                 imageView.kf.setImage(with: gifURL)
                 photoSize = CGSize(width: 400, height: 400 * (1/media.aspectRatio))
+                calculateSize()
             } else{
              self.dismiss(animated: true, completion: nil)
             }
         }else{
             imageView.image = image
+            calculateSize()
         }
         // Do any additional setup after loading the view.
 
@@ -54,10 +63,38 @@ class SendToUserViewController: UIViewController {
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         setUpSendButton()
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(photoPressed))
+        
+        containerView.addGestureRecognizer(tap)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         sendButton.isEnabled = true
+    }
+    
+    func calculateSize(){
+        UIView.animate(withDuration: 0.2) {
+            let scale = self.containerView.frame.height / self.photoSize.height
+            var width : CGFloat = self.photoSize.width * scale
+            
+            if width >= self.view.frame.width - 32{
+            width = self.view.frame.width - 32
+            }
+            self.widthConstraint.constant = width
+        }
+    }
+    
+    func addImageShadow(){
+        containerView.layer.cornerRadius = 10.0
+        containerView.layer.shadowColor = UIColor.darkGray.cgColor
+        containerView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+        containerView.layer.shadowRadius = 12.0
+        containerView.layer.shadowOpacity = 0.6
+        
+        
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10.0
     }
     
 
@@ -71,6 +108,22 @@ class SendToUserViewController: UIViewController {
     }
     */
     
+    
+    @objc func photoPressed(){
+        
+        
+        if self.isGIF{
+            
+        if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString) {
+        let image = LightboxImage(imageURL: gifURL, text: textView.text, videoURL: nil)
+        self.presentLightBoxController(images: [image], goToIndex: nil)
+            }
+        }else{
+        let image = LightboxImage(image: self.image, text: textView.text, videoURL: self.video)
+        self.presentLightBoxController(images: [image], goToIndex: nil)
+        }
+
+    }
     
 
     

@@ -15,8 +15,8 @@ class FollowersHelper{
         
         if let user = User.shared.uid, let followee = followeeUser.uid {
             if followee != user{
-                let relationship = Relationship(followedUser: followeeUser)
                 let docRef = db.collection("users").document(user).collection("relationships").document("\(user)_\(followee)")
+                let relationship = Relationship(followedUser: followeeUser, id: docRef.documentID)
                 docRef.setData(relationship.representation) { (error) in
                     if error == nil{
                         completion(true)
@@ -134,17 +134,16 @@ class FollowersHelper{
         return (image?.withTintColor(.secondaryLabel).withRenderingMode(.alwaysOriginal))!
     }
     
-    func generateThumbnail(path: URL) -> UIImage? {
+    func generateThumbnail(path: URL, image: @escaping (UIImage) -> Void) {
         do {
             let asset = AVURLAsset(url: path, options: nil)
             let imgGenerator = AVAssetImageGenerator(asset: asset)
             imgGenerator.appliesPreferredTrackTransform = true
             let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil)
             let thumbnail = UIImage(cgImage: cgImage)
-            return thumbnail
+            image(thumbnail)
         } catch let error {
             print("*** Error generating thumbnail: \(error.localizedDescription)")
-            return nil
         }
     }
     

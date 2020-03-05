@@ -275,7 +275,7 @@ open class SwiftyCamViewController: UIViewController {
 
 		// Add Gesture Recognizers
 
-        addGestureRecognizers()
+    //    addGestureRecognizers()
 
 		previewLayer.session = session
 

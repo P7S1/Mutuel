@@ -28,9 +28,9 @@ class CommentsViewController: UIViewController {
     
     var post : Post!
     
-    var originalQuery : Query!
+    var originalQuery : Query?
     
-    var query : Query!
+    var query : Query?
     
     var lastDocument : DocumentSnapshot?
     
@@ -76,7 +76,9 @@ class CommentsViewController: UIViewController {
 
             
         }else{
+            if originalQuery == nil{
          originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+            }
         }
     
         getComments(deleteAll: false)
@@ -88,10 +90,10 @@ class CommentsViewController: UIViewController {
         query = self.originalQuery
         
         if let doc = self.lastDocument{
-            query = query.start(afterDocument: doc)
+            query = query?.start(afterDocument: doc)
         }
         
-        query.getDocuments { (snapshot, error) in
+        query?.getDocuments { (snapshot, error) in
             if error == nil{
                 let old = self.comments
                 var newItems = self.comments
@@ -239,7 +241,8 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                     return uid == id
                 }
                 self.replaceComment(comment: comment)
-                docRef.updateData(["likes" : FieldValue.arrayRemove([uid])]) { (error) in
+                docRef.updateData(["likes" : FieldValue.arrayRemove([uid]),
+                                   "likesCount" : FieldValue.increment(-1.0)]) { (error) in
                 if error == nil{
                 cell.likeButton.isEnabled = true
                 }else{
@@ -250,7 +253,8 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
             cell.setLikedState()
             comment.likes.append(uid)
                 self.replaceComment(comment: comment)
-             docRef.updateData(["likes" : FieldValue.arrayUnion([uid])]) { (error) in
+             docRef.updateData(["likes" : FieldValue.arrayUnion([uid]),
+                                "likesCount" : FieldValue.increment(1.0)]) { (error) in
                     if error == nil{
                     cell.likeButton.isEnabled = true
                     }else{

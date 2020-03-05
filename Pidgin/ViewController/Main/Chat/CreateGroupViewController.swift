@@ -8,6 +8,9 @@
 
 import UIKit
 import CropViewController
+import FirebaseFirestore
+import DeepDiff
+import BubblePictures
 class CreateGroupViewController: UIViewController{
     @IBOutlet weak var createGroupButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
@@ -15,18 +18,28 @@ class CreateGroupViewController: UIViewController{
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var membersCountLogo: UILabel!
     
-    @IBOutlet weak var image: UIButton!
+    @IBOutlet weak var collectionView: UICollectionView!
+    
+    
     
     
     var channel : Channel =  Channel(id: "", name: "")
     
     var mode = ""
     
-    var results : [Account] = [Account]()
+    var results : [Relationship] = [Relationship]()
     
-    var members : [Account] = [User.shared]
+    var members : [String] = [(User.shared.uid!)]
     
     var imageURL : String?
+    
+    var lastDocument : DocumentSnapshot?
+    
+    let queryLimit = 25
+    
+    var loadedAllDocs = false
+    
+    private var bubblePictures: BubblePictures!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,45 +56,41 @@ class CreateGroupViewController: UIViewController{
         getUsersFollowers()
         updateMembersText()
         textField.addDoneButtonOnKeyboard()
-
-        setUpProfilePicture()
         
         // Do any additional setup after loading the view.
     }
     
-    func setUpProfilePicture(){
-        image.roundCorners()
-        image.imageView?.contentMode = .scaleAspectFill
-        if  let urlString = channel.profilePics.value(forKey: channel.id) as? String{
-            image.kf.setImage(with: URL(string: urlString), for: .normal, placeholder: FollowersHelper().getGroupProfilePicture())
-        }else{
-            image.setImage(FollowersHelper().getGroupProfilePicture(), for: .normal)
-        }
-    }
-    
-    @IBAction func didTapProfilePicture(_ sender: Any) {
-        print("did recognize tap")
-        let alertController = UIAlertController(title: nil, message: nil , preferredStyle: .actionSheet)
+    func setUpBubblePictures(){
+        var bubblePics = [BPCellConfigFile]()
         
-        alertController.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: { (action) in
-            print("chose take photo")
+        let layoutConfigurator = BPLayoutConfigurator(
+        backgroundColorForTruncatedBubble: UIColor.gray,
+        fontForBubbleTitles: UIFont(name: "HelveticaNeue-Light", size: 16.0)!,
+        colorForBubbleBorders: UIColor.white,
+        colorForBubbleTitles: UIColor.white,
+        maxCharactersForBubbleTitles: 2,
+        maxNumberOfBubbles: 5,
+        displayForTruncatedCell: BPTruncatedCellDisplay.number(4),
+        direction: .leftToRight,
+        alignment: .center)
+        
+        for member in members{
+            let relationshipMember = results.first { (relationship) -> Bool in
+                return relationship.follower == member && member != User.shared.uid
+            }
+            print(members.count)
             
-        }))
-           
-           alertController.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { (action) in
-               print("chose choose from camera roll")
-               
-               let myPickerController = UIImagePickerController()
-               myPickerController.delegate = self
-               myPickerController.sourceType = UIImagePickerController.SourceType.photoLibrary
-               self.present(myPickerController, animated: true, completion: nil)
-               
-           }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-           self.present(alertController, animated: true, completion: nil)
+            if let string = relationshipMember?.followerProfileURL, let url = URL(string: string){
+                let bubble = BPCellConfigFile(imageType: .URL(url), title: "")
+            print("append a bubble")
+            bubblePics.append(bubble)
+            }
+        }
+        
+        self.bubblePictures = BubblePictures(collectionView: collectionView, configFiles: bubblePics, layoutConfigurator: layoutConfigurator)
+        
+        collectionView.reloadData()
     }
-    
-    
     
     func showError(msg : String){
         errorLabel.text = msg
@@ -93,7 +102,7 @@ class CreateGroupViewController: UIViewController{
         switch mode {
         case "editing":
             print("editing")
-            navigationItem.title = "\(channel.name ?? "")"
+            navigationItem.title = "\(channel.name )"
             textField.text = channel.name
         default:
             navigationItem.title = "Create Group"
@@ -102,22 +111,37 @@ class CreateGroupViewController: UIViewController{
     
     func getUsersFollowers(){
         if let id = User.shared.uid{
-        let query = db.collection("users").whereField("following", arrayContains: id).limit(to: 10)
+        var query = db.collectionGroup("relationships").whereField("followed", isEqualTo: id).limit(to: queryLimit).order(by: "creationDate")
+            if let lastDoc = self.lastDocument{
+                query = query.start(afterDocument: lastDoc)
+            }
         query.getDocuments { (snapshot, error) in
             if error == nil{
+                let old = self.results
+                var new = self.results
+                
                 for document in snapshot!.documents{
-                    let account = Account()
-                    account.convertFromDocument(dictionary: document)
+                    let relation = Relationship(document: document)
+                    self.lastDocument = document
+                    if snapshot!.count < self.queryLimit{
+                        self.loadedAllDocs = true
+                    }
                     if self.mode == "editing"{
-                        if self.channel.members.contains(account.uid ?? ""){
-                            self.members.append(account)
-                            print("found match")
+                        if self.channel.members.contains(relation.follower){
+                            self.members.append(relation.follower)
                         }
                     }
-                    self.results.append(account)
-                    self.updateMembersText()
+                    new.append(relation)
+                    
+                    
                 }
-                self.tableView.reloadData()
+                
+                let changes = diff(old: old, new: new)
+                self.tableView.reload(changes: changes, section: 0, updateData: {
+                    self.results = new
+                    self.updateMembersText()
+                })
+                
             }else{
                 print("there was an error \(error!)")
             }
@@ -126,7 +150,7 @@ class CreateGroupViewController: UIViewController{
     }
     
     func updateMembersText(){
-        membersCountLogo.text = "\(members.count)/30 members"
+        membersCountLogo.text = "\(members.count)/10 members"
         if members.count > 2{
             createGroupButton.isEnabled = true
             createGroupButton.alpha = 1
@@ -148,6 +172,8 @@ class CreateGroupViewController: UIViewController{
             createGroupButton.setTitle("Add \(3 - members.count) more members", for: .normal)
         }
         createGroupButton.setTitleColor(UIColor.label, for: .normal)
+        
+        setUpBubblePictures()
     }
     
     
@@ -158,59 +184,32 @@ class CreateGroupViewController: UIViewController{
         if isTextFieldEmpty{
             showError(msg: "Group name field can't be left blank")
         }else{
-            var tokens = [String]()
-            var metaData = NSMutableDictionary()
-            var profileURLs = NSMutableDictionary()
-            var memberList = [String]()
-            
-            if  mode == "editing"{
-                metaData = channel.metaData
-            }
-            
-            if  mode == "editing"{
-                profileURLs = channel.profilePics
-            }
-            for member in members{
-                if let id = member.uid{
-                tokens = Array(Set(tokens + member.tokens))
-                metaData.setValue(member.name, forKey: id)
-                profileURLs.setValue(member.profileURL, forKey: id)
-                memberList.append(id)
-                }
-            }
-            
-            if mode == "editing"{
-                memberList = Array(Set(channel.members + memberList))
-            }
            
             var docRef = db.collection("channels").document()
+            
             if mode == "editing"{
 
                 docRef = db.collection("channels").document(channel.id)
                 
             }
             
-            docRef.setData(["fcmToken":tokens,
-               "members":memberList,
-               "metaData": metaData,
-               "profilePicURLs" : profileURLs,
+            docRef.setData(["members":members,
                "name": textField.text ?? "",
                "groupChat": true],merge : true)
             
-            var channel = Channel(id: docRef.documentID, name: textField.text ?? "")
-            channel.metaData = metaData
-            channel.profilePics = profileURLs
-            channel.groupChat = true
-            channel.id = docRef.documentID
-            
             let vc = ChatViewController()
-            vc.channel = channel
+            vc.channel = self.channel
             
             let navArray:Array = (self.navigationController?.viewControllers)!
             
             if mode == "editing"{
             navigationController?.popToViewController(navArray[navArray.count-3], animated: true)
             }else{
+                var chan = Channel(id: docRef.documentID, name: textField.text ?? "")
+                chan.groupChat = true
+                
+                
+                vc.channel = chan
                 navigationController?.pushViewController(vc, animated: true)
                 var navArray:Array = (self.navigationController?.viewControllers)!
                 navArray.remove(at: navArray.count-2)
@@ -243,25 +242,27 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
         return results.count
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == results.count && !self.loadedAllDocs{
+            self.getUsersFollowers()
+        }
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchUserTableViewCell", for: indexPath) as! SearchUserTableViewCell
         
-        if self.channel.members.contains(results[indexPath.row].uid ?? ""){
+        let relation = results[indexPath.row]
+        
+        if self.channel.members.contains(relation.follower){
             cell.accessoryType = .checkmark
         }else{
             cell.accessoryType = .none
         }
-        
-        
-        cell.displayName.text = results[indexPath.row].name ?? ""
-        cell.username.text = "@\(results[indexPath.row].username ?? "")"
-        if let url = results[indexPath.row].profileURL{
-            cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
-            cell.profilePic.layer.cornerRadius = cell.profilePic.bounds.height/2
-            cell.profilePic.clipsToBounds = true
-        }else{
-            cell.profilePic.image = FollowersHelper().getUserProfilePicture()
-        }
+        cell.displayName.text = results[indexPath.row].followerUsername
+        cell.username.text = ""
+        cell.profilePic.kf.setImage(with: URL(string: relation.followerProfileURL), placeholder: FollowersHelper().getUserProfilePicture())
+        cell.profilePic.layer.cornerRadius = cell.profilePic.bounds.height/2
+        cell.profilePic.clipsToBounds = true
         
         // Configure the cell...
 
@@ -275,22 +276,20 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if let cell = tableView.cellForRow(at: indexPath) {
-            if members.contains(results[indexPath.row]){
+            let relation = results[indexPath.row]
+            if members.contains(relation.follower){
                 cell.accessoryType = .none
-                if let index = members.firstIndex(of: results[indexPath.row]){
-                    
-                    if let index2 = channel.members.firstIndex(of: members[index].uid ?? ""){
-                        channel.metaData.removeObject(forKey: members[index].uid ?? "")
+                let index = members.firstIndex(of: relation.follower)!
+                    if let index2 = channel.members.firstIndex(of: relation.follower){
                     channel.members.remove(at: index2)
                     }
                 members.remove(at: index)
-                }
             }else{
-                if members.count < 30{
+                if members.count < 10{
             cell.accessoryType = .checkmark
-                members.append(results[indexPath.row])
+                    members.append(relation.follower)
                 }else{
-                    showError(msg: "Max 30 members allowed")
+                    showError(msg: "Max 10 members allowed")
                 }
             }
          updateMembersText()
@@ -302,37 +301,9 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return getHeaderView(with: "Select up to 30 members", tableView: tableView)
+        return getHeaderView(with: "Select up to 10 members", tableView: tableView)
     }
     
     
 }
 
-
-extension CreateGroupViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true) {
-            if let newImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
-                self.presentCropViewController(image: newImage)
-            }
-        }
-    }
-}
-
-extension CreateGroupViewController : CropViewControllerDelegate{
-    func presentCropViewController(image : UIImage) {
-        let cropViewController = CropViewController(croppingStyle: .circular, image: image)
-      cropViewController.delegate = self
-        self.present(cropViewController, animated: true, completion: nil)
-    }
-
-    func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
-            // 'image' is the newly cropped version of the original image
-        self.image.setImage(image, for: .normal)
-        if let url = channel.metaData.value(forKey: channel.id ?? "") as? String{
-        FollowersHelper.deleteImage(at: url)
-        }
-        FollowersHelper().uploadGroupPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString, docID: channel.id ?? "")
-        cropViewController.dismiss(animated: true, completion: nil)
-        }
-}

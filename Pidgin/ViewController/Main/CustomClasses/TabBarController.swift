@@ -42,8 +42,8 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
         secondViewController.tabBarItem = messagesTab
         
         
-        let cameraImage =  UIImage(systemName: "circle", withConfiguration: config)?.withTintColor(.systemPink, renderingMode: .alwaysOriginal)
-        let actionViewController = storyboard.instantiateViewController(withIdentifier: "CameraVC") as! CameraVC
+        let cameraImage =  UIImage(systemName: "plus.app", withConfiguration: config)?.withTintColor(.systemPink, renderingMode: .alwaysOriginal)
+        let actionViewController = UploadViewController()
         let cameraTab = UITabBarItem(title: nil, image: cameraImage, tag: 3)
         actionViewController.tabBarItem = cameraTab
  
@@ -55,13 +55,9 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 
-        if viewController.isKind(of: CameraVC.self) {
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "CameraVC") as! CameraVC
-            vc.isHeroEnabled = true
-            vc.hero.modalAnimationType = .selectBy(presenting:.zoom, dismissing:.zoomOut)
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true, completion: nil)
+        if viewController.isKind(of: UploadViewController.self) {
+            let vc = UploadViewController()
+            self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
             return false
         }
 

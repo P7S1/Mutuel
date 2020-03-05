@@ -8,26 +8,27 @@
 
 import UIKit
 import AVFoundation
-import ARKit
 import FirebaseAuth
 import GiphyUISDK
 import GiphyCoreSDK
+
+protocol CameraDelegate {
+    func didFinishProcessingVideo(url : URL)
+    func didTakePhoto(image : UIImage)
+}
 class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     
     @IBOutlet weak var captureButton: RecordingButton!
-    
-    @IBOutlet weak var gifButton: UIButton!
     @IBOutlet weak var flipCameraButton : UIButton!
     @IBOutlet weak var flashButton      : UIButton!
-    @IBOutlet weak var presentARButton: UIButton!
-    @IBOutlet weak var dismissButton: UIButton!
-    @IBOutlet weak var galleryButton: UIButton!
     
     var initialZoom : CGFloat = 1
     
     override var preferredStatusBarStyle : UIStatusBarStyle {
         return .lightContent
     }
+    
+    var cameraVCDelegate : CameraDelegate?
     
     override func viewDidLoad() {
         videoGravity = .resizeAspectFill
@@ -40,14 +41,14 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         allowAutoRotate = false
         audioEnabled = true
         allowBackgroundAudio = true
+        self.swipeToZoom = false
+        
+        self.videoQuality = .iframe960x540
+        
         
         captureButton.layer.addButtonShadows()
         flipCameraButton.layer.addButtonShadows()
         flashButton.layer.addButtonShadows()
-        presentARButton.layer.addButtonShadows()
-        dismissButton.layer.addButtonShadows()
-        galleryButton.layer.addButtonShadows()
-        gifButton.layer.addButtonShadows()
         
         let captureTap = UITapGestureRecognizer(target: self, action: #selector(takeAPhoto))
         captureButton.addGestureRecognizer(captureTap)
@@ -57,11 +58,8 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         
         // disable capture button until session starts
         let zoom = UIPanGestureRecognizer(target: self, action: #selector(zoomGesture))
-        captureButton.addGestureRecognizer(zoom)
+        //captureButton.addGestureRecognizer(zoom)
         captureButton.isEnabled = false
-        if !ARFaceTrackingConfiguration.isSupported{
-            presentARButton.removeFromSuperview()
-        }
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -79,7 +77,6 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        session.stopRunning()
     }
     override func viewWillAppear(_ animated : Bool){
         super.viewWillAppear(animated)
@@ -150,13 +147,15 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         //        let newVC = PhotoViewController(image: photo)
         //        self.present(newVC, animated: true, completion: nil)
         //
-        let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
+     /*   let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
         vc.photo = photo
         vc.checkVideoOrIamge = true
         
         vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true, completion: nil)
+        present(vc, animated: true, completion: nil) */
+        
+        cameraVCDelegate?.didTakePhoto(image: photo)
     }
     
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didBeginRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
@@ -172,17 +171,17 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     }
     
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFinishProcessVideoAt url: URL) {
+        
+        cameraVCDelegate?.didFinishProcessingVideo(url: url)
+        
+        /*
         let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
         vc.videoURL = url
         vc.checkVideoOrIamge = false
         vc.modalPresentationStyle = .fullScreen
         
-        for i in 100...110 {
-            vc.stickers.append(UIImage(named: i.description )!)
-        }
-        
-        present(vc, animated: true, completion: nil)
+        present(vc, animated: true, completion: nil) */
     }
     
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFocusAtPoint point: CGPoint) {
@@ -229,12 +228,6 @@ extension CameraVC {
         UIView.animate(withDuration: 0.25) {
             self.flashButton.alpha = 0.0
             self.flipCameraButton.alpha = 0.0
-            if ARFaceTrackingConfiguration.isSupported{
-                self.presentARButton.alpha = 0.00
-            }
-            self.galleryButton.alpha = 0.0
-            self.dismissButton.alpha = 0.0
-            self.gifButton.alpha = 0.0
         }
     }
     
@@ -242,12 +235,7 @@ extension CameraVC {
         UIView.animate(withDuration: 0.25) {
             self.flashButton.alpha = 1.0
             self.flipCameraButton.alpha = 1.0
-            if ARFaceTrackingConfiguration.isSupported{
-                self.presentARButton.alpha = 1.00
-            }
-            self.galleryButton.alpha = 1.0
-            self.dismissButton.alpha = 1.0
-            self.gifButton.alpha = 1.0
+
         }
     }
     
@@ -400,48 +388,4 @@ extension CameraVC : UIImagePickerControllerDelegate, UINavigationControllerDele
     }
 }
 
-extension CALayer{
-    func addButtonShadows(){
-        shadowColor = UIColor.black.cgColor
-        shadowOpacity = 0.5
-        shadowRadius = 2
-        shadowOffset = CGSize(width: 3, height: 3)
-    }
-}
 
-extension CameraVC : GiphyDelegate{
-    @IBAction func gifButtonPressed(_ sender: Any) {
-        print("gif button pressed")
-       let giphy = GiphyViewController()
-        
-        giphy.layout = .waterfall
-        giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
-        giphy.showConfirmationScreen = true
-        if self.traitCollection.userInterfaceStyle == .dark {
-            // User Interface is Dark
-            giphy.theme = .dark
-        } else {
-            giphy.theme = .light
-            // User Interface is Light
-        }
-        giphy.delegate = self
-        giphy.tabBarController?.tabBar.isHidden = true
-        giphy.hidesBottomBarWhenPushed = true
-        self.present(giphy, animated: true, completion: nil)
-    }
-    func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
-        vc.isGIF = true
-        vc.media = media
-        giphyViewController.dismiss(animated: true) {
-            self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
-        }
-    }
-    
-    func didDismiss(controller: GiphyViewController?) {
-        print("did dismiss")
-    }
-    
-    
-}

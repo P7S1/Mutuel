@@ -50,6 +50,7 @@ class ResultsTableViewController: UIViewController, UITableViewDelegate, UITable
         
         vc.user = results[indexPath.row]
         vc.isUserProfile = true
+        vc.isPresented = true
         vc.setDismissButton()
         
         self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)

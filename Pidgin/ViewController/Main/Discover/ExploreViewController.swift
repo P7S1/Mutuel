@@ -39,6 +39,8 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var isCurrentUser = false
     
+    var isPresented = false
+    
     let refreshControl = UIRefreshControl()
     
     
@@ -47,9 +49,6 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        if self.navigationController == nil{
-            self.setDismissButton()
-        }
         
         setUpCollectionView()
         let backButton = UIBarButtonItem()
@@ -66,11 +65,11 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             appearance?.shadowColor = .clear
             navigationItem.standardAppearance = appearance
             
-            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 25)
+            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 20)
             originalQuery = query
             
         }else{
-            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 25)
+            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 20)
             originalQuery = query
         }
         getMorePosts(removeAll: false)
@@ -82,6 +81,10 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         collectionView.alwaysBounceVertical = true
         
         self.view.isSkeletonable  = true
+        
+        if isPresented{
+           self.setDismissButton()
+        }
         
         // Do any additional setup after loading the view.
     }
@@ -163,7 +166,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         query.getDocuments { (snapshot, error) in
             if error == nil{
-                if snapshot!.count < 25{
+                if snapshot!.count < 20{
                     self.loadedAllPosts = true
                     self.updateFooter()
                 }

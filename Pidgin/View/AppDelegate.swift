@@ -42,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         ref = Database.database().reference()
         Giphy.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
+        GiphyViewController.trayHeightMultiplier = 1
         if #available(iOS 13.0, *) {
             configureNavBariOS13()
         }
@@ -64,9 +65,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIApplication.shared.windows.first?.rootViewController = vc
             appDidLoad = true
         }
-        if #available(iOS 13.0, *) {
+
             ProgressHUD.statusColor(.label)
-        }
+        
         
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: .mixWithOthers)
@@ -76,17 +77,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
              print(error)
         }
         
-  
-       /* guard let customFont = UIFont(name: "OpenSans-SemiBold", size: UIFont.labelFontSize) else {
-            fatalError("""
-                Failed to load the " OpenSans-SemiBold" font.
-                Make sure the font file is included in the project and the font name is spelled correctly.
-                """
-            )
-        }
-        UILabel.appearance().font = customFont */
 
-        application.applicationIconBadgeNumber = 0
+
         // Override point for customization after application launch.
         return true
     }
@@ -96,7 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let uid = User.shared.uid{
         let docRef = ref.child("/badgeCount/\(uid)")
-            
+        application.applicationIconBadgeNumber = 0
         docRef.removeValue()
         }
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -115,13 +107,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        if let uid = User.shared.uid{
-        let docRef = ref.child("/badgeCount/\(uid)")
-            
-        docRef.removeValue()
-        }
-        application.applicationIconBadgeNumber = 0
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

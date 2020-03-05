@@ -24,8 +24,9 @@ class ARCameraVC: UIViewController {
     
     @IBOutlet weak var sceneView: ARSCNView!
     
-    @IBOutlet weak var captureButton : UIView!
-    @IBOutlet weak var backbutton: UIButton!
+    @IBOutlet weak var captureButton : RecordingButton!
+    
+    var cameraDelegate : CameraDelegate?
     
     
     var searchResults: [SvrfMedia] = []
@@ -72,12 +73,14 @@ class ARCameraVC: UIViewController {
         setupCamera()
         
         searchBar.delegate = self
-                
+        
+        captureButton.delegate = self
         let captureTap = UITapGestureRecognizer(target: self, action: #selector(takePhoto))
         captureButton.addGestureRecognizer(captureTap)
         
         let videoPress = UILongPressGestureRecognizer(target: self, action: #selector(startRecording))
         captureButton.addGestureRecognizer(videoPress)
+        
         
         getTrendingFilters()
     }
@@ -97,34 +100,42 @@ class ARCameraVC: UIViewController {
     }
     
     @objc func startRecording(sender : UILongPressGestureRecognizer){
-        
         switch sender.state {
         case .began:
             print("video started recording")
             _nextLevel?.record()
+          //  captureButton.record()
             //start recording
-        case .ended,.failed:
+        case .ended:
             print("video paused")
-            _nextLevel?.pause(withCompletionHandler: {
-                print("video completed paused")
+
+            
+          //  self.captureButton.stopRecord()
                 self.stopRecording()
-            })
+            
         default:
             break
         }
     }
-    
+
     func stopRecording(){
         if let session = _nextLevel?.session {
             // export
-            session.mergeClips(usingPreset: AVAssetExportPreset3840x2160, completionHandler: { (url: URL?, error: Error?) in
-                if let videoUrl = url {
-                    self.saveVideo(url: videoUrl)
-                } else if let _ = error {
-                    print("Exporting error")
-                    //
+            
+            session.endClip { (clip, error) in
+                if error == nil{
+                    session.mergeClips(usingPreset: AVAssetExportPreset960x540, completionHandler: { (url: URL?, error: Error?) in
+                       if let videoUrl = url {
+                           self.saveVideo(url: videoUrl)
+                       } else if let err = error {
+                           print("Exporting error: \(err.localizedDescription)")
+                           //
+                       }
+                    })
+                }else{
+                    print("ther was an error : \(error!)")
                 }
-             })
+            }
 
             //..
         }
@@ -132,7 +143,6 @@ class ARCameraVC: UIViewController {
     
     func setButtonShadows(){
         captureButton.layer.addButtonShadows()
-        backbutton.layer.addButtonShadows()
     }
     
     
@@ -295,13 +305,15 @@ extension ARCameraVC {
         
         nextLevel.delegate = self
         nextLevel.videoDelegate = self
+        nextLevel.deviceDelegate = self
+        nextLevel.videoDelegate = self
         
         nextLevel.captureMode = .arKit
         nextLevel.isVideoCustomContextRenderingEnabled = true
         nextLevel.videoStabilizationMode = .off
         nextLevel.frameRate = 60
         
-        //video configuration
+   /*     //video configur ation
         nextLevel.videoConfiguration.maximumCaptureDuration = CMTime(seconds: 12.0, preferredTimescale: 1)
         nextLevel.videoConfiguration.bitRate = 15000000
         nextLevel.videoConfiguration.maxKeyFrameInterval = 30
@@ -309,40 +321,19 @@ extension ARCameraVC {
         nextLevel.videoConfiguration.codec = AVVideoCodecType.hevc
         nextLevel.videoConfiguration.profileLevel = String(kVTProfileLevel_HEVC_Main_AutoLevel)
         // audio configuration
-        nextLevel.audioConfiguration.bitRate = 96000
+        nextLevel.audioConfiguration.bitRate = 96000 */
+        
+        
     }
     
 }
     
     func saveVideo(url :URL){
-        let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
-        vc.videoURL = url
-        vc.checkVideoOrIamge = false
-        
-        for i in 100...110 {
-            vc.stickers.append(UIImage(named: i.description )!)
-        }
-        if #available(iOS 13.0, *) {
-            vc.modalPresentationStyle = .fullScreen
-        }
-        
-        self.present(vc, animated: false, completion: nil)
+        cameraDelegate?.didFinishProcessingVideo(url: url)
     }
     
     func savePhoto(photo : UIImage){
-        let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
-        vc.photo = photo
-        vc.checkVideoOrIamge = true
-        
-        vc.modalPresentationStyle = .fullScreen
-        
-        for i in 100...110 {
-            vc.stickers.append(UIImage(named: i.description )!)
-        }
-        
-        present(vc, animated: false, completion: nil)
+        cameraDelegate?.didTakePhoto(image: photo)
     }
 }
 
@@ -381,7 +372,7 @@ extension ARCameraVC : NextLevelVideoDelegate{
     
     func nextLevel(_ nextLevel: NextLevel, didCompleteClip clip: NextLevelClip, inSession session: NextLevelSession) {
         print("did complete clip")
-        stopRecording()
+       // stopRecording()
     }
     
     func nextLevel(_ nextLevel: NextLevel, didAppendVideoSampleBuffer sampleBuffer: CMSampleBuffer, inSession session: NextLevelSession) {
@@ -409,6 +400,8 @@ extension ARCameraVC : NextLevelVideoDelegate{
     }
     
     func nextLevel(_ nextLevel: NextLevel, didCompleteSession session: NextLevelSession) {
+        print("did complete session")
+        self.stopRecording()
     }
     
     func nextLevel(_ nextLevel: NextLevel, didCompletePhotoCaptureFromVideoFrame photoDict: [String : Any]?) {
@@ -466,6 +459,8 @@ extension ARCameraVC : NextLevelDelegate{
 }
 
 extension ARCameraVC : NextLevelPhotoDelegate{
+    
+
     func nextLevel(_ nextLevel: NextLevel, willCapturePhotoWithConfiguration photoConfiguration: NextLevelPhotoConfiguration) {
         
     }
@@ -586,36 +581,14 @@ extension ARCameraVC : ARSessionObserver{
 }
 
 
-extension UISearchBar{
-    
-    @IBInspectable var doneAccessory: Bool{
-        get{
-            return self.doneAccessory
-        }
-        set (hasDone) {
-            if hasDone{
-                addDoneButtonOnKeyboard()
-            }
-        }
+extension ARCameraVC : RecordingButtonDelegate{
+    func didStartCapture() {
+        print("did start captre")
     }
     
-    func addDoneButtonOnKeyboard()
-    {
-        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        doneToolbar.barStyle = .default
-        
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
-        
-        let items = [flexSpace, done]
-        doneToolbar.items = items
-        doneToolbar.sizeToFit()
-        
-        self.inputAccessoryView = doneToolbar
+    func didEndCapture() {
+        print("did end capture")
     }
     
-    @objc func doneButtonAction()
-    {
-        self.resignFirstResponder()
-    }
+    
 }

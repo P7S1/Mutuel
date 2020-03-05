@@ -301,7 +301,6 @@ class ChatViewController: MessagesViewController {
             picker.sourceType = .photoLibrary
             picker.videoMaximumDuration = 30
             picker.allowsEditing = true
-
             self.present(picker, animated: true, completion: nil)
         }))
         
@@ -312,7 +311,7 @@ class ChatViewController: MessagesViewController {
     
     
     func getMessageArray(){
-        let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages")
+        let docRef = db.collection("channels").document(channel.id).collection("messages")
         let query = docRef.order(by: "sentDate", descending: true).limit(to: 20)
         
         
@@ -780,20 +779,28 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
                              failure(error)
                             }else{
                                 let imageRef = Storage.storage().reference().child("profilePics").child(User.shared.uid ?? "").child("\(UUID().uuidString)\(Date()).jpg")
-                                guard let data = FollowersHelper().generateThumbnail(path: url)?.jpegData(compressionQuality: 0.1) else { return }
-                                imageRef.putData(data, metadata: nil) { (metaData, error) in
-                                    if error == nil{
-                                    imageRef.downloadURL { (thumbnail, error) in
+                                
+                                
+                                FollowersHelper().generateThumbnail(path: url) { (image) in
+                                    guard let data = image.jpegData(compressionQuality: 0.1) else { return }
+                                    
+                                    imageRef.putData(data, metadata: nil) { (metaData, error) in
                                         if error == nil{
-                                        print("thumb nail url downloaded successfully")
-                                        self.sendMessage(text: nil, photoURL: downloadURL?.absoluteString, kind: "video", placeHolderURL: thumbnail?.absoluteString)
-                                            success(downloadURL!.absoluteString)
-                                        }else{
-                                            failure(error!)
+                                        imageRef.downloadURL { (thumbnail, error) in
+                                            if error == nil{
+                                            print("thumb nail url downloaded successfully")
+                                            self.sendMessage(text: nil, photoURL: downloadURL?.absoluteString, kind: "video", placeHolderURL: thumbnail?.absoluteString)
+                                                success(downloadURL!.absoluteString)
+                                            }else{
+                                                failure(error!)
+                                            }
+                                        }
                                         }
                                     }
-                                    }
                                 }
+                                
+                                
+    
                             }
                         }
                     }

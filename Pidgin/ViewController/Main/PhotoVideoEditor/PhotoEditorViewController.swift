@@ -595,10 +595,14 @@ public final class PhotoEditorViewController: UIViewController {
                     self.saveToPhotoLibrary(outputURL: exporter!.outputURL!)
                 }else if ((exporter?.outputURL) != nil) && !saveToPhotoLibray{
                     ProgressHUD.dismiss()
-                    DispatchQueue.main.async{
-                        let image = FollowersHelper().generateThumbnail(path: exporter!.outputURL!)
-                        self.presentSendToUserViewController(image: image, video: exporter!.outputURL!, size: clipVideoTrack.naturalSize)
-                    }
+                
+                        FollowersHelper().generateThumbnail(path: exporter!.outputURL!) { (image) in
+                            DispatchQueue.main.async{
+                            self.presentSendToUserViewController(image: image, video: exporter!.outputURL!, size: clipVideoTrack.naturalSize)
+                            }
+                        }
+                        
+                    
                     self.photoEditorDelegate?.videoEdited(video: exporter!.outputURL!)
                 }
             }

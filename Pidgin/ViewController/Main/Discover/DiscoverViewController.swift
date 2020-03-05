@@ -27,7 +27,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
 
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         setupUI()
-        self.configureNavItem(name: "Discover")
+        self.configureNavItem(name: "Trending")
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         exploreVC = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as? ExploreViewController
         exploreVC.exploreDelegate = self
@@ -36,20 +36,10 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         followingVC.followingDelegate = self
         navigationItem.largeTitleDisplayMode = .never
         
-        let items = ["Discover", "Following"]
-        let carbonTabSwipeNavigation = CarbonTabSwipeNavigation(items: items, delegate: self)
-        carbonTabSwipeNavigation.insert(intoRootViewController: self)
-        carbonTabSwipeNavigation.setNormalColor(.secondaryLabel, font: UIFont.systemFont(ofSize: 16, weight: .medium))
-        carbonTabSwipeNavigation.setSelectedColor(.label, font: UIFont.systemFont(ofSize: 16, weight: .semibold))
-        carbonTabSwipeNavigation.setIndicatorColor(.systemPink)
-        carbonTabSwipeNavigation.setTabBarHeight(40)
-        carbonTabSwipeNavigation.carbonSegmentedControl?.backgroundColor = .systemBackground
-        carbonTabSwipeNavigation.toolbar.barTintColor = .systemBackground
-        carbonTabSwipeNavigation.toolbar.setShadowImage(UIImage(), forToolbarPosition: .any)
-        
-        for i in 0...items.count-1{
-     carbonTabSwipeNavigation.carbonSegmentedControl?.setWidth((self.view.frame.width/CGFloat(items.count)), forSegmentAt: i)
-        }
+        let items = ["Trending", "Following"]
+        let carbonTabSwipeNavigation = CarbonSwipe(items: items, delegate: self)
+        carbonTabSwipeNavigation.configure(items: items, vc: self)
+    
         
         //Camera
         AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
@@ -95,18 +85,6 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         super.viewWillAppear(animated)
 
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-
-
     
     func collectionViewScrolled(_ scrollView: UIScrollView) {
         self.scrollViewDidScroll(scrollView)

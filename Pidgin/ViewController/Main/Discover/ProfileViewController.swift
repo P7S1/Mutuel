@@ -76,10 +76,12 @@ class ProfileViewController: UIViewController{
         if let string = user?.profileURL{
             DispatchQueue.main.async {
                 if let url = URL(string: string){
-                    self.profile.startSkeletonAnimation()
+                    self.profile.isSkeletonable = true
+                    let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
+                    self.profile.showAnimatedGradientSkeleton(usingGradient: gradient)
                     self.profile.kf.setImage(with: URL(string: url.absoluteString)) { (result) in
+                        self.profile.stopSkeletonAnimation()
                     self.profile.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                        
                     }
                     self.profile.heroID = url.absoluteString
                 }else{
@@ -231,26 +233,17 @@ class ProfileViewController: UIViewController{
     
     @objc func handleFollowingTapped(){
         print("handleFollowingTapped")
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "FollowersTableViewController") as! FollowersTableViewController
-        
+        let vc = RelationshipViewController()
         vc.user = user
-        
-        vc.type = "following"
-        
+        vc.selectedIndex = 1
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func handleFollowersTapped(){
         print("handleFollowersTapped")
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "FollowersTableViewController") as! FollowersTableViewController
-        
-   
+        let vc = RelationshipViewController()
         vc.user = user
-        
-        vc.type = "followers"
-        
+        vc.selectedIndex = 0
         navigationController?.pushViewController(vc, animated: true)
     }
     

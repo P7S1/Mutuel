@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseFirestore
 import FirebaseAuth
+import DeepDiff
 class FollowersTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
@@ -60,12 +61,14 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
             viewTitle = "Followers"
             createGroupButton.isEnabled = false
             createGroupView.removeFromSuperview()
+            tableView.contentInset = UIEdgeInsets(top: -66, left: 0, bottom: 0, right: 0)
             tableView.layoutIfNeeded()
             self.view.layoutIfNeeded()
             getUsersFollowers()
         case "following":
             viewTitle = "Following"
             createGroupButton.isEnabled = false
+            tableView.contentInset = UIEdgeInsets(top: -66, left: 0, bottom: 0, right: 0)
             createGroupView.removeFromSuperview()
             tableView.layoutIfNeeded()
             self.view.layoutIfNeeded()
@@ -257,15 +260,27 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
                    query = query.start(afterDocument: startAfter)
                    query.getDocuments { (snapshot, error) in
                        if error == nil{
-                           if snapshot!.count < 10{
+                        if snapshot!.count < self.queryLimit{
                                self.loadedAllDocs = true
                            }
+                           
+                        let old = self.results
+                        var new = self.results
+                        
                            for document in snapshot!.documents{
                            let account = Account()
                            account.convertFromDocument(dictionary: document)
-                               self.results.append(account)
+                            new.append(account)
                            }
-                        self.tableView.reloadData()
+                            
+                        let changes = diff(old: old, new: new)
+                        self.tableView.reload(changes: changes, section: 0, updateData: {
+                            self.results = new
+                        })
+                    
+                        
+                        
+                        
                         }
                    }
                }

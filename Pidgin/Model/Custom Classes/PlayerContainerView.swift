@@ -42,6 +42,13 @@ class PlayerContainerView: UIView {
                 if shouldPlay{
                 (self.layer as! AVPlayerLayer).player?.play()
                 }
+                /*(self.layer as! AVPlayerLayer).player?.preroll(atRate: 2, completionHandler: { (completion) in
+                    if completion{
+                        print("pre roll complete")
+                    }else{
+                        print("pre roll failed")
+                    }
+                }) */
                 NotificationCenter.default.addObserver( self,
                                                        selector: #selector(self.playerItemDidReachEnd(notification:)),
                 name: .AVPlayerItemDidPlayToEndTime,

@@ -153,7 +153,7 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         
             let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass", withConfiguration: medium), style: .plain, target: self, action: #selector(searchButtonPressed))
         
-        let challengeButton = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil", withConfiguration: medium), style: .plain, target: self, action: #selector(challengesButtonPressed))
+        let challengeButton = UIBarButtonItem(image: UIImage(systemName: "rosette", withConfiguration: medium), style: .plain, target: self, action: #selector(challengesButtonPressed))
             
         navigationItem.leftBarButtonItems = [searchButton,chatButton,challengeButton]
 

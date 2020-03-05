@@ -46,7 +46,7 @@ class RecordingButton: UIButton {
     var endProgressValue: CGFloat = 0;
     
     
-    var timer: Timer!;
+    var timer: Timer?;
     
     
     func setOutlineColor(color: UIColor) {
@@ -74,7 +74,7 @@ class RecordingButton: UIButton {
         
         let outerCircle = UIBezierPath();
         let startAngle = 0;
-        let endAngle = M_PI * 2;
+        let endAngle = Double.pi * 2;
         outerCircle.addArc(withCenter: CGPoint.init(x: rect.size.width/2, y: rect.size.height/2), radius: outerCircleRadious, startAngle: CGFloat(startAngle), endAngle:CGFloat(endAngle), clockwise: true);
         outerCircle.lineWidth=5.0;
         outlineColor.set();
@@ -144,7 +144,7 @@ class RecordingButton: UIButton {
         endProgressValue=0;
         //innerCircleRadious=25;
         isCompleteMode = true;
-        timer.invalidate();
+        timer?.invalidate();
         timer = nil;
         timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.restoreDefaultState), userInfo: nil, repeats: true);
         
@@ -163,7 +163,7 @@ class RecordingButton: UIButton {
         setNeedsDisplay();
         if innerCircleRadious>=35 {
             
-            timer.invalidate();
+            timer?.invalidate();
             timer = nil;
 
         }
@@ -172,8 +172,8 @@ class RecordingButton: UIButton {
     }
     
     @objc func playProgress() {
-        endProgressValue += (CGFloat(M_PI * 2)/recordingDuration * 0.05);
-        let endAngle = M_PI * 2;
+        endProgressValue += (CGFloat(Double.pi * 2)/recordingDuration * 0.05);
+        let endAngle = Double.pi * 2;
         if endProgressValue > CGFloat(endAngle) {
             stopRecord();
         }
@@ -197,7 +197,7 @@ class RecordingButton: UIButton {
         //}while innerCircleCornerRadious>0
         
         if innerCircleCornerRadious<=5 {
-            timer.invalidate();
+            timer?.invalidate();
             timer=nil;
             isRecordingState = true;
             isPlayingProgress = true;
