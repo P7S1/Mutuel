@@ -685,6 +685,7 @@
                                             <subviews>
                                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="CI4-sq-cd4">
                                                     <rect key="frame" x="4" y="15" width="71" height="35"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="aqU-GY-prt">
                                                         <size key="itemSize" width="40" height="40"/>
                                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
