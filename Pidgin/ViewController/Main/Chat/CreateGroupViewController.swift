@@ -10,7 +10,6 @@ import UIKit
 import CropViewController
 import FirebaseFirestore
 import DeepDiff
-import BubblePictures
 class CreateGroupViewController: UIViewController{
     @IBOutlet weak var createGroupButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
@@ -39,7 +38,7 @@ class CreateGroupViewController: UIViewController{
     
     var loadedAllDocs = false
     
-    private var bubblePictures: BubblePictures!
+    var bubblePictures: BubblePictures?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,42 +53,66 @@ class CreateGroupViewController: UIViewController{
         tableView.dataSource = self
         setUpForGroup()
         getUsersFollowers()
+        getOldMembers()
         updateMembersText()
+        
         textField.addDoneButtonOnKeyboard()
         
         // Do any additional setup after loading the view.
+    }
+    
+    func getOldMembers(){
+        let docRef  = db.collection("users").whereField("follower", in: members).whereField("followed", isEqualTo: User.shared.uid ?? "")
+        
+        docRef.getDocuments { (snapshot, error) in
+            if error == nil{
+                for document in snapshot!.documents{
+                    let member = Relationship(document: document)
+                    self.results.append(member)
+                    self.updateMembersText()
+                }
+            }else{
+                print("ther was an erro: \(error!)")
+            }
+        }
     }
     
     func setUpBubblePictures(){
         var bubblePics = [BPCellConfigFile]()
         
         let layoutConfigurator = BPLayoutConfigurator(
-        backgroundColorForTruncatedBubble: UIColor.gray,
-        fontForBubbleTitles: UIFont(name: "HelveticaNeue-Light", size: 16.0)!,
-        colorForBubbleBorders: UIColor.white,
+        backgroundColorForTruncatedBubble: UIColor.secondarySystemBackground,
+        fontForBubbleTitles: UIFont.systemFont(ofSize: 15, weight: .regular),
+        colorForBubbleBorders: UIColor.clear,
         colorForBubbleTitles: UIColor.white,
         maxCharactersForBubbleTitles: 2,
-        maxNumberOfBubbles: 5,
-        displayForTruncatedCell: BPTruncatedCellDisplay.number(4),
+        maxNumberOfBubbles: 7,
+        displayForTruncatedCell: BPTruncatedCellDisplay.number(members.count-7),
         direction: .leftToRight,
         alignment: .center)
         
         for member in members{
-            let relationshipMember = results.first { (relationship) -> Bool in
-                return relationship.follower == member && member != User.shared.uid
-            }
-            print(members.count)
+            if let relationshipMember = results.first(where: { (relationship) -> Bool in
+                return relationship.follower == member
+            }){
             
-            if let string = relationshipMember?.followerProfileURL, let url = URL(string: string){
-                let bubble = BPCellConfigFile(imageType: .URL(url), title: "")
-            print("append a bubble")
+                if let url = URL(string: relationshipMember.followerProfileURL){
+                    let bubble = BPCellConfigFile(imageType: .URL(url), title: "")
             bubblePics.append(bubble)
+            }else{
+                    let bubble = BPCellConfigFile(imageType: .image(FollowersHelper().getUserProfilePicture()), title: relationshipMember.followerUsername)
+                    bubblePics.append(bubble)
             }
+            }
+        }
+        print("NEW BUBBLE PICS:")
+        for pic in bubblePics{
+            print(pic.title)
         }
         
         self.bubblePictures = BubblePictures(collectionView: collectionView, configFiles: bubblePics, layoutConfigurator: layoutConfigurator)
-        
-        collectionView.reloadData()
+        print(self.bubblePictures?.collectionView(collectionView, numberOfItemsInSection: 0))
+
     }
     
     func showError(msg : String){
@@ -126,11 +149,6 @@ class CreateGroupViewController: UIViewController{
                     if snapshot!.count < self.queryLimit{
                         self.loadedAllDocs = true
                     }
-                    if self.mode == "editing"{
-                        if self.channel.members.contains(relation.follower){
-                            self.members.append(relation.follower)
-                        }
-                    }
                     new.append(relation)
                     
                     
@@ -150,6 +168,7 @@ class CreateGroupViewController: UIViewController{
     }
     
     func updateMembersText(){
+        setUpBubblePictures()
         membersCountLogo.text = "\(members.count)/10 members"
         if members.count > 2{
             createGroupButton.isEnabled = true
@@ -172,8 +191,6 @@ class CreateGroupViewController: UIViewController{
             createGroupButton.setTitle("Add \(3 - members.count) more members", for: .normal)
         }
         createGroupButton.setTitleColor(UIColor.label, for: .normal)
-        
-        setUpBubblePictures()
     }
     
     
@@ -253,7 +270,7 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
         
         let relation = results[indexPath.row]
         
-        if self.channel.members.contains(relation.follower){
+        if self.members.contains(relation.follower){
             cell.accessoryType = .checkmark
         }else{
             cell.accessoryType = .none
@@ -292,8 +309,8 @@ extension CreateGroupViewController : UITableViewDelegate, UITableViewDataSource
                     showError(msg: "Max 10 members allowed")
                 }
             }
-         updateMembersText()
         }
+        updateMembersText()
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

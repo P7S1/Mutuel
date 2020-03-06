@@ -19,16 +19,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>BubblePictures-BubblePictures.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>BubblePictures.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Cache.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -234,11 +224,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>SDWebImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>SkeletonView.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -270,16 +255,6 @@
 			<false/>
 		</dict>
 		<key>SwipeTransitionAutoSwipeToDismiss.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>TLPhotoPicker-TLPhotoPicker.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>TLPhotoPicker.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

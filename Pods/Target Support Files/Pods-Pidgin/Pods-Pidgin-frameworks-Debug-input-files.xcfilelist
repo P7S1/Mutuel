@@ -2,7 +2,6 @@ ${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
 ${BUILT_PRODUCTS_DIR}/Analytics/Analytics.framework
 ${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework
-${BUILT_PRODUCTS_DIR}/BubblePictures/BubblePictures.framework
 ${BUILT_PRODUCTS_DIR}/Cache/Cache.framework
 ${BUILT_PRODUCTS_DIR}/CarbonKit/CarbonKit.framework
 ${BUILT_PRODUCTS_DIR}/CollectionViewWaterfallLayout/CollectionViewWaterfallLayout.framework
@@ -23,7 +22,6 @@ ${BUILT_PRODUCTS_DIR}/NotificationBannerSwift/NotificationBannerSwift.framework
 ${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework
 ${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework
 ${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework
-${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework
 ${BUILT_PRODUCTS_DIR}/SkeletonView/SkeletonView.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfGLTFSceneKit/SvrfGLTFSceneKit.framework
@@ -31,7 +29,6 @@ ${BUILT_PRODUCTS_DIR}/SvrfSDK/SvrfSDK.framework
 ${BUILT_PRODUCTS_DIR}/SwipeTransition/SwipeTransition.framework
 ${BUILT_PRODUCTS_DIR}/SwipeTransitionAutoSwipeBack/SwipeTransitionAutoSwipeBack.framework
 ${BUILT_PRODUCTS_DIR}/SwipeTransitionAutoSwipeToDismiss/SwipeTransitionAutoSwipeToDismiss.framework
-${BUILT_PRODUCTS_DIR}/TLPhotoPicker/TLPhotoPicker.framework
 ${BUILT_PRODUCTS_DIR}/ViewRow/ViewRow.framework
 ${BUILT_PRODUCTS_DIR}/WLEmptyState/WLEmptyState.framework
 ${BUILT_PRODUCTS_DIR}/abseil/absl.framework

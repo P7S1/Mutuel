@@ -16,6 +16,8 @@ class ChatInfoViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     var viewTitle = ""
     
     var displayname = ""
@@ -25,6 +27,10 @@ class ChatInfoViewController: UIViewController {
     @IBOutlet weak var addMemberButton: UIButton!
     
     var channel : Channel!
+    
+    var bubblePictures : BubblePictures!
+    
+    
     
     
     override func viewDidLoad() {
@@ -56,12 +62,7 @@ class ChatInfoViewController: UIViewController {
             displayname = channel.name 
             leaveGroupButton.setTitle("Leave Group", for: .normal)
             addMemberButton.setTitle("Edit Group", for: .normal)
-            if let url = channel.profilePics.value(forKey: channel.id ?? "") as? String{
-                image.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
-                image.heroID = url
-            }else{
-                image.image = FollowersHelper().getGroupProfilePicture()
-            }
+            setUpBubblePictures()
         }else{
             if let url = channel.profilePics.value(forKey: channel.members[0]) as? String{
                 image.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
@@ -80,8 +81,12 @@ class ChatInfoViewController: UIViewController {
         image.isUserInteractionEnabled = true
         let gesture = UITapGestureRecognizer(target: self, action: #selector(handleProfilePictureTap))
         image.addGestureRecognizer(gesture)
+        
+        self.setUpBubblePictures()
         // Do any additional setup after loading the view.
     }
+    
+    
     
     @objc func handleProfilePictureTap(){
         print("tap gesture profile picture")
@@ -143,6 +148,7 @@ class ChatInfoViewController: UIViewController {
          vc.mode = "editing"
         }
         vc.channel = channel
+        vc.members = channel.members
         navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -168,7 +174,7 @@ extension ChatInfoViewController : UITableViewDelegate, UITableViewDataSource{
         
         
         cell.displayName.text = channel.metaData[channel.members[indexPath.row]] as? String
-        cell.username.removeFromSuperview()
+        cell.username.text = ""
         
         if let url = channel.profilePics.value(forKey: channel.members[indexPath.row]) as? String{
             cell.profilePic.kf.setImage(with: URL(string: url), placeholder: FollowersHelper().getUserProfilePicture())
@@ -215,5 +221,40 @@ extension ChatInfoViewController : UITableViewDelegate, UITableViewDataSource{
         return getHeaderView(with: "Members", tableView: tableView)
     }
     
+    func setUpBubblePictures(){
+        self.image.isHidden = true
+        var bubblePics = [BPCellConfigFile]()
+        
+        let layoutConfigurator = BPLayoutConfigurator(
+        backgroundColorForTruncatedBubble: UIColor.secondarySystemBackground,
+        fontForBubbleTitles: UIFont.systemFont(ofSize: 15, weight: .regular),
+        colorForBubbleBorders: UIColor.clear,
+        colorForBubbleTitles: UIColor.white,
+        maxCharactersForBubbleTitles: 2,
+        maxNumberOfBubbles: 10,
+        displayForTruncatedCell: BPTruncatedCellDisplay.number(channel.members.count-10),
+        direction: .leftToRight,
+        alignment: .center)
+        
+        for member in channel.members{
+            
+            if let string = channel.profilePics.value(forKey: member) as? String,
+                let url = URL(string: string){
+                    let bubble = BPCellConfigFile(imageType: .URL(url), title: "")
+            bubblePics.append(bubble)
+            }else{
+                    let bubble = BPCellConfigFile(imageType: .image(FollowersHelper().getUserProfilePicture()), title: "")
+                    bubblePics.append(bubble)
+            }
+            
+        }
+        print("NEW BUBBLE PICS:")
+        for pic in bubblePics{
+            print(pic.title)
+        }
+        
+        self.bubblePictures = BubblePictures(collectionView: collectionView, configFiles: bubblePics, layoutConfigurator: layoutConfigurator)
+
+    }
     
 }

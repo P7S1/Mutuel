@@ -33,6 +33,5 @@ target 'Pidgin' do
   pod "SwipeTransitionAutoSwipeBack"      # if needed
   pod "SwipeTransitionAutoSwipeToDismiss" # if needed
   pod 'CarbonKit'
-  pod 'BubblePictures'
 end
 

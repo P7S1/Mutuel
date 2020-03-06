@@ -225,14 +225,16 @@ extension ChannelsViewController {
     if channel.groupChat{
         id = channel.id
         cell.displayName.text = channel.name
+        cell.setUpBubblePictures(channel: channel)
     }else{
         id = channel.getSenderID()
         cell.displayName.text = channel.metaData.value(forKey: id) as? String ?? ""
     }
     
-    
+    if !channel.groupChat{
     let photoURL = channel.profilePics.value(forKey: id) as? String ?? ""
     cell.profilePic.kf.setImage(with: URL(string: photoURL), placeholder: FollowersHelper().getUserProfilePicture())
+    }
     
     cell.message.text = channel.lastMesssageText
     

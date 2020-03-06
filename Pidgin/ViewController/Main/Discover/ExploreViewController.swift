@@ -161,43 +161,48 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     
     func getMorePosts(removeAll : Bool){
+        
         if let doc = self.lastDocument{
             query = query.start(afterDocument: doc)
         }
-        query.getDocuments { (snapshot, error) in
-            if error == nil{
-                if snapshot!.count < 20{
-                    self.loadedAllPosts = true
-                    self.updateFooter()
-                }
-                let old = self.posts
-                if removeAll{
-                    self.posts.removeAll()
-                }
-                var newItems = self.posts
-                for document in snapshot!.documents{
-                    let post = Post(document: document)
-                    self.lastDocument = document
-                    if !self.posts.contains(post){
-                    newItems.append(post)
-                    }
-                    
-      
-                }
+        
+        DispatchQueue.main.async {
+            self.query.getDocuments { (snapshot, error) in
+                  if error == nil{
+                      if snapshot!.count < 20{
+                          self.loadedAllPosts = true
+                          self.updateFooter()
+                      }
+                      let old = self.posts
+                      if removeAll{
+                          self.posts.removeAll()
+                      }
+                      var newItems = self.posts
+                      for document in snapshot!.documents{
+                          let post = Post(document: document)
+                          self.lastDocument = document
+                          if !self.posts.contains(post){
+                          newItems.append(post)
+                          }
+                          
             
-                DispatchQueue.main.async {
-                    self.refreshControl.endRefreshing()
-                }
-                self.collectionView.performBatchUpdates({
-                    let changes = diff(old: old, new: newItems)
-                    self.collectionView.reload(changes: changes, section: 0, updateData: {
-                        self.posts = newItems
-                    })
-                }, completion: nil)
-            }else{
-                print("there was an error \(error!)")
-            }
+                      }
+                  
+                      DispatchQueue.main.async {
+                          self.refreshControl.endRefreshing()
+                      }
+                    
+                          let changes = diff(old: old, new: newItems)
+                          self.collectionView.reload(changes: changes, section: 0, updateData: {
+                              self.posts = newItems
+                          })
+                   
+                  }else{
+                      print("there was an error \(error!)")
+                  }
+              }
         }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -249,7 +254,7 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreCollectionViewCell", for: indexPath) as! ExploreCollectionViewCell
         let post = posts[indexPath.row]
-        
+
         cell.imageView.clipsToBounds = true
         cell.imageView.layer.cornerRadius = 10
         cell.backgroundColor = .clear
@@ -282,7 +287,7 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         if isUserProfile{
             vc.navTitle = user.name ?? ""
         }else{
-            vc.navTitle = "Discover"
+            vc.navTitle = "Trending"
         }
         willPresentAView = true
          navigationController?.pushViewController(vc, animated: true)
