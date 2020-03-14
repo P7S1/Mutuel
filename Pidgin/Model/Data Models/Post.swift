@@ -28,19 +28,23 @@ struct Post{
     
     var postID : String
     
-    var commentsCount : Int
-    
-    var repostsCount : Int
-    
     var isGIF : Bool
     
     var creatorDisplayName : String
     var creatorPhotoURL : String
     var creatorUsername : String
     
+    var originalPostID : String
+    var originalPublishDate : Date
+    
+    var originalCreatorID : String
+    
+    var isRepost : Bool
+    
+    var reposterUsername : String
+    
     init(document : DocumentSnapshot) {
         let data = document.data()
-        
      photoURL = data?["photoURL"] as? String ?? ""
      caption = data?["caption"] as? String ?? ""
      let date = data?["publishDate"] as? Timestamp ?? Timestamp()
@@ -49,19 +53,23 @@ struct Post{
         isVideo = data?["isVideo"] as? Bool ?? false
         isGIF = data?["isGIF"] as? Bool ?? false
         videoURL = data?["videoURL"] as? String
-        repostsCount = data?["repostsCount"] as? Int ?? 0
-        commentsCount = data?["commentsCount"] as? Int ?? 0
         
         let width = data?["width"] as? CGFloat ?? 200
         let height = data?["height"] as? CGFloat ?? 200
 
         photoSize = CGSize(width: width, height: height)
-        postID = data?["postID"] as? String ?? ""
+        postID = document.documentID
         
         creatorDisplayName = data?["creatorDisplayName"] as? String ?? ""
         creatorPhotoURL = data?["creatorPhotoURL"] as? String ?? ""
         creatorUsername = data?["creatorUsername"] as? String ?? ""
+        self.isRepost = data?["isRepost"] as? Bool ?? false
+        self.reposterUsername = data?["reposterUsername"] as? String ?? ""
+        self.originalPostID = data?["postID"] as? String ?? document.documentID
         
+        let originalPublishDate = data?["originalPublishDate"] as? Timestamp ?? Timestamp()
+        self.originalPublishDate = originalPublishDate.dateValue()
+        self.originalCreatorID = data?["originalCreatorID"] as? String ?? ""
     }
     
     init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool) {
@@ -73,12 +81,27 @@ struct Post{
         self.videoURL = videoURL
         self.photoSize = photoSize
         self.postID = postID
-        self.commentsCount = 0
-        self.repostsCount = 0
         self.isGIF = isGIF
         self.creatorDisplayName = User.shared.name ?? ""
         self.creatorPhotoURL = User.shared.profileURL ?? ""
         self.creatorUsername = User.shared.username ?? ""
+        self.isRepost = false
+        self.reposterUsername = User.shared.username ?? ""
+        self.originalPostID = postID
+        self.originalPublishDate = publishDate
+        self.originalCreatorID = User.shared.uid ?? ""
+    }
+  
+    init(post : Post) {
+        self = post
+        self.isRepost = true
+        self.creatorID = User.shared.uid ?? ""
+        self.reposterUsername = User.shared.username ?? ""
+        self.postID  = "\(User.shared.uid ?? "")_\(post.originalPostID)"
+        self.publishDate = Date()
+        print("Post id :\(self.postID)")
+        print("ORiginal post id : \(self.originalPostID)")
+        
     }
     
 }
@@ -96,7 +119,12 @@ extension Post : DatabaseRepresentation{
                                     "isGIF" : self.isGIF,
                                     "creatorDisplayName" : self.creatorDisplayName,
                                     "creatorPhotoURL" : self.creatorPhotoURL,
-                                    "creatorUsername" : self.creatorUsername]
+                                    "creatorUsername" : self.creatorUsername,
+                                    "isRepost" : self.isRepost,
+                                    "postID" : self.originalPostID,
+                                    "reposterUsername" : self.reposterUsername,
+                                    "originalPublishDate" : self.originalPublishDate,
+                                    "originalCreatorID" : self.originalCreatorID]
         return rep
     }
     
@@ -114,6 +142,7 @@ extension Post : DiffAware{
 
     static func compareContent(_ a: Post, _ b: Post) -> Bool {
         return (a.postID == b.postID)
+        
     }
     
 }

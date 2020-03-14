@@ -722,7 +722,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
       metadata.contentType = "image/jpeg"
       
       let imageName = [UUID().uuidString, String(Date().timeIntervalSince1970)].joined()
-      let imageRef = storage.child(channelID).child(imageName)
+        let imageRef = storage.child("channels").child(channelID).child(User.shared.uid ?? "").child(imageName)
       imageRef.putData(data, metadata: metadata) { meta, error in
         if error == nil{
         imageRef.downloadURL { (url, error) in
@@ -767,7 +767,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
             print(error)
         }
 
-        let storageRef = Storage.storage().reference().child(channelID).child(name)
+        let storageRef = Storage.storage().reference().child("channels").child(channelID).child(User.shared.uid ?? "").child(name)
         if let uploadData = data as Data? {
             storageRef.putData(uploadData, metadata: nil
                 , completion: { (metadata, error) in

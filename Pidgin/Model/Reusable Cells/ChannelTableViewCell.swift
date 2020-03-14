@@ -44,10 +44,10 @@ class ChannelTableViewCell: UITableViewCell {
         backgroundColorForTruncatedBubble: UIColor.secondarySystemBackground,
         fontForBubbleTitles: UIFont.systemFont(ofSize: 15, weight: .regular),
         colorForBubbleBorders: UIColor.clear,
-        colorForBubbleTitles: UIColor.white,
+        colorForBubbleTitles: UIColor.label,
         maxCharactersForBubbleTitles: 2,
         maxNumberOfBubbles: 3,
-        displayForTruncatedCell: nil,
+        displayForTruncatedCell: .number((channel.members.count-1)),
         direction: .leftToRight,
         alignment: .center)
         

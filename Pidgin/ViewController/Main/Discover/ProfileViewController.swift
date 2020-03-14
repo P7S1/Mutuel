@@ -292,6 +292,9 @@ class ProfileViewController: UIViewController{
             print("failed to follow user")
         }
         }else{
+            self.followButton.isEnabled = true
+            let vc = ActivityItemsViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
             print("did press avtivity")
         }
     }

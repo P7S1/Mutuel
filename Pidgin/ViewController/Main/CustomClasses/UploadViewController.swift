@@ -57,6 +57,11 @@ class UploadViewController: UIViewController, CarbonTabSwipeNavigationDelegate, 
         // Do any additional setup after loading the view.
     }
     
+    override func handleDismissButton() {
+        ProgressHUD.dismiss()
+        super.handleDismissButton()
+    }
+    
     func carbonTabSwipeNavigation(_ carbonTabSwipeNavigation: CarbonTabSwipeNavigation, viewControllerAt index: UInt) -> UIViewController {
         if index == 0{
          return photoVC
@@ -122,9 +127,9 @@ extension UploadViewController : GifDelegate, PhotoPickerDelegate, CropViewContr
             options.deliveryMode = .automatic
             
             let size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
-            
-            manager.requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPreset960x540) { (exporter, info) in
-                
+            ProgressHUD.show("Fetching from iCloud")
+            manager.requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPresetMediumQuality) { (exporter, info) in
+                ProgressHUD.show("Exporting")
                 let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
                 let myDocumentPath = URL(fileURLWithPath: documentsDirectory).appendingPathComponent("temp.mp4").absoluteString
                 _ = NSURL(fileURLWithPath: myDocumentPath)
@@ -144,6 +149,7 @@ extension UploadViewController : GifDelegate, PhotoPickerDelegate, CropViewContr
                 exporter?.exportAsynchronously(completionHandler: {
                     FollowersHelper().generateThumbnail(path: (exporter?.outputURL!)!) { (image) in
                         DispatchQueue.main.async {
+                            ProgressHUD.dismiss()
                             self.presentSendToUserVC(image: image , video: exporter?.outputURL!, photoSize: size)
                         }
                     }
@@ -155,7 +161,7 @@ extension UploadViewController : GifDelegate, PhotoPickerDelegate, CropViewContr
             
             
         }else if asset.mediaType == .image{
-         
+            ProgressHUD.show("Loading Photo")
             let manager = PHImageManager.default()
             let options = PHImageRequestOptions()
             options.version = .original
@@ -164,6 +170,7 @@ extension UploadViewController : GifDelegate, PhotoPickerDelegate, CropViewContr
             let size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
             manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: options) { (image, info) in
                 if image != nil{
+                    ProgressHUD.dismiss()
                 let vc = CropViewController(image: image!)
                     vc.aspectRatioLockEnabled = false
                     vc.delegate = self

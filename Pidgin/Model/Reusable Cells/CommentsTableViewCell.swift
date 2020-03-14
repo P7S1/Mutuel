@@ -10,6 +10,7 @@ import UIKit
 import GiphyUISDK
 import GiphyCoreSDK
 import SkeletonView
+import SwiftyGif
 class CommentsTableViewCell: UITableViewCell {
     
     @IBOutlet weak var profilePictureView: UIImageView!
@@ -91,10 +92,7 @@ class CommentsTableViewCell: UITableViewCell {
                         let url = URL(string: gifURL){
                         DispatchQueue.main.async {
                             DispatchQueue.main.async {
-                                self.gifView.stopSkeletonAnimation()
-                                self.gifView.kf.setImage(with: url) { (result) in
-                                    self.gifView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                                }
+                        self.gifView.setGifFromURL(url)
                             }
                         }
                 }

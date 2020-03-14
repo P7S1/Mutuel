@@ -352,6 +352,7 @@ PODS:
     - Alamofire (~> 4.8.2)
     - Analytics (~> 3.0)
     - SvrfGLTFSceneKit (~> 1.3)
+  - SwiftyGif (5.2.0)
   - SwipeTransition (0.4.2)
   - SwipeTransitionAutoSwipeBack (0.4.2):
     - SwipeTransition (~> 0.4.2)
@@ -381,6 +382,7 @@ DEPENDENCIES:
   - NotificationBannerSwift
   - SkeletonView
   - SvrfSDK
+  - SwiftyGif
   - SwipeTransition
   - SwipeTransitionAutoSwipeBack
   - SwipeTransitionAutoSwipeToDismiss
@@ -440,6 +442,7 @@ SPEC REPOS:
     - SnapKit
     - SvrfGLTFSceneKit
     - SvrfSDK
+    - SwiftyGif
     - SwipeTransition
     - SwipeTransitionAutoSwipeBack
     - SwipeTransitionAutoSwipeToDismiss
@@ -498,12 +501,13 @@ SPEC CHECKSUMS:
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SvrfGLTFSceneKit: 6572849d8b42e779c2e816e666def4e344d4f081
   SvrfSDK: f9e20f968c5bca4421b7ed4a4d58e220973bdcb6
+  SwiftyGif: b85c6b33a9411859d9e1db998b6a8214aea942df
   SwipeTransition: 03f6f995646bdff37946af75c442692b011cb348
   SwipeTransitionAutoSwipeBack: 64605a9e0d9bef917ba23f26f23bbe3ce8af4158
   SwipeTransitionAutoSwipeToDismiss: 8a477d96c7cefc133daf30ea60f627d4ab262498
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
   WLEmptyState: 2bbb3970f62c0b9252029d34a8f74cb3d436eeea
 
-PODFILE CHECKSUM: 49d8d9eef128b3eb38e7f2a6b1ff0365d90bd4b6
+PODFILE CHECKSUM: 7582d7fe1bb93967deab5e3aee5566c68e0bb0f3
 
 COCOAPODS: 1.8.4

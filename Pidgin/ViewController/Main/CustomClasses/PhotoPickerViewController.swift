@@ -58,6 +58,7 @@ class PhotoPickerViewController: UICollectionViewController, UICollectionViewDel
         
         let requestOptions = PHImageRequestOptions()
         requestOptions.deliveryMode = .highQualityFormat
+        requestOptions.isNetworkAccessAllowed = true
         
         let size = (self.collectionView.frame.width/3 - 1)
         
@@ -81,6 +82,7 @@ class PhotoPickerViewController: UICollectionViewController, UICollectionViewDel
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         photoPickerDelegate?.didSelectAsset(asset: fetchResults.object(at: indexPath.row), photoPicker: self)
     }
     

@@ -25,6 +25,7 @@
 		DF14F8EC2411B3B900E95E39 /* BPDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8DB2411B3B800E95E39 /* BPDelegate.swift */; };
 		DF14F8ED2411B3B900E95E39 /* BubblePictures.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8DC2411B3B800E95E39 /* BubblePictures.swift */; };
 		DF14F8EF2411B3B900E95E39 /* BPCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF14F8DF2411B3B800E95E39 /* BPCollectionViewCell.xib */; };
+		DF1726172413EA1800209146 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1726162413EA1700209146 /* ActivityViewController.swift */; };
 		DF209AC523F701DC00E031DB /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF209AC423F701DC00E031DB /* UIView.swift */; };
 		DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */; };
 		DF215B092356673700EE67D3 /* SwiftyCamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */; };
@@ -34,6 +35,9 @@
 		DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */; };
 		DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */; };
 		DF3C1A0E2398138000106964 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3C1A0D2398138000106964 /* HomeViewController.swift */; };
+		DF41B3432413F0E500F5B31F /* ActivityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */; };
+		DF41B3462413F3CD00F5B31F /* ActivityItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3452413F3CD00F5B31F /* ActivityItem.swift */; };
+		DF41B34A2413FD5C00F5B31F /* ActivityItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3492413FD5C00F5B31F /* ActivityItemsViewController.swift */; };
 		DF469B7E237910E400CDB540 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B7D237910E400CDB540 /* ProfileViewController.swift */; };
 		DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B7F2379FAD300CDB540 /* FollowersHelper.swift */; };
 		DF469B84237B47B600CDB540 /* FollowersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */; };
@@ -139,6 +143,7 @@
 		DF14F8DB2411B3B800E95E39 /* BPDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BPDelegate.swift; sourceTree = "<group>"; };
 		DF14F8DC2411B3B800E95E39 /* BubblePictures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubblePictures.swift; sourceTree = "<group>"; };
 		DF14F8DF2411B3B800E95E39 /* BPCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BPCollectionViewCell.xib; sourceTree = "<group>"; };
+		DF1726162413EA1700209146 /* ActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
 		DF209AC423F701DC00E031DB /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		DF215B012356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyCamViewControllerDelegate.swift; sourceTree = "<group>"; };
 		DF215B022356673700EE67D3 /* SwiftyCamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyCamViewController.swift; sourceTree = "<group>"; };
@@ -148,6 +153,9 @@
 		DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsTableViewController.swift; sourceTree = "<group>"; };
 		DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserTableViewCell.swift; sourceTree = "<group>"; };
 		DF3C1A0D2398138000106964 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTableViewCell.swift; sourceTree = "<group>"; };
+		DF41B3452413F3CD00F5B31F /* ActivityItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityItem.swift; sourceTree = "<group>"; };
+		DF41B3492413FD5C00F5B31F /* ActivityItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityItemsViewController.swift; sourceTree = "<group>"; };
 		DF469B7D237910E400CDB540 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		DF469B7F2379FAD300CDB540 /* FollowersHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersHelper.swift; sourceTree = "<group>"; };
 		DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersTableViewController.swift; sourceTree = "<group>"; };
@@ -354,6 +362,20 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		DF41B3442413F1C200F5B31F /* Data Models */ = {
+			isa = PBXGroup;
+			children = (
+				DF9510112360D945006B3B44 /* Account.swift */,
+				DFF346232367A3FC006AA467 /* Channel.swift */,
+				DFF346282367AE0D006AA467 /* Message.swift */,
+				DF7D0AC223B83ABE00B33E40 /* Post.swift */,
+				DF562A3223BE3E9F00CC43D3 /* Comment.swift */,
+				DF661AFB23F8CBE3006702C7 /* Relationship.swift */,
+				DF41B3452413F3CD00F5B31F /* ActivityItem.swift */,
+			);
+			path = "Data Models";
+			sourceTree = "<group>";
+		};
 		DF469B7B23790FC100CDB540 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
@@ -370,6 +392,8 @@
 			children = (
 				DFDE080D234D23880017BFDA /* DiscoverViewController.swift */,
 				DF469B7D237910E400CDB540 /* ProfileViewController.swift */,
+				DF41B3492413FD5C00F5B31F /* ActivityItemsViewController.swift */,
+				DF1726162413EA1700209146 /* ActivityViewController.swift */,
 				DF7D0ABC23B7104900B33E40 /* ExploreViewController.swift */,
 				DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */,
 				DF7D0ABE23B711F500B33E40 /* FollowingViewController.swift */,
@@ -534,14 +558,9 @@
 		DFDE0810234D24230017BFDA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DF41B3442413F1C200F5B31F /* Data Models */,
 				DFEFCACD23F38CDA00397091 /* Custom Classes */,
 				DFEFCACC23F38CB900397091 /* Reusable Cells */,
-				DF9510112360D945006B3B44 /* Account.swift */,
-				DFF346232367A3FC006AA467 /* Channel.swift */,
-				DFF346282367AE0D006AA467 /* Message.swift */,
-				DF7D0AC223B83ABE00B33E40 /* Post.swift */,
-				DF562A3223BE3E9F00CC43D3 /* Comment.swift */,
-				DF661AFB23F8CBE3006702C7 /* Relationship.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -604,6 +623,7 @@
 				DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */,
 				DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */,
 				DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */,
+				DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */,
 			);
 			path = "Reusable Cells";
 			sourceTree = "<group>";
@@ -765,6 +785,7 @@
 				DF14F8EA2411B3B900E95E39 /* BPCellConfigFile.swift in Sources */,
 				DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */,
 				DF14F8E72411B3B900E95E39 /* BPImageType.swift in Sources */,
+				DF41B3462413F3CD00F5B31F /* ActivityItem.swift in Sources */,
 				DFEFCAC123F38A9D00397091 /* UIViewController.swift in Sources */,
 				DF4BC41B234D8267001AD00D /* Pencil.swift in Sources */,
 				DF5A223323D5F35D00BA053F /* ReAuthenticationViewController.swift in Sources */,
@@ -818,8 +839,10 @@
 				DF7D0ABF23B711F500B33E40 /* FollowingViewController.swift in Sources */,
 				DFF346262367A3FF006AA467 /* Channel.swift in Sources */,
 				DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */,
+				DF41B3432413F0E500F5B31F /* ActivityTableViewCell.swift in Sources */,
 				DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */,
 				DFDD9ECF234FDD5D007A3177 /* RemoteFaceFilter.swift in Sources */,
+				DF41B34A2413FD5C00F5B31F /* ActivityItemsViewController.swift in Sources */,
 				DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */,
 				DF209AC523F701DC00E031DB /* UIView.swift in Sources */,
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
@@ -838,6 +861,7 @@
 				DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */,
 				DF7D0ABD23B7104900B33E40 /* ExploreViewController.swift in Sources */,
 				DF469B7E237910E400CDB540 /* ProfileViewController.swift in Sources */,
+				DF1726172413EA1800209146 /* ActivityViewController.swift in Sources */,
 				DF21A36D2365597E00E39A55 /* ChatViewController.swift in Sources */,
 				DFDE0817234D292D0017BFDA /* TabBarController.swift in Sources */,
 			);

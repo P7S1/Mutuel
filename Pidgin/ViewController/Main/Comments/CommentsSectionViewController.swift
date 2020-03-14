@@ -18,6 +18,8 @@ class CommentsSectionViewController: UIViewController, UIScrollViewDelegate, Car
     
     var post : Post!
     
+    var commentCount = 0
+    
 
 
     override func viewDidLoad() {
@@ -27,7 +29,7 @@ class CommentsSectionViewController: UIViewController, UIScrollViewDelegate, Car
         
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         let vc1 = storyboard.instantiateViewController(withIdentifier: "CommentsViewController") as! CommentsViewController
-        
+        vc1.commentCount = commentCount
         latestCommentsVC = vc1
         
         vc1.commentsDelegate = self
@@ -37,8 +39,8 @@ class CommentsSectionViewController: UIViewController, UIScrollViewDelegate, Car
         topCommentsVC = vc2
         vc2.post = self.post
         vc2.commentsDelegate = self
-        
-        topCommentsVC.originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").order(by: "likesCount")
+        vc2.commentCount = commentCount
+        topCommentsVC.originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").order(by: "likesCount")
         
         let items = ["Top", "Latest"]
         let carbonTabSwipeNavigation = CarbonSwipe(items: items, delegate: self)

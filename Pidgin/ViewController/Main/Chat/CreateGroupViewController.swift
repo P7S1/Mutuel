@@ -84,7 +84,7 @@ class CreateGroupViewController: UIViewController{
         backgroundColorForTruncatedBubble: UIColor.secondarySystemBackground,
         fontForBubbleTitles: UIFont.systemFont(ofSize: 15, weight: .regular),
         colorForBubbleBorders: UIColor.clear,
-        colorForBubbleTitles: UIColor.white,
+        colorForBubbleTitles: UIColor.label,
         maxCharactersForBubbleTitles: 2,
         maxNumberOfBubbles: 7,
         displayForTruncatedCell: BPTruncatedCellDisplay.number(members.count-7),

@@ -684,7 +684,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="CI4-sq-cd4">
-                                                    <rect key="frame" x="4" y="15" width="71" height="35"/>
+                                                    <rect key="frame" x="4" y="16" width="73" height="33"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="aqU-GY-prt">
                                                         <size key="itemSize" width="40" height="40"/>
@@ -708,7 +708,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Atemnkeng N. Fontemm" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XdF-3Z-GNA">
-                                                    <rect key="frame" x="73" y="11.5" width="190" height="20.5"/>
+                                                    <rect key="frame" x="75" y="11.5" width="190" height="20.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="190" id="azx-Dy-bWn"/>
                                                     </constraints>
@@ -733,7 +733,7 @@
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subtitle of text message goes here" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="13i-ac-QoP">
-                                                    <rect key="frame" x="73" y="33" width="256" height="16"/>
+                                                    <rect key="frame" x="75" y="33" width="254" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -741,8 +741,8 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstItem="13i-ac-QoP" firstAttribute="leading" secondItem="tHI-iR-334" secondAttribute="trailing" constant="12" id="0fq-PS-HMf"/>
-                                                <constraint firstItem="XdF-3Z-GNA" firstAttribute="leading" secondItem="tHI-iR-334" secondAttribute="trailing" constant="12" id="2wA-xP-eUK"/>
+                                                <constraint firstItem="13i-ac-QoP" firstAttribute="leading" secondItem="tHI-iR-334" secondAttribute="trailing" constant="14" id="0fq-PS-HMf"/>
+                                                <constraint firstItem="XdF-3Z-GNA" firstAttribute="leading" secondItem="tHI-iR-334" secondAttribute="trailing" constant="14" id="2wA-xP-eUK"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="13i-ac-QoP" secondAttribute="trailing" constant="12" id="D7N-AH-KJH"/>
                                                 <constraint firstItem="XdF-3Z-GNA" firstAttribute="leading" secondItem="CI4-sq-cd4" secondAttribute="trailing" constant="-2" id="HEZ-b1-1YN"/>
                                                 <constraint firstItem="l2l-CK-4x7" firstAttribute="top" secondItem="XdF-3Z-GNA" secondAttribute="bottom" id="Ljy-WJ-iG5"/>
@@ -755,7 +755,7 @@
                                                 <constraint firstItem="13i-ac-QoP" firstAttribute="top" secondItem="l2l-CK-4x7" secondAttribute="bottom" id="pMS-vn-ANB"/>
                                                 <constraint firstItem="l2l-CK-4x7" firstAttribute="leading" secondItem="VfJ-11-giN" secondAttribute="leadingMargin" id="pWK-OZ-vIy"/>
                                                 <constraint firstItem="tHI-iR-334" firstAttribute="top" secondItem="VfJ-11-giN" secondAttribute="topMargin" id="rVs-Sd-zQL"/>
-                                                <constraint firstItem="CI4-sq-cd4" firstAttribute="height" secondItem="tHI-iR-334" secondAttribute="height" constant="-8" id="rpB-hE-sru"/>
+                                                <constraint firstItem="CI4-sq-cd4" firstAttribute="height" secondItem="tHI-iR-334" secondAttribute="height" constant="-10" id="rpB-hE-sru"/>
                                                 <constraint firstItem="CI4-sq-cd4" firstAttribute="leading" secondItem="VfJ-11-giN" secondAttribute="leading" constant="4" id="sBi-m2-pvh"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="tHI-iR-334" secondAttribute="bottom" id="tDs-r4-F78"/>
                                                 <constraint firstItem="1W1-DQ-ETP" firstAttribute="top" secondItem="VfJ-11-giN" secondAttribute="top" constant="8" id="vRW-Yg-LEx"/>

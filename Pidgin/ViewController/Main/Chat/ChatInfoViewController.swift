@@ -229,7 +229,7 @@ extension ChatInfoViewController : UITableViewDelegate, UITableViewDataSource{
         backgroundColorForTruncatedBubble: UIColor.secondarySystemBackground,
         fontForBubbleTitles: UIFont.systemFont(ofSize: 15, weight: .regular),
         colorForBubbleBorders: UIColor.clear,
-        colorForBubbleTitles: UIColor.white,
+        colorForBubbleTitles: UIColor.label,
         maxCharactersForBubbleTitles: 2,
         maxNumberOfBubbles: 10,
         displayForTruncatedCell: BPTruncatedCellDisplay.number(channel.members.count-10),

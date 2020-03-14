@@ -48,11 +48,11 @@ struct Comment{
         creatorUsername = User.shared.username ?? ""
         self.repliesCount = 0
         self.creationDate = Date()
-        self.postID = post.postID
+        self.postID = post.originalPostID
         self.likes = [String]()
         self.mediaID = media?.id
         self.aspectRatio = media?.aspectRatio ?? 0
-        self.postCreatorID = post.creatorID
+        self.postCreatorID = post.originalCreatorID
         self.replyCreatorID = reply?.creatorID
         self.likesCount = 0
     }

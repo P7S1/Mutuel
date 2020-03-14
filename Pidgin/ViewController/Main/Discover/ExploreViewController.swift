@@ -9,9 +9,9 @@
 import UIKit
 import CollectionViewWaterfallLayout
 import DeepDiff
-import AVKit
 import FirebaseFirestore
 import SkeletonView
+import SwiftyGif
 public protocol ExploreViewControllerDelegate {
    func collectionViewScrolled(_ scrollView: UIScrollView)
 }
@@ -65,11 +65,11 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             appearance?.shadowColor = .clear
             navigationItem.standardAppearance = appearance
             
-            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 20)
+            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 16)
             originalQuery = query
             
         }else{
-            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 20)
+            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 16)
             originalQuery = query
         }
         getMorePosts(removeAll: false)
@@ -169,7 +169,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         DispatchQueue.main.async {
             self.query.getDocuments { (snapshot, error) in
                   if error == nil{
-                      if snapshot!.count < 20{
+                      if snapshot!.count < 16{
                           self.loadedAllPosts = true
                           self.updateFooter()
                       }
@@ -254,7 +254,8 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreCollectionViewCell", for: indexPath) as! ExploreCollectionViewCell
         let post = posts[indexPath.row]
-
+        cell.imageView.delegate = self
+        
         cell.imageView.clipsToBounds = true
         cell.imageView.layer.cornerRadius = 10
         cell.backgroundColor = .clear
@@ -262,12 +263,19 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         cell.imageView.isSkeletonable = true
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
         cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
-        DispatchQueue.main.async {
-            cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
+        
+        if post.isGIF{
+            cell.imageView.setGifFromURL(URL(string: post.photoURL)!)
+        }else{
+            SwiftyGifManager.defaultManager.deleteImageView(cell.imageView)
+            cell.imageView.kf.setImage(with: URL(string: post.photoURL), placeholder: UIImage()) { (result) in
                 cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
             }
         }
+         
+        
+        
         cell.playButton.isHidden = !(post.isVideo)
         cell.playButton.shouldBlink = false
         return cell
@@ -385,3 +393,26 @@ extension ExploreViewController : PostViewDelegate{
     
 }
 
+extension ExploreViewController : SwiftyGifDelegate {
+
+    func gifURLDidFinish(sender: UIImageView) {
+        sender.stopSkeletonAnimation()
+        sender.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+    }
+
+    func gifURLDidFail(sender: UIImageView) {
+        
+    }
+
+    func gifDidStart(sender: UIImageView) {
+       
+    }
+    
+    func gifDidLoop(sender: UIImageView) {
+        
+    }
+    
+    func gifDidStop(sender: UIImageView) {
+       
+    }
+}

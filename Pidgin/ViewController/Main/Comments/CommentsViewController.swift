@@ -12,6 +12,7 @@ import DeepDiff
 import GiphyUISDK
 import GiphyCoreSDK
 import SkeletonView
+import SwiftyGif
 class CommentsViewController: UIViewController {
     
     var commentsDelegate : ExploreViewControllerDelegate?
@@ -44,6 +45,7 @@ class CommentsViewController: UIViewController {
     
     var navTitle = "Comments"
     
+    var commentCount = 0
     private enum Constants {
         static let numberOfCommentsToLoad: Int = 10
     }
@@ -71,17 +73,21 @@ class CommentsViewController: UIViewController {
         tableView.addSubview(refreshControl)
         
         if isReplying && commentReply != nil{
-            originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+            originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
             
 
             
         }else{
             if originalQuery == nil{
-         originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+         originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
             }
         }
     
         getComments(deleteAll: false)
+        
+        if post.postID.isEmpty || post.originalPostID.isEmpty{
+            navigationController?.popViewController(animated: true)
+        }
         // Do any additional setup after loading the view.
     }
     
@@ -137,9 +143,9 @@ class CommentsViewController: UIViewController {
         textView.text = ""
         
         ProgressHUD.show("Sending...")
-        var docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document()
+        var docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").document()
         if isReplying && commentReply != nil{
-            docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID).collection("comments").document(commentReply!.commentID).collection("replies").document()
+            docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").document()
         }
         let comment = Comment(text: text, commentID: docRef.documentID, post: self.post, media: self.media, reply : commentReply)
         docRef.setData(comment.representation) { (error) in
@@ -152,7 +158,6 @@ class CommentsViewController: UIViewController {
                 self.tableView.reload(changes: changes, section: 0, updateData: {
                     self.comments = newItems
                 })
-                self.post.commentsCount =  self.post.commentsCount + 1
                 self.media = nil
                 self.gifButton.setImage(nil, for: .normal)
 
@@ -199,7 +204,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
             height = 300
         }
         cell.gifViewHeight.constant = height
-        
+        cell.gifView.delegate = self
         cell.setGifMediaView(comment: comment)
         
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
@@ -231,7 +236,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
             var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
             
             if self.isReplying && self.commentReply != nil{
-                docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.postID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
+                docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
             }
             cell.likeButton.isEnabled = false
             guard let uid = User.shared.uid else { return }
@@ -290,7 +295,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                     var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
                     
                     if self.isReplying && self.commentReply != nil{
-                        docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.postID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
+                        docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
                     }
                     
                     docRef.delete { (error) in
@@ -298,7 +303,6 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                             if let index = self.comments.firstIndex(of: comment){
                                 self.comments.remove(at: index)
                                 tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                                self.post.commentsCount =  self.post.commentsCount - 1
                             }
                         }else{
                             ProgressHUD.showError("Error")
@@ -361,7 +365,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         self.addChild(vc)
         return header
         }else{
-            return self.getHeaderView(with: "\(post.commentsCount) Comments", tableView: tableView)
+            return self.getHeaderView(with: "\(commentCount) Comments", tableView: tableView)
         }
     }
     
@@ -409,35 +413,18 @@ extension  CommentsViewController : UITextViewDelegate{
     
 }
 
-extension CommentsViewController : GiphyDelegate{
-    
+extension CommentsViewController : GifDelegate{
     @IBAction func gifButtonPressed(_ sender: Any) {
-        print("giphy button pressed")
-        print("Send gif pressed")
-        let giphy = GiphyViewController()
-        
-        giphy.layout = .waterfall
-        giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
-        giphy.showConfirmationScreen = true
-        if self.traitCollection.userInterfaceStyle == .dark {
-            // User Interface is Dark
-            giphy.theme = .dark
-        } else {
-            giphy.theme = .light
-            // User Interface is Light
-        }
-        giphy.delegate = self
-        giphy.tabBarController?.tabBar.isHidden = true
-        giphy.hidesBottomBarWhenPushed = true
-        self.tabBarController?.present(giphy, animated: true, completion: nil)
+        let discoverStoryboard = UIStoryboard(name: "Discover", bundle: nil)
+        let giphy = discoverStoryboard.instantiateViewController(withIdentifier: "GifViewController") as! GifViewController
+        giphy.gifDeleagte = self
+        navigationController?.pushViewController(giphy, animated: true)
     }
-
-
     
-    func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
+    func didSelectItem(gif: GPHMedia, vc: GifViewController) {
         print("did select giph media")
-        self.media = media
-        if let string = media.url(rendition: .fixedWidth, fileType: .gif), let url = URL(string: string){
+        self.media = gif
+        if let string = gif.url(rendition: .fixedWidth, fileType: .gif), let url = URL(string: string){
             let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
             self.gifButton.showAnimatedGradientSkeleton(usingGradient: gradient)
             DispatchQueue.main.async {
@@ -448,12 +435,35 @@ extension CommentsViewController : GiphyDelegate{
                 }
             }
         }
-        giphyViewController.dismiss(animated: true, completion: nil)
-    }
-    
-    func didDismiss(controller: GiphyViewController?) {
-        print("did dismiss")
+        vc.navigationController?.popViewController(animated: true)
     }
     
     
+}
+
+
+extension CommentsViewController : SwiftyGifDelegate {
+    
+    
+
+    func gifURLDidFinish(sender: UIImageView) {
+        sender.stopSkeletonAnimation()
+        sender.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+    }
+
+    func gifURLDidFail(sender: UIImageView) {
+        
+    }
+
+    func gifDidStart(sender: UIImageView) {
+       
+    }
+    
+    func gifDidLoop(sender: UIImageView) {
+        
+    }
+    
+    func gifDidStop(sender: UIImageView) {
+       
+    }
 }

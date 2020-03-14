@@ -12,6 +12,7 @@ import SkeletonView
 import CollectionViewWaterfallLayout
 import DeepDiff
 import Kingfisher
+import SwiftyGif
 protocol GifDelegate {
     func didSelectItem(gif : GPHMedia, vc : GifViewController)
 }
@@ -46,6 +47,12 @@ class GifViewController: UIViewController, UICollectionViewDelegate, UICollectio
         setUpCollectionView()
         
         searchBar.addDoneButtonOnKeyboard()
+        
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
+        navigationItem.title = "Select GIF"
         
         
         // Do any additional setup after loading the view.
@@ -131,7 +138,7 @@ class GifViewController: UIViewController, UICollectionViewDelegate, UICollectio
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "giphyCell", for: indexPath)
         let imageView = cell.viewWithTag(1) as! UIImageView
-        
+        imageView.delegate = self
         let gif = gifs[indexPath.row]
         
         let id = gif.id
@@ -153,10 +160,7 @@ class GifViewController: UIViewController, UICollectionViewDelegate, UICollectio
         if let nsUrl = cache.object(forKey: id as NSString), let url = nsUrl.absoluteURL {
             // use the cached version
             DispatchQueue.main.async {
-                imageView.kf.setImage(with: url) { (result) in
-                    imageView.stopSkeletonAnimation()
-                    imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                }
+              imageView.setGifFromURL(url)
             }
         }
          else {
@@ -170,22 +174,21 @@ class GifViewController: UIViewController, UICollectionViewDelegate, UICollectio
                 imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
             } */
             
-            
-            GiphyCore.shared.gifByID(id) { (response, error) in
-                if let media = response?.data {
-                    if let gifURL = media.url(rendition: .fixedWidthDownsampled, fileType: .gif),
-                        let url = URL(string: gifURL){
-                            DispatchQueue.main.async {
+            DispatchQueue.global().async {
+                GiphyCore.shared.gifByID(id) { (response, error) in
+                    if let media = response?.data {
+                        if let gifURL = media.url(rendition: .fixedWidth, fileType: .gif),
+                            let url = URL(string: gifURL){
+                                DispatchQueue.main.async {
 
-                                imageView.kf.setImage(with: url) { (result) in
-                                    imageView.stopSkeletonAnimation()
-                                    imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+                                    imageView.setGifFromURL(url) 
                                 }
-                            }
-                        
-                }
+                            
+                    }
+                    }
                 }
             }
+            
         }
         
         return cell
@@ -230,4 +233,28 @@ class GifViewController: UIViewController, UICollectionViewDelegate, UICollectio
     }
     */
 
+}
+
+extension GifViewController : SwiftyGifDelegate {
+
+    func gifURLDidFinish(sender: UIImageView) {
+        sender.stopSkeletonAnimation()
+        sender.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+    }
+
+    func gifURLDidFail(sender: UIImageView) {
+        
+    }
+
+    func gifDidStart(sender: UIImageView) {
+       
+    }
+    
+    func gifDidLoop(sender: UIImageView) {
+        
+    }
+    
+    func gifDidStop(sender: UIImageView) {
+       
+    }
 }

@@ -39,6 +39,8 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     var post : Post!
     
+    var commentCount = 00
+    
  //   var panGR: UIPanGestureRecognizer!
     
     @IBOutlet weak var playerContainerView: PlayerContainerView!
@@ -60,9 +62,6 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
             self.imageView.kf.setImage(with: URL(string: self.post.photoURL))
         }
         setBackBarButtonCustom()
-        imageView.heroID = post.postID
-        engagementStackView.heroID = "\(post.postID).engagementStackView"
-        caption.heroID = "\(post.postID).caption"
         timeLabel.text = post.publishDate.getElapsedInterval()
         scrollView.alwaysBounceVertical = true
         let height = UIApplication.shared.statusBarFrame.height
@@ -75,12 +74,8 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         imageViewHeightConstraint.constant = post.photoSize.height * scale
         
         caption.text = post.caption
-        commentsLabel.text = "\(post.commentsCount)"
-        repostsLabel.text = "\(post.repostsCount)"
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(engagementTapped))
-        engagementStackView.addGestureRecognizer(tap)
-        playerContainerView.heroID = "\(post.postID).player"
+        addGestureRecognizers()
         
         if post.isVideo{
             playerContainerView.initialize(post: post, shouldPlay: true)
@@ -94,11 +89,11 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         appearance?.shadowColor = .clear
         navigationItem.standardAppearance = appearance
         
-        ref.child("postData/\(post.postID)").observe(DataEventType.value) { (snapshot) in
+        ref.child("postData/\(post.originalPostID)").observe(DataEventType.value) { (snapshot) in
             let postDict = snapshot.value as? [String : AnyObject] ?? [:]
             if let commentCount = postDict["commentsCount"] as? Int{
-                self.post.commentsCount = commentCount
                 self.commentsLabel.text = String(commentCount)
+                self.commentCount = commentCount
             }
         }
         
@@ -137,11 +132,49 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         }
     }
     
-    @objc func engagementTapped(){
-        let vc = CommentsSectionViewController()
-        vc.post = self.post
-        navigationController?.pushViewController(vc, animated: true)
+    func addGestureRecognizers(){
+        let comment = UITapGestureRecognizer(target: self, action: #selector(commentsTapped))
+        commentsStackView.addGestureRecognizer(comment)
         
+        let repost = UITapGestureRecognizer(target: self, action: #selector(repostsTapped))
+        repostsStackView.addGestureRecognizer(repost)
+        
+        
+    }
+    
+    @objc func commentsTapped(){
+     let vc = CommentsSectionViewController()
+        vc.post = self.post
+        vc.commentCount = self.commentCount
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func repostsTapped(){
+        if post.creatorID != User.shared.uid && post.originalCreatorID != User.shared.uid{
+        let controller = UIAlertController(title: "Confirm", message: "Are you sure you want to repost this?", preferredStyle: .alert)
+        
+        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+            controller.dismiss(animated: true, completion: nil)
+        }))
+        
+        controller.addAction(UIAlertAction(title: "Repost", style: .default, handler: { (action) in
+            self.repostsImageView.tintColor = .systemGreen
+            ProgressHUD.show("Reposting...")
+            let post = Post(post: self.post)
+            let docRef = db.collection("users").document(User.shared.uid ?? "").collection("posts").document(post.originalPostID)
+            docRef.setData(post.representation, merge: true) { (error) in
+                if error == nil{
+                    ProgressHUD.showSuccess("Reposted Successfully")
+                  self.repostsImageView.tintColor = .systemGreen
+                }else{
+                    ProgressHUD.showError("Post Error")
+                }
+            }
+        }))
+        self.present(controller, animated: true, completion: nil)
+        }else{
+            ProgressHUD.showError("You can't repost your own post")
+        }
     }
     
     func setBackBarButtonCustom()

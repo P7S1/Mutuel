@@ -11,7 +11,7 @@ import DeepDiff
 import FirebaseFirestore
 import AVKit
 import SkeletonView
-
+import SwiftyGif
  protocol PostViewDelegate {
     func preparePostsFor(indexPath: IndexPath, posts : [Post], lastDocument : DocumentSnapshot?, loadedAllPosts : Bool)
 }
@@ -197,6 +197,34 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
             }
     }
     
+     func repost(oldPost : Post){
+        if oldPost.creatorID != User.shared.uid{
+        let controller = UIAlertController(title: "Confirm", message: "Are you sure you want to repost this?", preferredStyle: .alert)
+        
+        controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+            controller.dismiss(animated: true, completion: nil)
+        }))
+        
+        controller.addAction(UIAlertAction(title: "Repost", style: .default, handler: { (action) in
+            ProgressHUD.show("Reposting...")
+            let post = Post(post: oldPost)
+            let docRef = db.collection("users").document(User.shared.uid ?? "").collection("posts").document(post.postID)
+            docRef.setData(post.representation, merge: true) { (error) in
+                if error == nil{
+                    ProgressHUD.showSuccess("Reposted Successfully")
+                }else{
+                    ProgressHUD.showError("Post Error")
+                }
+            }
+        }))
+        
+        
+        self.present(controller, animated: true, completion: nil)
+        }else{
+            ProgressHUD.showError("You can't repost your own post")
+        }
+    }
+    
     
     
     
@@ -282,7 +310,12 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         cell.imageView.layer.cornerRadius = 20.0
         cell.imageView.clipsToBounds = true
         cell.contentView.isSkeletonable = true
+        cell.imageView.delegate = self
         DispatchQueue.main.async {
+            if post.isGIF{
+              cell.imageView.setGifFromURL(URL(string: post.photoURL)!)
+            }else{
+            SwiftyGifManager.defaultManager.deleteImageView(cell.imageView)
             cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
                    cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
@@ -291,8 +324,13 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
                     cell.gradientView.isHidden = false
                 }
             }
+            }
         }
-        cell.usernameLabel.text = post.publishDate.getElapsedInterval()
+        if post.isRepost{
+            cell.usernameLabel.text = "reposted by \(post.reposterUsername) \(post.publishDate.getElapsedInterval())"
+        }else{
+            cell.usernameLabel.text = post.publishDate.getElapsedInterval()
+        }
         cell.nameLabel.text = post.creatorUsername 
             cell.profilePictureView.clipsToBounds = true
             cell.profilePictureView.layer.cornerRadius = cell.profilePictureView.frame.height/2
@@ -329,6 +367,13 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
                         self.present(alertC, animated: true, completion: nil)
                     }))
                 }
+                
+                if User.shared.uid != post.creatorID && User.shared.uid != post.originalCreatorID{
+                alertController.addAction(UIAlertAction(title: "Repost", style: .default, handler: { (action) in
+                    self.repost(oldPost: post)
+                }))
+                }
+                
                 alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                     alertController.dismiss(animated: true, completion: nil)
                 }))
@@ -417,4 +462,28 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     }
 
 
+}
+
+extension FollowingViewController : SwiftyGifDelegate {
+
+    func gifURLDidFinish(sender: UIImageView) {
+        sender.stopSkeletonAnimation()
+        sender.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+    }
+
+    func gifURLDidFail(sender: UIImageView) {
+        
+    }
+
+    func gifDidStart(sender: UIImageView) {
+       
+    }
+    
+    func gifDidLoop(sender: UIImageView) {
+        
+    }
+    
+    func gifDidStop(sender: UIImageView) {
+       
+    }
 }

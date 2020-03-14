@@ -163,11 +163,14 @@ class FollowersHelper{
     static func deletePost(post : Post){
         let docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID)
         docRef.delete(completion: nil)
+        if !post.isRepost{
         if !post.isGIF{
         FollowersHelper.deleteImage(at: post.photoURL)
-        }
+            
         if let url = post.videoURL{
         FollowersHelper.deleteImage(at: url)
+        }
+        }
         }
     }
     
