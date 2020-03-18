@@ -42,11 +42,17 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var moreButton: UIButton!
     
+    @IBOutlet weak var challengeView: UIView!
+    
+    @IBOutlet weak var challengeText: UILabel!
+    
     
     
     var btnTapAction : (()->())?
     
     var moreTapAction : (()->())?
+    
+    var challengeTapAction : (()->())?
 
     func setUpGestures(){
        let tap = UITapGestureRecognizer(target: self, action: #selector(btnTapped))
@@ -54,7 +60,9 @@ class FollowingCollectionViewCell: UICollectionViewCell {
         
         let moreTapGesture = UITapGestureRecognizer(target: self, action: #selector(moreButtonTapped))
         moreButton.addGestureRecognizer(moreTapGesture)
-     
+        
+        let challengeGesture = UITapGestureRecognizer(target: self, action: #selector(challengeTapped))
+        challengeView.addGestureRecognizer(challengeGesture)
     } 
     func setUpPlayer(post : Post){
         playerContainerView.backgroundColor = .clear
@@ -78,5 +86,8 @@ class FollowingCollectionViewCell: UICollectionViewCell {
         btnTapAction?()
     }
     
+    @objc func challengeTapped(){
+        challengeTapAction?()
+    }
     
 }

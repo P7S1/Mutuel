@@ -43,13 +43,24 @@ struct Post{
     
     var reposterUsername : String
     
+    var challengeID : String
+    
+    var challengeTitle : String
+    
+    var hasChallenge : Bool
+    
+    var dayNumber : Int
+    
+    var challengeDayID : String
+    
     init(document : DocumentSnapshot) {
         let data = document.data()
      photoURL = data?["photoURL"] as? String ?? ""
      caption = data?["caption"] as? String ?? ""
      let date = data?["publishDate"] as? Timestamp ?? Timestamp()
         publishDate = date.dateValue()
-     creatorID = data?["creatorID"] as? String ?? ""
+        let creatorID = data?["creatorID"] as? String ?? ""
+        self.creatorID = creatorID
         isVideo = data?["isVideo"] as? Bool ?? false
         isGIF = data?["isGIF"] as? Bool ?? false
         videoURL = data?["videoURL"] as? String
@@ -69,10 +80,18 @@ struct Post{
         
         let originalPublishDate = data?["originalPublishDate"] as? Timestamp ?? Timestamp()
         self.originalPublishDate = originalPublishDate.dateValue()
-        self.originalCreatorID = data?["originalCreatorID"] as? String ?? ""
+        self.originalCreatorID = data?["originalCreatorID"] as? String ?? (creatorID)
+        
+        self.challengeID = data?["challengeID"] as? String ?? ""
+        self.challengeTitle = data?["challengeTitle"] as? String ?? ""
+        self.hasChallenge = data?["hasChallenge"] as? Bool ?? false
+        self.dayNumber = data?["dayNumber"] as? Int ?? 0
+        self.challengeDayID = data?["challengeDayID"] as? String ?? ""
+        
+        
     }
     
-    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool) {
+    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool, challenge : Challenge?, challengeDay : ChallengeDay?) {
         self.photoURL = photoURL
         self.caption = caption
         self.publishDate = publishDate
@@ -90,6 +109,12 @@ struct Post{
         self.originalPostID = postID
         self.originalPublishDate = publishDate
         self.originalCreatorID = User.shared.uid ?? ""
+        
+        self.challengeID = challenge?.id ?? "undefined"
+        self.challengeTitle = challenge?.title ?? ""
+        self.hasChallenge = challenge != nil
+        self.dayNumber = challengeDay?.day ?? 0
+        self.challengeDayID = challengeDay?.id ?? ""
     }
   
     init(post : Post) {
@@ -99,8 +124,7 @@ struct Post{
         self.reposterUsername = User.shared.username ?? ""
         self.postID  = "\(User.shared.uid ?? "")_\(post.originalPostID)"
         self.publishDate = Date()
-        print("Post id :\(self.postID)")
-        print("ORiginal post id : \(self.originalPostID)")
+        self.originalCreatorID = post.originalCreatorID
         
     }
     
@@ -108,7 +132,7 @@ struct Post{
 
 extension Post : DatabaseRepresentation{
     
-    var representation : [String : Any]{
+     var representation : [String : Any]{
         let rep : [String : Any] = ["photoURL": photoURL,
                                     "caption" : caption,
                                     "creatorID" : creatorID,
@@ -124,7 +148,12 @@ extension Post : DatabaseRepresentation{
                                     "postID" : self.originalPostID,
                                     "reposterUsername" : self.reposterUsername,
                                     "originalPublishDate" : self.originalPublishDate,
-                                    "originalCreatorID" : self.originalCreatorID]
+                                    "originalCreatorID" : self.originalCreatorID,
+                                    "challengeID": self.challengeID,
+                                    "challengeTitle": self.challengeTitle,
+                                    "hasChallenge": self.hasChallenge,
+                                    "dayNumber" : self.dayNumber,
+                                    "challengeDayID" : self.challengeDayID]
         return rep
     }
     

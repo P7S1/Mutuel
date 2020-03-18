@@ -69,6 +69,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
    
         collectionView.delegate = self
         collectionView.dataSource = self
+
         if shouldQuery{
             
             guard let uid = User.shared.uid else{
@@ -208,7 +209,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         controller.addAction(UIAlertAction(title: "Repost", style: .default, handler: { (action) in
             ProgressHUD.show("Reposting...")
             let post = Post(post: oldPost)
-            let docRef = db.collection("users").document(User.shared.uid ?? "").collection("posts").document(post.postID)
+            let docRef = db.collection("users").document(User.shared.uid ?? "").collection("posts").document(post.originalPostID)
             docRef.setData(post.representation, merge: true) { (error) in
                 if error == nil{
                     ProgressHUD.showSuccess("Reposted Successfully")
@@ -259,71 +260,75 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FollowingCollectionViewCell", for: indexPath) as! FollowingCollectionViewCell
         
+        
+        
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
         let post = posts[indexPath.row]
         
-
+        
+        if post.hasChallenge{
+            cell.challengeView.isHidden = false
+            cell.challengeText.text = "\(post.challengeTitle): Day \(post.dayNumber)"
+            cell.challengeView.layer.masksToBounds = true
+            cell.challengeView.layer.cornerRadius = cell.challengeView.frame.height/2
+        }else{
+            cell.challengeView.isHidden = true
+        }
+        
+        
         cell.caption.text = post.caption
         
-        cell.imageView.heroID = post.postID
- 
-        cell.caption.heroID = "\(post.postID).caption"
+        cell.playButton.isHidden = !(post.isVideo)
         
-        cell.playButton.isHidden = !(posts[indexPath.row].isVideo)
-        
-        cell.playButton.heroID = "\(post.postID).playButton"
-        
-        cell.playerContainerView.heroID = "\(post.postID).player"
         cell.containerView.layer.masksToBounds = true
-        cell.containerView.layer.cornerRadius = 20.0
+         cell.containerView.layer.cornerRadius = 10.0
 
         cell.playerContainerView.layer.masksToBounds = true
-        cell.playerContainerView.layer.cornerRadius = 20.0
+       cell.playerContainerView.layer.cornerRadius = 10.0
         cell.playerContainerView.initialize(post: post, shouldPlay: false)
         
+        let width = collectionView.bounds.width - 16
         
-        let ratio = (collectionView.bounds.width) / post.photoSize.width
+        let ratio = (width) / post.photoSize.width
         var height = post.photoSize.height * ratio
-        if height < collectionView.bounds.width{
-            height = collectionView.bounds.width
+        height = height + 68
+        if height < width{
+            height = width
         }
-        var constant : CGFloat = 00
-        if !shouldQuery{
-            constant = 48
-        }
-        if height >= collectionView.bounds.height - 132 - constant{
-            height = collectionView.bounds.height - 132 - constant
+
+        if height >= collectionView.bounds.height - 68{
+            height = collectionView.bounds.height - 68
         }
         
     
         
         
-        if shouldQuery{
-            cell.yAnchor.constant = -35
-        }
+        
+            cell.yAnchor.constant = -40
+        
         cell.height.constant = height
         cell.contentView.setNeedsUpdateConstraints()
         
         cell.gradientView.isHidden = true
         cell.imageView.isSkeletonable = true
         cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
-        cell.imageView.layer.cornerRadius = 20.0
-        cell.imageView.clipsToBounds = true
+    cell.imageView.layer.cornerRadius = 10.0
+      cell.imageView.clipsToBounds = true
         cell.contentView.isSkeletonable = true
         cell.imageView.delegate = self
         DispatchQueue.main.async {
+            SwiftyGifManager.defaultManager.deleteImageView(cell.imageView)
             if post.isGIF{
               cell.imageView.setGifFromURL(URL(string: post.photoURL)!)
+              cell.gradientView.isHidden = false
             }else{
-            SwiftyGifManager.defaultManager.deleteImageView(cell.imageView)
             cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
                    cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                UIView.animate(withDuration: 0.2) {
-                    cell.imageView.layer.cornerRadius = 20.0
-                    cell.gradientView.isHidden = false
-                }
+                cell.gradientView.isHidden = false
+                
             }
+                
             }
         }
         if post.isRepost{
@@ -337,6 +342,25 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
             DispatchQueue.main.async {
                 cell.profilePictureView.kf.setImage(with: URL(string: post.creatorPhotoURL), placeholder: FollowersHelper().getUserProfilePicture())
             }
+        
+        
+        cell.challengeTapAction = {
+            () in
+            if post.hasChallenge{
+                let docRef = db.collection("challenges").document(post.challengeID)
+                
+                docRef.getDocument { (snapshot, error) in
+                    if error == nil{
+                        let challenge = Challenge(document: snapshot!)
+                        let vc = self.storyboard?.instantiateViewController(identifier: "ChallengeDayViewController") as! ChallengeDayViewController
+                        vc.challenge = challenge
+                        self.navigationController?.pushViewController(vc, animated: true)
+                        
+                    }
+                }
+            }
+        }
+        
             cell.moreTapAction = {
                 () in
                 let alertController = UIAlertController(title: nil, message: nil , preferredStyle: .actionSheet)
@@ -386,12 +410,12 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
                 let storyboard = UIStoryboard(name: "Discover", bundle: nil)
                 let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
                 vc.isUserProfile = true
-                if post.creatorID == User.shared.uid{
+                if post.originalCreatorID == User.shared.uid{
                 vc.user = User.shared
                 vc.isCurrentUser = true
                 self.navigationController?.pushViewController(vc, animated: true)
                 }else{
-                    let docRef = db.collection("users").document(post.creatorID)
+                    let docRef = db.collection("users").document(post.originalCreatorID)
                     docRef.getDocument { (snapshot, error) in
                         if error == nil{
                             let user = Account()

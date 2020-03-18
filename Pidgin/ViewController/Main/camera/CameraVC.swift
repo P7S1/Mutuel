@@ -11,7 +11,7 @@ import AVFoundation
 import FirebaseAuth
 import GiphyUISDK
 import GiphyCoreSDK
-
+import ARKit
 protocol CameraDelegate {
     func didFinishProcessingVideo(url : URL)
     func didTakePhoto(image : UIImage)
@@ -21,6 +21,7 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     @IBOutlet weak var captureButton: RecordingButton!
     @IBOutlet weak var flipCameraButton : UIButton!
     @IBOutlet weak var flashButton      : UIButton!
+    @IBOutlet weak var arCameraButton: UIButton!
     
     var initialZoom : CGFloat = 1
     
@@ -49,6 +50,7 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         captureButton.layer.addButtonShadows()
         flipCameraButton.layer.addButtonShadows()
         flashButton.layer.addButtonShadows()
+        arCameraButton.layer.addButtonShadows()
         
         let captureTap = UITapGestureRecognizer(target: self, action: #selector(takeAPhoto))
         captureButton.addGestureRecognizer(captureTap)
@@ -58,6 +60,10 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         
         // disable capture button until session starts
         let zoom = UIPanGestureRecognizer(target: self, action: #selector(zoomGesture))
+        
+        if !ARFaceTrackingConfiguration.isSupported{
+            arCameraButton.isHidden = true
+        }
         //captureButton.addGestureRecognizer(zoom)
         captureButton.isEnabled = false
     }
@@ -89,17 +95,16 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     @IBAction func dismissPressed(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
-    
+   
     @IBAction func presentAR(_ sender: Any) {
-       let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ARCameraVC") as! ARCameraVC
         vc.isHeroEnabled = true
         vc.hero.modalAnimationType = .selectBy(presenting:.zoom, dismissing:.zoomOut)
         vc.modalPresentationStyle = .fullScreen
         
-        present(vc, animated: true, completion: nil)
+        navigationController?.pushViewController(vc, animated: true)
     }
-    
     @IBAction func presentGallery(_ sender: Any) {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -228,6 +233,7 @@ extension CameraVC {
         UIView.animate(withDuration: 0.25) {
             self.flashButton.alpha = 0.0
             self.flipCameraButton.alpha = 0.0
+            self.arCameraButton.alpha = 0.00
         }
     }
     
@@ -235,7 +241,7 @@ extension CameraVC {
         UIView.animate(withDuration: 0.25) {
             self.flashButton.alpha = 1.0
             self.flipCameraButton.alpha = 1.0
-
+            self.arCameraButton.alpha = 1.0
         }
     }
     

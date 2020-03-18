@@ -30,6 +30,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         self.configureNavItem(name: "Trending")
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         exploreVC = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as? ExploreViewController
+        exploreVC.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).order(by: "publishDate", descending: true).limit(to: 20)
         exploreVC.exploreDelegate = self
         
         followingVC  = storyboard.instantiateViewController(withIdentifier: "FollowingViewController") as? FollowingViewController

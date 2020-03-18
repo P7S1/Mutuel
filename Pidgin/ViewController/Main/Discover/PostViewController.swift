@@ -39,7 +39,8 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     var post : Post!
     
-    var commentCount = 00
+    var commentCount = 0
+    var repostCount = 0
     
  //   var panGR: UIPanGestureRecognizer!
     
@@ -88,12 +89,17 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         appearance?.shadowImage = UIImage()
         appearance?.shadowColor = .clear
         navigationItem.standardAppearance = appearance
-        
+        self.commentsLabel.text = String(commentCount)
+        self.repostsLabel.text = String(repostCount)
         ref.child("postData/\(post.originalPostID)").observe(DataEventType.value) { (snapshot) in
             let postDict = snapshot.value as? [String : AnyObject] ?? [:]
             if let commentCount = postDict["commentsCount"] as? Int{
-                self.commentsLabel.text = String(commentCount)
                 self.commentCount = commentCount
+                self.commentsLabel.text = String(commentCount)
+            }
+            if let repostCount = postDict["repostCount"] as? Int{
+                self.repostCount = repostCount
+                self.repostsLabel.text = String(repostCount)
             }
         }
         

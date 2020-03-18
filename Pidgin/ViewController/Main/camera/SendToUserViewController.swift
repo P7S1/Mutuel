@@ -25,9 +25,13 @@ class SendToUserViewController: UIViewController {
     var isGIF = false
     
     var media = GPHMedia()
-
+    @IBOutlet weak var challengeLabel: UILabel!
     
     @IBOutlet weak var widthConstraint: NSLayoutConstraint!
+    
+    var challenge : Challenge?
+    
+    var challengeDay : ChallengeDay?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +70,8 @@ class SendToUserViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(photoPressed))
         
         containerView.addGestureRecognizer(tap)
+        
+        challengeLabel.text = challengeDay?.activity ?? ""
         
     }
     
@@ -225,7 +231,9 @@ class SendToUserViewController: UIViewController {
                         isVideo: isVideo, videoURL: videoURL?.absoluteString,
                         photoSize: self.photoSize,
                         postID: ref.documentID,
-                        isGIF: self.isGIF)
+                        isGIF: self.isGIF,
+                        challenge: self.challenge,
+                        challengeDay: self.challengeDay)
         ref.setData(post.representation)
         ProgressHUD.showSuccess("Post Successful")
     }

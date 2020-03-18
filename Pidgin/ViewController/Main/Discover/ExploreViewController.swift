@@ -43,6 +43,8 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     let refreshControl = UIRefreshControl()
     
+    var shouldquery = true
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,12 +67,12 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             appearance?.shadowColor = .clear
             navigationItem.standardAppearance = appearance
             
-            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 16)
+            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 20)
             originalQuery = query
             
         }else{
-            query = db.collectionGroup("posts").order(by: "publishDate", descending: true).limit(to: 16)
             originalQuery = query
+            
         }
         getMorePosts(removeAll: false)
         
@@ -132,7 +134,6 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         if isUserProfile{
-
             let statusBarView = UIView(frame: CGRect(x:0, y:0, width:view.frame.size.width, height: UIApplication.shared.statusBarFrame.height))
             statusBarView.backgroundColor=UIColor.systemBackground
             view.addSubview(statusBarView)
@@ -169,7 +170,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         DispatchQueue.main.async {
             self.query.getDocuments { (snapshot, error) in
                   if error == nil{
-                      if snapshot!.count < 16{
+                      if snapshot!.count < 20{
                           self.loadedAllPosts = true
                           self.updateFooter()
                       }

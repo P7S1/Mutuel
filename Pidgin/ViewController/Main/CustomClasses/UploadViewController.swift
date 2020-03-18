@@ -18,16 +18,26 @@ class UploadViewController: UIViewController, CarbonTabSwipeNavigationDelegate, 
     
     var cameraVC : CameraVC!
     
-    var arVC : ARCameraVC?
+    var challengeVC : ChallengesViewController!
     
     var gifVC : GifViewController!
+    
+    var challenge : Challenge?
+    
+    var challengeDay : ChallengeDay?
+    
+    var isChallenge = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .systemBackground
         
-        navigationItem.title = "New Post"
+        if isChallenge{
+         navigationItem.title = "Challenge Post"
+        }else{
+         navigationItem.title = "New Post"
+        }
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let discoverStoryboard = UIStoryboard(name: "Discover", bundle: nil)
@@ -40,12 +50,12 @@ class UploadViewController: UIViewController, CarbonTabSwipeNavigationDelegate, 
         gifVC = discoverStoryboard.instantiateViewController(withIdentifier: "GifViewController") as? GifViewController
         gifVC.gifDeleagte = self
         
-        var items = ["Photos", "GIFs", "Camera"]
+        challengeVC = discoverStoryboard.instantiateViewController(withIdentifier: "ChallengesViewController") as? ChallengesViewController
         
-        if ARFaceTrackingConfiguration.isSupported{
-            self.arVC = storyboard.instantiateViewController(withIdentifier: "ARCameraVC") as? ARCameraVC
-            self.arVC?.cameraDelegate = self
-            items.append("AR")
+        var items = ["Photo", "GIF", "Challenge", "Camera"]
+        
+        if isChallenge{
+            items.remove(at: 2)
         }
         
         let carbonTabSwipeNavigation = CarbonSwipe(items: items, delegate: self)
@@ -68,13 +78,13 @@ class UploadViewController: UIViewController, CarbonTabSwipeNavigationDelegate, 
         }else if index == 1{
          return gifVC
         }else if index == 2{
-         return cameraVC
-        }else{
-         if ARFaceTrackingConfiguration.isSupported{
-            return arVC!
-         }else{
-            return cameraVC
+            if isChallenge{
+                return cameraVC
+            }else{
+         return challengeVC
             }
+        }else{
+         return cameraVC
         }
         // return viewController at index
     }
@@ -115,6 +125,8 @@ extension UploadViewController : GifDelegate, PhotoPickerDelegate, CropViewContr
         let sendVC = storyboard.instantiateViewController(withIdentifier: "SendToUserViewController") as! SendToUserViewController
         sendVC.isGIF = true
         sendVC.media = gif
+        sendVC.challenge = challenge
+        sendVC.challengeDay = challengeDay
         navigationController?.pushViewController(sendVC, animated: true)
     }
     
@@ -193,7 +205,8 @@ extension UploadViewController : GifDelegate, PhotoPickerDelegate, CropViewContr
         vc.video = video
         vc.image = image
         vc.photoSize = photoSize
-
+        vc.challenge = self.challenge
+        vc.challengeDay = self.challengeDay
         navigationController?.pushViewController(vc, animated: true)
     }
     

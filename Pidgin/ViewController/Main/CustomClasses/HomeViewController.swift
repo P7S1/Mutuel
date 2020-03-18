@@ -181,11 +181,11 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
     }
     
     @objc func challengesButtonPressed(){
-        let alertcontroller = UIAlertController(title: "Coming soon...", message: "This feature is not yet finished, and is coming soon", preferredStyle: .alert)
+       let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ChallengesViewController") as! ChallengesViewController
         
-        alertcontroller.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        navigationController?.pushViewController(vc, animated: true)
         
-        self.present(alertcontroller, animated: true, completion: nil)
         
     }
     @objc func profileBarButtonPressed(){

@@ -73,13 +73,13 @@ class CommentsViewController: UIViewController {
         tableView.addSubview(refreshControl)
         
         if isReplying && commentReply != nil{
-            originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+            originalQuery = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
             
 
             
         }else{
             if originalQuery == nil{
-         originalQuery = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+         originalQuery = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
             }
         }
     
@@ -143,9 +143,9 @@ class CommentsViewController: UIViewController {
         textView.text = ""
         
         ProgressHUD.show("Sending...")
-        var docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").document()
+        var docRef = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").document()
         if isReplying && commentReply != nil{
-            docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").document()
+            docRef = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").document()
         }
         let comment = Comment(text: text, commentID: docRef.documentID, post: self.post, media: self.media, reply : commentReply)
         docRef.setData(comment.representation) { (error) in
@@ -236,7 +236,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
             var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
             
             if self.isReplying && self.commentReply != nil{
-                docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
+                docRef =  db.collection("users").document(self.post.originalCreatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
             }
             cell.likeButton.isEnabled = false
             guard let uid = User.shared.uid else { return }
@@ -295,7 +295,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                     var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
                     
                     if self.isReplying && self.commentReply != nil{
-                        docRef =  db.collection("users").document(self.post.creatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
+                        docRef =  db.collection("users").document(self.post.originalCreatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
                     }
                     
                     docRef.delete { (error) in

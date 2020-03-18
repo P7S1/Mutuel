@@ -120,6 +120,13 @@
 		DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */; };
 		DFF3DBD123DD066F00557BC8 /* CommentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */; };
 		DFF3DBD323DD163200557BC8 /* CommentsSectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */; };
+		DFF66B8B24208D87003F82DB /* ChallengesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF66B8A24208D86003F82DB /* ChallengesViewController.swift */; };
+		DFF66B8D24208DF2003F82DB /* ChallengesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF66B8C24208DF2003F82DB /* ChallengesCollectionViewCell.swift */; };
+		DFF66B8F24208EC1003F82DB /* Challenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF66B8E24208EC1003F82DB /* Challenge.swift */; };
+		DFF66B9124209247003F82DB /* ChallengeDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF66B9024209247003F82DB /* ChallengeDay.swift */; };
+		DFF66B9324209F23003F82DB /* ChallengeDayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF66B9224209F23003F82DB /* ChallengeDayViewController.swift */; };
+		DFF66B952420A2B1003F82DB /* ChallengeDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF66B942420A2B1003F82DB /* ChallengeDayTableViewCell.swift */; };
+		DFF66B972420AF43003F82DB /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF66B962420AF42003F82DB /* UIColor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -243,6 +250,13 @@
 		DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelTableViewCell.swift; sourceTree = "<group>"; };
 		DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsTableViewCell.swift; sourceTree = "<group>"; };
 		DFF3DBD223DD163200557BC8 /* CommentsSectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsSectionViewController.swift; sourceTree = "<group>"; };
+		DFF66B8A24208D86003F82DB /* ChallengesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengesViewController.swift; sourceTree = "<group>"; };
+		DFF66B8C24208DF2003F82DB /* ChallengesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengesCollectionViewCell.swift; sourceTree = "<group>"; };
+		DFF66B8E24208EC1003F82DB /* Challenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
+		DFF66B9024209247003F82DB /* ChallengeDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDay.swift; sourceTree = "<group>"; };
+		DFF66B9224209F23003F82DB /* ChallengeDayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDayViewController.swift; sourceTree = "<group>"; };
+		DFF66B942420A2B1003F82DB /* ChallengeDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDayTableViewCell.swift; sourceTree = "<group>"; };
+		DFF66B962420AF42003F82DB /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -372,6 +386,8 @@
 				DF562A3223BE3E9F00CC43D3 /* Comment.swift */,
 				DF661AFB23F8CBE3006702C7 /* Relationship.swift */,
 				DF41B3452413F3CD00F5B31F /* ActivityItem.swift */,
+				DFF66B8E24208EC1003F82DB /* Challenge.swift */,
+				DFF66B9024209247003F82DB /* ChallengeDay.swift */,
 			);
 			path = "Data Models";
 			sourceTree = "<group>";
@@ -398,6 +414,8 @@
 				DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */,
 				DF7D0ABE23B711F500B33E40 /* FollowingViewController.swift */,
 				DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */,
+				DFF66B8A24208D86003F82DB /* ChallengesViewController.swift */,
+				DFF66B9224209F23003F82DB /* ChallengeDayViewController.swift */,
 			);
 			path = Discover;
 			sourceTree = "<group>";
@@ -610,6 +628,7 @@
 				DF86089F2409AE70003E1C77 /* UISearchBar.swift */,
 				DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */,
 				DF14F8B32410188800E95E39 /* CALayer.swift */,
+				DFF66B962420AF42003F82DB /* UIColor.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -624,6 +643,8 @@
 				DFF3462A2367B002006AA467 /* ChannelTableViewCell.swift */,
 				DFF3DBD023DD066F00557BC8 /* CommentsTableViewCell.swift */,
 				DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */,
+				DFF66B8C24208DF2003F82DB /* ChallengesCollectionViewCell.swift */,
+				DFF66B942420A2B1003F82DB /* ChallengeDayTableViewCell.swift */,
 			);
 			path = "Reusable Cells";
 			sourceTree = "<group>";
@@ -771,6 +792,7 @@
 				DFEFCACB23F38CB000397091 /* CustomBannerColors.swift in Sources */,
 				DF661AFC23F8CBE3006702C7 /* Relationship.swift in Sources */,
 				DF215B0B2356673700EE67D3 /* Orientation.swift in Sources */,
+				DFF66B9324209F23003F82DB /* ChallengeDayViewController.swift in Sources */,
 				DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */,
 				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
 				DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */,
@@ -790,14 +812,17 @@
 				DF4BC41B234D8267001AD00D /* Pencil.swift in Sources */,
 				DF5A223323D5F35D00BA053F /* ReAuthenticationViewController.swift in Sources */,
 				DF7F05BF240CAFAC0016F58A /* PhotoPickerViewController.swift in Sources */,
+				DFF66B8F24208EC1003F82DB /* Challenge.swift in Sources */,
 				DF4BC420234D8267001AD00D /* UIImageExtensions.swift in Sources */,
 				DFF3DBD323DD163200557BC8 /* CommentsSectionViewController.swift in Sources */,
 				DF4BC40C234D8267001AD00D /* ColorsCollectionViewDelegate.swift in Sources */,
+				DFF66B9124209247003F82DB /* ChallengeDay.swift in Sources */,
 				DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */,
 				DFEFCAC923F38C5B00397091 /* Date.swift in Sources */,
 				DFE9E6ED240EEFE100131CBF /* GiphyHelper.swift in Sources */,
 				DFDD9ECE234FDD5D007A3177 /* VirtualFaceContent.swift in Sources */,
 				DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */,
+				DFF66B972420AF43003F82DB /* UIColor.swift in Sources */,
 				DF4BC427234D8267001AD00D /* ColorCollectionViewCell.swift in Sources */,
 				DF0002DF2385E0CD00654EAC /* EditProfileViewController.swift in Sources */,
 				DF4BC428234D8267001AD00D /* GradientView.swift in Sources */,
@@ -805,6 +830,7 @@
 				DF14F8EB2411B3B900E95E39 /* BPLayoutConfigurator.swift in Sources */,
 				DFDD9ED0234FDD5D007A3177 /* VirtualContentUpdater.swift in Sources */,
 				DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */,
+				DFF66B952420A2B1003F82DB /* ChallengeDayTableViewCell.swift in Sources */,
 				DF73728A23C1899D003ED359 /* CommentsViewController.swift in Sources */,
 				DFE9E6EF240EF06300131CBF /* GifViewController.swift in Sources */,
 				DF14F8ED2411B3B900E95E39 /* BubblePictures.swift in Sources */,
@@ -816,6 +842,7 @@
 				DFEB2929236DAF7C006FC6BB /* PushNotificationManager.swift in Sources */,
 				DF4BC41F234D8267001AD00D /* UIView+Image.swift in Sources */,
 				DF7D0AC923B9B63900B33E40 /* FollowingCollectionViewCell.swift in Sources */,
+				DFF66B8D24208DF2003F82DB /* ChallengesCollectionViewCell.swift in Sources */,
 				DF7D0AC123B8278E00B33E40 /* ExploreCollectionViewCell.swift in Sources */,
 				DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */,
 				DF14F8E62411B3B900E95E39 /* BPDirection.swift in Sources */,
@@ -832,6 +859,7 @@
 				DFDCA0A523C93D7700240CE7 /* VideoManager.swift in Sources */,
 				DF215B092356673700EE67D3 /* SwiftyCamViewController.swift in Sources */,
 				DF14F8E82411B3B900E95E39 /* ImageExtensions.swift in Sources */,
+				DFF66B8B24208D87003F82DB /* ChallengesViewController.swift in Sources */,
 				DFF3DBD123DD066F00557BC8 /* CommentsTableViewCell.swift in Sources */,
 				DF7D0AC523B83D9A00B33E40 /* DatabaseRepresentation.swift in Sources */,
 				DF4BC415234D8267001AD00D /* ARCameraVC.swift in Sources */,

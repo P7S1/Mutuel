@@ -59,13 +59,18 @@ class ARCameraVC: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let backButton = UIBarButtonItem()
+        backButton.title = " " //in your case it will be empty or you can put the title of your choice
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
         searchResultsView.delegate = self
         searchResultsView.dataSource = self
         searchBar.addDoneButtonOnKeyboard()
         // ContentUpdater will tell the A)RSCNView what to draw
         sceneView.delegate = contentUpdater
         sceneView.session.delegate = contentUpdater
-
+        navigationItem.title = "AR Filters"
         // ContentUpdater's virtual face node will dictate what Face Filter to render
         contentUpdater.virtualFaceNode = remoteFaceFilter
     
