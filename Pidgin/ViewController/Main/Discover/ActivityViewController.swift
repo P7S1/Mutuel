@@ -16,11 +16,27 @@ class ActivityViewController: UIViewController {
     
     var items : [ActivityItem]  = [ActivityItem]()
     
+    @IBOutlet weak var followRequestsLabel: UILabel!
+    @IBOutlet weak var viewRequestsButton: UIButton!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        if User.shared.isPrivate{
+            followRequestsLabel.text = " \(User.shared.followRequestsCount) Follow Requests"
+            viewRequestsButton.roundCorners()
+        }else{
+            followRequestsLabel.isHidden = true
+            viewRequestsButton.isHidden = true
+            tableView.contentInset = UIEdgeInsets(top: -50, left: 0, bottom: 0, right: 0)
+        }
+        
+        
+        
         
         originalQuery.getDocuments { (snapshot, error) in
             if error == nil{
@@ -34,6 +50,12 @@ class ActivityViewController: UIViewController {
             }
         }
         // Do any additional setup after loading the view.
+    }
+    
+    @IBAction func viewRequetsTapped(_ sender: Any) {
+        print("Followers label tapped")
+               let vc = storyboard?.instantiateViewController(identifier: "FollowRequestTableViewController") as! FollowRequestTableViewController
+               navigationController?.pushViewController(vc, animated: true)
     }
     
 
@@ -83,6 +105,10 @@ extension ActivityViewController : UITableViewDelegate, UITableViewDataSource{
         cell.icon.tintColor = activityItem.getColor()
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
     }
     
     

@@ -73,7 +73,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
             tableView.layoutIfNeeded()
             self.view.layoutIfNeeded()
             if let id = user?.uid{
-                query = db.collectionGroup("relationships").whereField("follower", isEqualTo: id).limit(to: queryLimit).order(by: "creationDate")
+                query = db.collectionGroup("relationships").whereField("follower", isEqualTo: id).whereField("isApproved", isEqualTo: true).limit(to: queryLimit).order(by: "creationDate")
                 if let lastDoc = self.lastDocument{
                     self.lastDocument = lastDoc
                 }
@@ -108,7 +108,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     
     func getUsersFollowers(){
         guard let uid = user?.uid else { return }
-        query = db.collectionGroup("relationships").whereField("followed", isEqualTo: uid).limit(to: queryLimit).order(by: "creationDate")
+        query = db.collectionGroup("relationships").whereField("followed", isEqualTo: uid).whereField("isApproved", isEqualTo: true).limit(to: queryLimit).order(by: "creationDate")
         if let doc = self.lastDocument{
             query = query.start(afterDocument: doc)
         }

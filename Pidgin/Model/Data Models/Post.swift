@@ -53,6 +53,8 @@ struct Post{
     
     var challengeDayID : String
     
+    var isPrivate : Bool
+    
     init(document : DocumentSnapshot) {
         let data = document.data()
      photoURL = data?["photoURL"] as? String ?? ""
@@ -87,7 +89,7 @@ struct Post{
         self.hasChallenge = data?["hasChallenge"] as? Bool ?? false
         self.dayNumber = data?["dayNumber"] as? Int ?? 0
         self.challengeDayID = data?["challengeDayID"] as? String ?? ""
-        
+        self.isPrivate = data?["isPrivate"] as? Bool ?? false
         
     }
     
@@ -115,6 +117,7 @@ struct Post{
         self.hasChallenge = challenge != nil
         self.dayNumber = challengeDay?.day ?? 0
         self.challengeDayID = challengeDay?.id ?? ""
+        self.isPrivate = User.shared.isPrivate
     }
   
     init(post : Post) {
@@ -125,6 +128,7 @@ struct Post{
         self.postID  = "\(User.shared.uid ?? "")_\(post.originalPostID)"
         self.publishDate = Date()
         self.originalCreatorID = post.originalCreatorID
+        self.isPrivate = User.shared.isPrivate
         
     }
     
@@ -153,7 +157,8 @@ extension Post : DatabaseRepresentation{
                                     "challengeTitle": self.challengeTitle,
                                     "hasChallenge": self.hasChallenge,
                                     "dayNumber" : self.dayNumber,
-                                    "challengeDayID" : self.challengeDayID]
+                                    "challengeDayID" : self.challengeDayID,
+                                    "isPrivate" : self.isPrivate]
         return rep
     }
     

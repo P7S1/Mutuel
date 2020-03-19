@@ -88,9 +88,13 @@ class EditProfileViewController: FormViewController {
                     
                 })
              form +++ Section("")
-                <<< SwitchRow("privateAccount"){
-                        $0.title = "Private Account"
-                }
+                <<< SwitchRow(""){ row in
+                    row.tag = "isPrivate"
+                    row.title = "Private Account"
+                    row.value = User.shared.isPrivate
+                }.cellSetup({ (cell, row) in
+                    cell.switchControl.isOn = User.shared.isPrivate
+                })
         }
     
     func saveChangesButton(){
@@ -132,17 +136,27 @@ class EditProfileViewController: FormViewController {
             if let url = User.shared.profileURL{
             FollowersHelper.deleteImage(at: url)
             }
-            let _ = FollowersHelper().uploadPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: UUID().uuidString)
+            let _ = FollowersHelper().uploadPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: "profile")
         }
         
         let user = User.shared
         
         if let name = formvalues["displayName"] as? String{
+            if User.shared.name != name{
             user.name = name
+            }
         }
         
         if let dob = formvalues["dob"] as? Date{
+            if User.shared.birthday != dob{
             user.birthday = dob
+            }
+        }
+        
+        if let isPrivate = formvalues["isPrivate"] as? Bool{
+            if User.shared.isPrivate != isPrivate{
+            user.isPrivate = isPrivate
+            }
         }
         
         let docRef = db.collection("users").document(User.shared.uid ?? "")

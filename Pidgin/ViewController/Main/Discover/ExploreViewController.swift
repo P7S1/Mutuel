@@ -45,6 +45,8 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var shouldquery = true
     
+    var footer : UICollectionReusableView?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,16 +72,18 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 20)
             originalQuery = query
             
+            if user.uid == User.shared.uid ?? ""{
+            getMorePosts(removeAll: false)
+            setUpRefresh()
+            }
+            
         }else{
             originalQuery = query
-            
+            getMorePosts(removeAll: false)
+            setUpRefresh()
         }
-        getMorePosts(removeAll: false)
         
-        
-        refreshControl.tintColor = .secondaryLabel
-        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-        collectionView.addSubview(refreshControl)
+    
         collectionView.alwaysBounceVertical = true
         
         self.view.isSkeletonable  = true
@@ -89,6 +93,12 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         // Do any additional setup after loading the view.
+    }
+    
+    func setUpRefresh(){
+        refreshControl.tintColor = .secondaryLabel
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        collectionView.addSubview(refreshControl)
     }
     
     @objc func refresh(){
@@ -173,6 +183,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
                       if snapshot!.count < 20{
                           self.loadedAllPosts = true
                           self.updateFooter()
+                          self.footer?.activityIndicator(show: false)
                       }
                       let old = self.posts
                       if removeAll{
@@ -199,6 +210,8 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
                           })
                    
                   }else{
+                      self.footer?.activityIndicator(show: false)
+                      
                       print("there was an error \(error!)")
                   }
               }
@@ -345,14 +358,15 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
             let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
             vc.user = user
             vc.isCurrentUser = self.isCurrentUser
+            vc.profileDelegate = self
             self.addChild(vc, in: header)
             return header
         default:
-            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "BottomActivity", for: indexPath)
+            footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "BottomActivity", for: indexPath)
 
-            footer.activityIndicator(show: !self.loadedAllPosts)
+            footer!.activityIndicator(show: !self.loadedAllPosts)
             
-            return footer
+            return footer!
         }
         
     }
@@ -415,5 +429,20 @@ extension ExploreViewController : SwiftyGifDelegate {
     
     func gifDidStop(sender: UIImageView) {
        
+    }
+}
+
+extension ExploreViewController : ProfileDelegate{
+    func didFinishFetchingRelationship(relationship: Relationship?) {
+        if let item = relationship{
+            if item.isApproved{
+                self.getMorePosts(removeAll : false)
+                self.setUpRefresh()
+            }else{
+                footer?.activityIndicator(show: false)
+            }
+        }else{
+            footer?.activityIndicator(show: false)
+        }
     }
 }

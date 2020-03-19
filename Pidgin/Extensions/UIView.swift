@@ -13,7 +13,7 @@ extension UIView {
     // MARK: Activity Indicator
 
     func activityIndicator(show: Bool) {
-        activityIndicator(show: show, style: .large)
+        activityIndicator(show: show, style: .medium)
     }
 
     func activityIndicator(show: Bool, style: UIActivityIndicatorView.Style) {

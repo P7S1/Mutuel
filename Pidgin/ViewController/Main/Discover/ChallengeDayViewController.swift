@@ -139,7 +139,7 @@ extension ChallengeDayViewController: UITableViewDelegate, UITableViewDataSource
             self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
         }
     
-        let dayInterval = abs(challenge.startDate.interval(ofComponent: .day, fromDate: Date()))
+        let dayInterval = abs(challenge.startDate.interval(ofComponent: .day, fromDate: Date()))+1
         
         let isEnabled = dayInterval >= day.day
         print("Interver \(dayInterval)")
@@ -165,7 +165,7 @@ extension ChallengeDayViewController: UITableViewDelegate, UITableViewDataSource
         
         let day = days[indexPath.row]
         
-        let dayInterval = abs(challenge.startDate.interval(ofComponent: .day, fromDate: Date()))
+        let dayInterval = abs(challenge.startDate.interval(ofComponent: .day, fromDate: Date()))+1
         
         let isEnabled = dayInterval >= day.day
         
@@ -174,7 +174,7 @@ extension ChallengeDayViewController: UITableViewDelegate, UITableViewDataSource
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         let vc = storyboard.instantiateViewController(identifier: "ExploreViewController") as! ExploreViewController
         vc.isUserProfile = false
-        vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("challengeDayID", isEqualTo: day.id)
+            vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("challengeDayID", isEqualTo: day.id).whereField("isPrivate", isEqualTo: false).limit(to: 20)
         vc.navigationItem.title = day.activity
         navigationController?.pushViewController(vc, animated: true)
         }

@@ -34,6 +34,7 @@
 		DF21A36D2365597E00E39A55 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A36C2365597E00E39A55 /* ChatViewController.swift */; };
 		DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */; };
 		DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */; };
+		DF2C741E2423CA1E0020D76C /* AuthorizationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2C741D2423CA1E0020D76C /* AuthorizationButton.swift */; };
 		DF3C1A0E2398138000106964 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3C1A0D2398138000106964 /* HomeViewController.swift */; };
 		DF41B3432413F0E500F5B31F /* ActivityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */; };
 		DF41B3462413F3CD00F5B31F /* ActivityItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3452413F3CD00F5B31F /* ActivityItem.swift */; };
@@ -104,6 +105,8 @@
 		DFE9E6ED240EEFE100131CBF /* GiphyHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */; };
 		DFE9E6EF240EF06300131CBF /* GifViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE9E6EE240EF06200131CBF /* GifViewController.swift */; };
 		DFEB2929236DAF7C006FC6BB /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */; };
+		DFED88BF24232AE600D9969B /* FollowRequestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFED88BE24232AE600D9969B /* FollowRequestTableViewCell.swift */; };
+		DFED88C124232C8400D9969B /* FollowRequestTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFED88C024232C8400D9969B /* FollowRequestTableViewController.swift */; };
 		DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */; };
 		DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */; };
 		DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFEFCABC23F3406F00397091 /* ReplyHeaderViewController.swift */; };
@@ -159,6 +162,7 @@
 		DF21A36C2365597E00E39A55 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsTableViewController.swift; sourceTree = "<group>"; };
 		DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserTableViewCell.swift; sourceTree = "<group>"; };
+		DF2C741D2423CA1E0020D76C /* AuthorizationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationButton.swift; sourceTree = "<group>"; };
 		DF3C1A0D2398138000106964 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTableViewCell.swift; sourceTree = "<group>"; };
 		DF41B3452413F3CD00F5B31F /* ActivityItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityItem.swift; sourceTree = "<group>"; };
@@ -232,6 +236,9 @@
 		DFE9E6EE240EF06200131CBF /* GifViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifViewController.swift; sourceTree = "<group>"; };
 		DFEB2928236DAF7C006FC6BB /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		DFEB292A236DB082006FC6BB /* Pidgin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pidgin.entitlements; sourceTree = "<group>"; };
+		DFED88BB242297E400D9969B /* MutuelDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MutuelDebug.entitlements; sourceTree = "<group>"; };
+		DFED88BE24232AE600D9969B /* FollowRequestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowRequestTableViewCell.swift; sourceTree = "<group>"; };
+		DFED88C024232C8400D9969B /* FollowRequestTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowRequestTableViewController.swift; sourceTree = "<group>"; };
 		DFEE6F40239BA8FA0097EA52 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		DFEE6F41239BA8FC0097EA52 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		DFEE6F42239BA8FF0097EA52 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
@@ -475,6 +482,7 @@
 		DF4F7A0A234C239A001D6CE8 /* Pidgin */ = {
 			isa = PBXGroup;
 			children = (
+				DFED88BB242297E400D9969B /* MutuelDebug.entitlements */,
 				DFEE6F43239BA9020097EA52 /* Pidgin-Bridging-Header.h */,
 				DFEB292A236DB082006FC6BB /* Pidgin.entitlements */,
 				DFEFCABF23F38A7900397091 /* Extensions */,
@@ -500,6 +508,7 @@
 				DFF2D226240C9867004A1AF4 /* UploadViewController.swift */,
 				DF7F05BE240CAFAC0016F58A /* PhotoPickerViewController.swift */,
 				DFE9E6EE240EF06200131CBF /* GifViewController.swift */,
+				DFED88C024232C8400D9969B /* FollowRequestTableViewController.swift */,
 			);
 			path = CustomClasses;
 			sourceTree = "<group>";
@@ -527,6 +536,7 @@
 				DF70721723C695A500F00DF0 /* UsernameViewController.swift */,
 				DF5A223623D67F8200BA053F /* ForgotPasswordViewController.swift */,
 				DF5A223823D67FBC00BA053F /* PasswordResetEmailViewController.swift */,
+				DF2C741D2423CA1E0020D76C /* AuthorizationButton.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -645,6 +655,7 @@
 				DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */,
 				DFF66B8C24208DF2003F82DB /* ChallengesCollectionViewCell.swift */,
 				DFF66B942420A2B1003F82DB /* ChallengeDayTableViewCell.swift */,
+				DFED88BE24232AE600D9969B /* FollowRequestTableViewCell.swift */,
 			);
 			path = "Reusable Cells";
 			sourceTree = "<group>";
@@ -672,6 +683,7 @@
 				DF4F7A05234C239A001D6CE8 /* Frameworks */,
 				DF4F7A06234C239A001D6CE8 /* Resources */,
 				1E1743FECD9D002036473B76 /* [CP] Embed Pods Frameworks */,
+				EDD8D9038BFCB53E458F195B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -778,6 +790,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		EDD8D9038BFCB53E458F195B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -806,10 +835,12 @@
 				DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */,
 				DF14F8EA2411B3B900E95E39 /* BPCellConfigFile.swift in Sources */,
 				DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */,
+				DF2C741E2423CA1E0020D76C /* AuthorizationButton.swift in Sources */,
 				DF14F8E72411B3B900E95E39 /* BPImageType.swift in Sources */,
 				DF41B3462413F3CD00F5B31F /* ActivityItem.swift in Sources */,
 				DFEFCAC123F38A9D00397091 /* UIViewController.swift in Sources */,
 				DF4BC41B234D8267001AD00D /* Pencil.swift in Sources */,
+				DFED88C124232C8400D9969B /* FollowRequestTableViewController.swift in Sources */,
 				DF5A223323D5F35D00BA053F /* ReAuthenticationViewController.swift in Sources */,
 				DF7F05BF240CAFAC0016F58A /* PhotoPickerViewController.swift in Sources */,
 				DFF66B8F24208EC1003F82DB /* Challenge.swift in Sources */,
@@ -861,6 +892,7 @@
 				DF14F8E82411B3B900E95E39 /* ImageExtensions.swift in Sources */,
 				DFF66B8B24208D87003F82DB /* ChallengesViewController.swift in Sources */,
 				DFF3DBD123DD066F00557BC8 /* CommentsTableViewCell.swift in Sources */,
+				DFED88BF24232AE600D9969B /* FollowRequestTableViewCell.swift in Sources */,
 				DF7D0AC523B83D9A00B33E40 /* DatabaseRepresentation.swift in Sources */,
 				DF4BC415234D8267001AD00D /* ARCameraVC.swift in Sources */,
 				DFF346292367AE0D006AA467 /* Message.swift in Sources */,
@@ -1047,9 +1079,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Pidgin/Pidgin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Pidgin/MutuelDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1077,7 +1109,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/Pidgin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

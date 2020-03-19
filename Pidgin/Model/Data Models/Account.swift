@@ -36,7 +36,8 @@ class Account: Comparable{
     var tokens : [String] = [String]()
     var followersCount : Int?
     var followingCount : Int?
-    
+    var isPrivate = false
+    var followRequestsCount = 0
     
     func convertFrom(dictionary: NSDictionary){
         if let c = dictionary.value(forKey: "username"){
@@ -60,6 +61,8 @@ class Account: Comparable{
         if let c = dictionary.value(forKey: "birthday"){
             birthday = c as? Date
         }
+        self.isPrivate = dictionary.value(forKey: "isPrivate") as? Bool ?? false
+        self.followRequestsCount = dictionary.value(forKey: "followRequestsCount") as? Int ?? 0
     }
     
     func convertFromDocument(dictionary: DocumentSnapshot){
@@ -93,6 +96,8 @@ class Account: Comparable{
         if let c = dictionary.get("fcmToken"){
             tokens = c as? [String] ?? [String]()
         }
+        self.isPrivate = dictionary.get("isPrivate") as? Bool ?? false
+        self.followRequestsCount = dictionary.get("followRequestsCount") as? Int ?? 0
         self.uid = dictionary.documentID
     }
     
@@ -184,7 +189,8 @@ extension User : DatabaseRepresentation{
             "email":email as Any,
             "profilePicURL":profileURL as Any,
             "birthday":Timestamp(date: birthday ?? Date()),
-            "name": name as Any]
+            "name": name as Any,
+            "isPrivate": self.isPrivate]
         return rep
     }
     

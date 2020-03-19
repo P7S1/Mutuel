@@ -33,6 +33,13 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     
     var channelDelegate : ChannelDelegate?
     
+    var footer : UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        view.activityIndicator(show: true)
+        
+        return view
+    }()
+    
     
     
     deinit {
@@ -59,6 +66,10 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
       snapshot.documentChanges.forEach { change in
         self.handleDocumentChange(change)
       }
+        
+        if snapshot.count < 25{
+            self.footer.activityIndicator(show: false)
+        }
     
     }
         
@@ -159,6 +170,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
             if error == nil{
                 if snapshot!.count < 25{
                     self.loadedAllPosts = true
+                    self.footer.activityIndicator(show: false)
                 }
                 for document in snapshot!.documents{
                     self.lastDocument = document
@@ -166,6 +178,9 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
                     self.addChannelToTable(channel)
                     
                 }
+            }else{
+                self.loadedAllPosts = true
+                self.footer.activityIndicator(show: false)
             }
         }
     }
@@ -198,11 +213,8 @@ extension ChannelsViewController {
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         if self.loadedAllPosts{
-        footer.activityIndicator(show: false)
-        }else{
-        footer.activityIndicator(show: true)
+            footer.activityIndicator(show: false)
         }
         return footer
     }
@@ -223,10 +235,12 @@ extension ChannelsViewController {
     let channel = channels[indexPath.row]
     var id = ""
     if channel.groupChat{
+        cell.collectionView.isHidden = false
         id = channel.id
         cell.displayName.text = channel.name
         cell.setUpBubblePictures(channel: channel)
     }else{
+        cell.collectionView.isHidden = true
         id = channel.getSenderID()
         cell.displayName.text = channel.metaData.value(forKey: id) as? String ?? ""
     }

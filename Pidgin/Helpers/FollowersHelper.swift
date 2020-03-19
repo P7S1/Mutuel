@@ -16,7 +16,7 @@ class FollowersHelper{
         if let user = User.shared.uid, let followee = followeeUser.uid {
             if followee != user{
                 let docRef = db.collection("users").document(user).collection("relationships").document("\(user)_\(followee)")
-                let relationship = Relationship(followedUser: followeeUser, id: docRef.documentID)
+                let relationship = Relationship(followedUser: followeeUser, id: docRef.documentID, isApproved: !followeeUser.isPrivate)
                 docRef.setData(relationship.representation) { (error) in
                     if error == nil{
                         completion(true)

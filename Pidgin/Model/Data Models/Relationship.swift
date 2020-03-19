@@ -12,7 +12,7 @@ import DeepDiff
 class Relationship {
     var followed : String
     var follower : String
-    var isApproved : Bool?
+    var isApproved : Bool
     
     var followedUsername : String
     var followedProfileURL : String
@@ -26,7 +26,7 @@ class Relationship {
         let data = document.data()
         followed = data?["followed"] as? String ?? ""
         follower = data?["follower"] as? String ?? ""
-        isApproved = data?["isApproved"] as? Bool
+        isApproved = data?["isApproved"] as? Bool ?? false
         
         followedUsername = data?["followedUsername"] as? String ?? ""
         followedProfileURL = data?["followedProfileURL"] as? String ?? ""
@@ -37,7 +37,7 @@ class Relationship {
         self.id = document.documentID
     }
     
-    init(followedUser : Account, id : String) {
+    init(followedUser : Account, id : String, isApproved : Bool) {
         follower = User.shared.uid ?? ""
         followerUsername = User.shared.username ?? ""
         followerProfileURL = User.shared.profileURL ?? ""
@@ -46,6 +46,7 @@ class Relationship {
         followedUsername = followedUser.username ?? ""
         followedProfileURL = followedUser.profileURL ?? ""
         self.id = id
+        self.isApproved = isApproved
     }
     
     func getFollowerAccount() -> Account{
@@ -83,7 +84,8 @@ extension Relationship : DatabaseRepresentation{
             "followerProfileURL":self.followerProfileURL,
             "followed":self.followed,
             "followedUsername":self.followedUsername,
-            "followedProfileURL":self.followedProfileURL]
+            "followedProfileURL":self.followedProfileURL,
+            "isApproved":self.isApproved]
         
         return rep
     }

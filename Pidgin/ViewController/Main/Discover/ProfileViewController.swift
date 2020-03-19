@@ -13,10 +13,7 @@ import Kingfisher
 import Lightbox
 import SkeletonView
 protocol ProfileDelegate {
-    func handleMoreButtonPressed(_ sender: Any)
-    func handleProfilePictureTapped()
-    func handleFollowersTapped()
-    func didPressFollowButton(_ sender: Any)
+    func didFinishFetchingRelationship(relationship : Relationship?)
 }
 class ProfileViewController: UIViewController{
     
@@ -38,12 +35,16 @@ class ProfileViewController: UIViewController{
     @IBOutlet weak var moreButton: UIButton!
     @IBOutlet weak var username: UILabel!
     
+    var relationship : Relationship?
+    
     
     
     var isCurrentUser = false
     
     
     var userFollows = false
+    
+    var userRequested  = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,8 +101,6 @@ class ProfileViewController: UIViewController{
         followButton.backgroundColor = .systemGray6
         followButton.roundCorners()
         
-        user?.printClass()
-        
         if !isCurrentUser{
             guard let follower = User.shared.uid else {
                 self.dismiss(animated: true, completion: nil)
@@ -115,13 +114,15 @@ class ProfileViewController: UIViewController{
                     if document.exists{
                         
                         let relationship = Relationship(document: document)
-                        if relationship.isApproved ?? false{
+                        self.profileDelegate?.didFinishFetchingRelationship(relationship: relationship)
+                        if relationship.isApproved{
                             self.setFollowingState()
+                        }else{
+                            self.setRequestedState()
                         }
                     } else {
-
                         self.setNotFollowingState()
-
+                        self.profileDelegate?.didFinishFetchingRelationship(relationship: nil)
                     }
                 }
                 if let err = error{
@@ -247,11 +248,20 @@ class ProfileViewController: UIViewController{
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    func setRequestedState(){
+       followButton.setTitle("REQUESTED", for: .normal)
+        followButton.setTitleColor(.label, for: .normal)
+        followButton.backgroundColor = .systemGray6
+        self.userFollows = false
+        self.userRequested = true
+    }
+    
     func setFollowingState(){
         followButton.setTitle("UNFOLLOW", for: .normal)
         followButton.setTitleColor(.systemPink, for: .normal)
         followButton.backgroundColor = .systemGray6
         self.userFollows = true
+        self.userRequested = false
     }
     
     func setNotFollowingState(){
@@ -259,31 +269,40 @@ class ProfileViewController: UIViewController{
         followButton.setTitleColor(.white, for: .normal)
         followButton.backgroundColor = .systemBlue
         self.userFollows = false
+        self.userRequested = false
     }
     
     @IBAction func didPressFollowButton(_ sender: Any) {
         if !isCurrentUser{
             followButton.isEnabled = false
         if let followee = self.user{
-            if userFollows{
+            if userFollows || userRequested{
                 FollowersHelper().unFollow(followeeUser: followee) { (success) in
                     if success{
                         self.setNotFollowingState()
                         self.followButton.isEnabled = true
+                        if self.userFollows{
                         DispatchQueue.main.async {
                             self.user?.followersCount = (self.user?.followersCount ?? 0) - 1
                             self.followers.text = "\((self.user?.followersCount ?? 0) )"
                         }
+                        }
+                        self.setNotFollowingState()
                     }
                 }
             }else{
                 FollowersHelper().follow(followeeUser: followee) { (success) in
                     if success{
-                        self.setFollowingState()
                         self.followButton.isEnabled = true
+                        
+                        if self.user?.isPrivate ?? false{
+                            self.setRequestedState()
+                        }else{
+                        self.setFollowingState()
                         DispatchQueue.main.async {
                             self.user?.followersCount = (self.user?.followersCount ?? 0) + 1
                             self.followers.text = "\((self.user?.followersCount ?? 0)  )"
+                        }
                         }
                     }
                 }
