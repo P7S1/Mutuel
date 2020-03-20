@@ -10,7 +10,7 @@ import UIKit
 import GiphyUISDK
 import GiphyCoreSDK
 import SkeletonView
-import SwiftyGif
+import Kingfisher
 class CommentsTableViewCell: UITableViewCell {
     
     @IBOutlet weak var profilePictureView: UIImageView!
@@ -23,7 +23,7 @@ class CommentsTableViewCell: UITableViewCell {
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var viewRepliesLabel: UILabel!
     
-    @IBOutlet weak var gifView: UIImageView!
+    @IBOutlet weak var gifView: AnimatedImageView!
     @IBOutlet weak var gifViewHeight: NSLayoutConstraint!
     
     
@@ -92,7 +92,10 @@ class CommentsTableViewCell: UITableViewCell {
                         let url = URL(string: gifURL){
                         DispatchQueue.main.async {
                             DispatchQueue.main.async {
-                        self.gifView.setGifFromURL(url)
+                                self.gifView.kf.setImage(with: url) { (result) in
+                                    self.gifView.stopSkeletonAnimation()
+                                    self.gifView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
+                                }
                             }
                         }
                 }

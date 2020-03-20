@@ -7,9 +7,9 @@
 //
 
 import UIKit
-
+import Kingfisher
 class ChallengesCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageView: AnimatedImageView!
     @IBOutlet weak var colorView: UIView!
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var subtitle: UILabel!

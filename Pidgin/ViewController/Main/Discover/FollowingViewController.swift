@@ -11,7 +11,6 @@ import DeepDiff
 import FirebaseFirestore
 import AVKit
 import SkeletonView
-import SwiftyGif
  protocol PostViewDelegate {
     func preparePostsFor(indexPath: IndexPath, posts : [Post], lastDocument : DocumentSnapshot?, loadedAllPosts : Bool)
 }
@@ -315,19 +314,12 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     cell.imageView.layer.cornerRadius = 10.0
       cell.imageView.clipsToBounds = true
         cell.contentView.isSkeletonable = true
-        cell.imageView.delegate = self
+        
         DispatchQueue.main.async {
-            SwiftyGifManager.defaultManager.deleteImageView(cell.imageView)
-            if post.isGIF{
-              cell.imageView.setGifFromURL(URL(string: post.photoURL)!)
-              cell.gradientView.isHidden = false
-            }else{
             cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
                    cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
                 cell.gradientView.isHidden = false
-                
-            }
                 
             }
         }
@@ -488,26 +480,3 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
 
 }
 
-extension FollowingViewController : SwiftyGifDelegate {
-
-    func gifURLDidFinish(sender: UIImageView) {
-        sender.stopSkeletonAnimation()
-        sender.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-    }
-
-    func gifURLDidFail(sender: UIImageView) {
-        
-    }
-
-    func gifDidStart(sender: UIImageView) {
-       
-    }
-    
-    func gifDidLoop(sender: UIImageView) {
-        
-    }
-    
-    func gifDidStop(sender: UIImageView) {
-       
-    }
-}

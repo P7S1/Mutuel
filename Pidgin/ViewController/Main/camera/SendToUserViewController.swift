@@ -12,6 +12,8 @@ import AVFoundation
 import SkeletonView
 import GiphyCoreSDK
 import Lightbox
+import CollectionViewWaterfallLayout
+
 class SendToUserViewController: UIViewController {
     var video : URL?
     var image = UIImage()
@@ -32,7 +34,9 @@ class SendToUserViewController: UIViewController {
     var challenge : Challenge?
     
     var challengeDay : ChallengeDay?
+
     
+    @IBOutlet weak var collectionView: UICollectionView!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -72,6 +76,8 @@ class SendToUserViewController: UIViewController {
         containerView.addGestureRecognizer(tap)
         
         challengeLabel.text = challengeDay?.activity ?? ""
+        
+        setUpCollectionView()
         
     }
     
@@ -254,6 +260,42 @@ extension SendToUserViewController : UITextViewDelegate{
             textView.text = "Write a caption..."
             textView.textColor = UIColor.secondaryLabel
         }
+    }
+    
+    
+}
+
+extension  SendToUserViewController : UICollectionViewDelegate, UICollectionViewDataSource, CollectionViewWaterfallLayoutDelegate{
+    
+    func setUpCollectionView(){
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        let layout = CollectionViewWaterfallLayout()
+        layout.minimumColumnSpacing = 4
+        layout.minimumInteritemSpacing = 4
+        collectionView.collectionViewLayout = layout
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.height, height: self.view.frame.width)
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return categories.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "categoryCell", for: indexPath)
+        
+        cell.contentView.layer.masksToBounds = true
+        cell.contentView.layer.cornerRadius = 10
+        return cell
     }
     
     

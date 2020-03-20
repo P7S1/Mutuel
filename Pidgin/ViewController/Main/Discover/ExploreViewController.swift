@@ -11,7 +11,6 @@ import CollectionViewWaterfallLayout
 import DeepDiff
 import FirebaseFirestore
 import SkeletonView
-import SwiftyGif
 public protocol ExploreViewControllerDelegate {
    func collectionViewScrolled(_ scrollView: UIScrollView)
 }
@@ -268,7 +267,6 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreCollectionViewCell", for: indexPath) as! ExploreCollectionViewCell
         let post = posts[indexPath.row]
-        cell.imageView.delegate = self
         
         cell.imageView.clipsToBounds = true
         cell.imageView.layer.cornerRadius = 10
@@ -277,16 +275,11 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         cell.imageView.isSkeletonable = true
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
         cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
-        
-        if post.isGIF{
-            cell.imageView.setGifFromURL(URL(string: post.photoURL)!)
-        }else{
-            SwiftyGifManager.defaultManager.deleteImageView(cell.imageView)
             cell.imageView.kf.setImage(with: URL(string: post.photoURL), placeholder: UIImage()) { (result) in
                 cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
             }
-        }
+        
          
         
         
@@ -406,30 +399,6 @@ extension ExploreViewController : PostViewDelegate{
 
     
     
-}
-
-extension ExploreViewController : SwiftyGifDelegate {
-
-    func gifURLDidFinish(sender: UIImageView) {
-        sender.stopSkeletonAnimation()
-        sender.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-    }
-
-    func gifURLDidFail(sender: UIImageView) {
-        
-    }
-
-    func gifDidStart(sender: UIImageView) {
-       
-    }
-    
-    func gifDidLoop(sender: UIImageView) {
-        
-    }
-    
-    func gifDidStop(sender: UIImageView) {
-       
-    }
 }
 
 extension ExploreViewController : ProfileDelegate{

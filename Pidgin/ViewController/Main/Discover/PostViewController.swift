@@ -11,6 +11,7 @@ import Hero
 import AVKit
 import Lightbox
 import FirebaseDatabase
+import Kingfisher
 class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var contentView: UIView!
@@ -18,7 +19,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     
     @IBOutlet weak var scrollView: UIScrollView!
     
-    @IBOutlet weak var imageView: VideoIcon!
+    @IBOutlet weak var imageView: AnimatedImageView!
     
     @IBOutlet weak var commentsStackView: UIStackView!
     @IBOutlet weak var commentsImageView: UIImageView!
@@ -55,6 +56,10 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         scrollView.delegate = self
         navigationItem.largeTitleDisplayMode = .never
+        
+        if post.postID.isEmpty || post.creatorID.isEmpty || post.originalPostID.isEmpty{
+            navigationController?.popViewController(animated: true)
+        }
         
         
         navigationItem.title = ""

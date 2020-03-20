@@ -247,6 +247,7 @@ extension ChannelsViewController {
     
     if !channel.groupChat{
     let photoURL = channel.profilePics.value(forKey: id) as? String ?? ""
+        cell.profilePic.isHidden = false
     cell.profilePic.kf.setImage(with: URL(string: photoURL), placeholder: FollowersHelper().getUserProfilePicture())
     }
     

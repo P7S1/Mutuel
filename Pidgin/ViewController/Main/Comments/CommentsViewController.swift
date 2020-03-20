@@ -12,7 +12,6 @@ import DeepDiff
 import GiphyUISDK
 import GiphyCoreSDK
 import SkeletonView
-import SwiftyGif
 class CommentsViewController: UIViewController {
     
     var commentsDelegate : ExploreViewControllerDelegate?
@@ -204,7 +203,6 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
             height = 300
         }
         cell.gifViewHeight.constant = height
-        cell.gifView.delegate = self
         cell.setGifMediaView(comment: comment)
         
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
@@ -442,28 +440,3 @@ extension CommentsViewController : GifDelegate{
 }
 
 
-extension CommentsViewController : SwiftyGifDelegate {
-    
-    
-
-    func gifURLDidFinish(sender: UIImageView) {
-        sender.stopSkeletonAnimation()
-        sender.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-    }
-
-    func gifURLDidFail(sender: UIImageView) {
-        
-    }
-
-    func gifDidStart(sender: UIImageView) {
-       
-    }
-    
-    func gifDidLoop(sender: UIImageView) {
-        
-    }
-    
-    func gifDidStop(sender: UIImageView) {
-       
-    }
-}

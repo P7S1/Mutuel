@@ -7,7 +7,8 @@
 //
 
 import UIKit
+import Kingfisher
 class ExploreCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageView: AnimatedImageView!
     @IBOutlet weak var playButton: VideoIcon!
 }

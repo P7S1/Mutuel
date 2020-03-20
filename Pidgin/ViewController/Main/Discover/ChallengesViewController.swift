@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SwiftyGif
 import  CollectionViewWaterfallLayout
 import FirebaseFirestore
 class ChallengesViewController: UIViewController {
@@ -85,7 +84,7 @@ extension ChallengesViewController : UICollectionViewDelegate, UICollectionViewD
         cell.title.text = challenge.title
         cell.colorView.backgroundColor = challenge.color
         cell.subtitle.text = challenge.desc
-        cell.imageView.setGifFromURL(challenge.photoURL)
+        cell.imageView.kf.setImage(with: challenge.photoURL)
         cell.contentView.layer.cornerRadius = 15
         cell.contentView.layer.masksToBounds = true
         

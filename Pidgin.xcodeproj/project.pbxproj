@@ -35,6 +35,7 @@
 		DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */; };
 		DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */; };
 		DF2C741E2423CA1E0020D76C /* AuthorizationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2C741D2423CA1E0020D76C /* AuthorizationButton.swift */; };
+		DF2C7420242441830020D76C /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2C741F242441830020D76C /* UIImageView.swift */; };
 		DF3C1A0E2398138000106964 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3C1A0D2398138000106964 /* HomeViewController.swift */; };
 		DF41B3432413F0E500F5B31F /* ActivityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */; };
 		DF41B3462413F3CD00F5B31F /* ActivityItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3452413F3CD00F5B31F /* ActivityItem.swift */; };
@@ -163,6 +164,7 @@
 		DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsTableViewController.swift; sourceTree = "<group>"; };
 		DF21A441236578C200E39A55 /* SearchUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserTableViewCell.swift; sourceTree = "<group>"; };
 		DF2C741D2423CA1E0020D76C /* AuthorizationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationButton.swift; sourceTree = "<group>"; };
+		DF2C741F242441830020D76C /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 		DF3C1A0D2398138000106964 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTableViewCell.swift; sourceTree = "<group>"; };
 		DF41B3452413F3CD00F5B31F /* ActivityItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityItem.swift; sourceTree = "<group>"; };
@@ -639,6 +641,7 @@
 				DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */,
 				DF14F8B32410188800E95E39 /* CALayer.swift */,
 				DFF66B962420AF42003F82DB /* UIColor.swift */,
+				DF2C741F242441830020D76C /* UIImageView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -919,6 +922,7 @@
 				DF562A3323BE3E9F00CC43D3 /* Comment.swift in Sources */,
 				DF8608A5240BB408003E1C77 /* RelationshipViewController.swift in Sources */,
 				DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */,
+				DF2C7420242441830020D76C /* UIImageView.swift in Sources */,
 				DF7D0ABD23B7104900B33E40 /* ExploreViewController.swift in Sources */,
 				DF469B7E237910E400CDB540 /* ProfileViewController.swift in Sources */,
 				DF1726172413EA1800209146 /* ActivityViewController.swift in Sources */,

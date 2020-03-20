@@ -21,6 +21,7 @@ var ref: DatabaseReference!
 
 var userListener: ListenerRegistration?
 var appDidLoad = false
+var categories = ["booty","booty","booty","booty","booty","booty","booty","booty"]
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {

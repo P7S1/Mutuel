@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 protocol cellDelegate {
     func didSelectUser()
 }
@@ -15,7 +16,7 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var containerView: UIView!
     
     
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageView: AnimatedImageView!
     
     @IBOutlet weak var caption: UILabel!
     
