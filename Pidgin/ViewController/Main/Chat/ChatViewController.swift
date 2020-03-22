@@ -289,6 +289,8 @@ class ChatViewController: MessagesViewController {
     @objc func cameraButtonPressed(){
         print("camera button pressed")
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.popoverPresentationController?.sourceView = self.view
+        alertController.popoverPresentationController?.sourceRect = self.view.frame
         
         alertController.addAction(UIAlertAction(title: "Take photo", style: .default, handler: { (action) in
             print("take photo pressed")
@@ -567,6 +569,8 @@ extension ChatViewController : MessageCellDelegate{
         }
         let sent = "Sent \(MessageKitDateFormatter.shared.string(from: message.sentDate))"
         let alertController = UIAlertController(title: message.content ?? "", message: sent, preferredStyle: .actionSheet)
+        alertController.popoverPresentationController?.sourceView = self.view
+        alertController.popoverPresentationController?.sourceRect = self.view.frame
         
         
         if message.messageKind == "photo" || message.messageKind == "video" {

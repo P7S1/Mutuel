@@ -174,7 +174,8 @@ extension ChallengeDayViewController: UITableViewDelegate, UITableViewDataSource
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         let vc = storyboard.instantiateViewController(identifier: "ExploreViewController") as! ExploreViewController
         vc.isUserProfile = false
-            vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("challengeDayID", isEqualTo: day.id).whereField("isPrivate", isEqualTo: false).limit(to: 20)
+            vc.isChallenge = false
+            vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("challengeDayID", isEqualTo: day.id).order(by: "score", descending: true).whereField("isExplicit", isEqualTo: false).whereField("isPrivate", isEqualTo: false).limit(to: 20)
         vc.navigationItem.title = day.activity
         navigationController?.pushViewController(vc, animated: true)
         }

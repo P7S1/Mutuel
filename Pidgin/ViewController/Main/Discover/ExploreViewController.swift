@@ -46,6 +46,8 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var footer : UICollectionReusableView?
     
+    var isChallenge = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,8 +70,8 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             appearance?.shadowColor = .clear
             navigationItem.standardAppearance = appearance
             
-            query = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).limit(to: 20)
-            originalQuery = query
+            originalQuery = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true)
+            query = originalQuery.limit(to: 20)
             
             if user.uid == User.shared.uid ?? ""{
             getMorePosts(removeAll: false)
@@ -142,22 +144,22 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             setBackBarButtonCustom()
         }
         
-        if isUserProfile{
-            let statusBarView = UIView(frame: CGRect(x:0, y:0, width:view.frame.size.width, height: UIApplication.shared.statusBarFrame.height))
-            statusBarView.backgroundColor=UIColor.systemBackground
-            view.addSubview(statusBarView)
-         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
-        }else{
-         collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 32, right: 0)
-        }
         
         // Change individual layout attributes for the spacing between cells'
         layout.minimumColumnSpacing = 4
         layout.minimumInteritemSpacing = 4
         if isUserProfile{
         layout.headerHeight = 160
+        let statusBarView = UIView(frame: CGRect(x:0, y:0, width:view.frame.size.width, height: UIApplication.shared.statusBarFrame.height))
+           statusBarView.backgroundColor=UIColor.systemBackground
+           view.addSubview(statusBarView)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
+        }else if isChallenge{
+            layout.headerHeight = 46
+            collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         }else{
-         layout.headerHeight = 0
+          layout.headerHeight = 0
+          collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 32, right: 0)
         }
         layout.footerHeight = 100
         
@@ -293,16 +295,20 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
          let vc = storyboard.instantiateViewController(withIdentifier: "FollowingViewController") as! FollowingViewController
         vc.shouldQuery = false
-         vc.posts = posts
-        vc.indexPath = indexPath
-        vc.postDelegate = self
-        vc.query = self.query
-        vc.originalQuery = self.query
-        vc.lastDocument = self.lastDocument
+        //vc.postDelegate = self
+        var query = self.originalQuery
+        let post = posts[indexPath.row]
+        if self.isChallenge && !post.tags.isEmpty && post.tags.count <= 10 {
+            query = originalQuery.whereField("tags", arrayContainsAny: post.tags)
+        }
+        query = query?.start(atDocument: post.document!).limit(to: 10)
+        vc.query = query
+        vc.originalQuery = query
+        vc.lastDocument = nil
         if isUserProfile{
             vc.navTitle = user.name ?? ""
         }else{
-            vc.navTitle = "Trending"
+            vc.navTitle = self.navigationItem.title ?? "Trending"
         }
         willPresentAView = true
          navigationController?.pushViewController(vc, animated: true)
@@ -347,12 +353,18 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
         switch kind {
         case CollectionViewWaterfallElementKindSectionHeader:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ProfileHeader", for: indexPath)
+            if isUserProfile{
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
             vc.user = user
             vc.isCurrentUser = self.isCurrentUser
             vc.profileDelegate = self
             self.addChild(vc, in: header)
+            }else{
+                let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+                let vc = storyboard.instantiateViewController(identifier: "CategoriesViewController") as! CategoriesViewController
+                self.addChild(vc, in: header)
+            }
             return header
         default:
             footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "BottomActivity", for: indexPath)
@@ -378,7 +390,7 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
        }
     
 }
-
+/*
 extension ExploreViewController : PostViewDelegate{
     
     func preparePostsFor(indexPath: IndexPath, posts: [Post], lastDocument: DocumentSnapshot?, loadedAllPosts: Bool) {
@@ -400,17 +412,20 @@ extension ExploreViewController : PostViewDelegate{
     
     
 }
-
+*/
 extension ExploreViewController : ProfileDelegate{
     func didFinishFetchingRelationship(relationship: Relationship?) {
         if let item = relationship{
-            if item.isApproved{
+            if item.isApproved || !user.isPrivate{
                 self.getMorePosts(removeAll : false)
                 self.setUpRefresh()
             }else{
                 footer?.activityIndicator(show: false)
             }
-        }else{
+        }else if !user.isPrivate {
+            self.getMorePosts(removeAll : false)
+            self.setUpRefresh()
+        }else {
             footer?.activityIndicator(show: false)
         }
     }

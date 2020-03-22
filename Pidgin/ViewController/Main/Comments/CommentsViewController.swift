@@ -288,6 +288,8 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         cell.moreTapAction = {
         () in
             let actionViewController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            actionViewController.popoverPresentationController?.sourceView = cell.contentView
+            actionViewController.popoverPresentationController?.sourceRect = cell.moreButton.frame
             if comment.creatorID == User.shared.uid{
                 actionViewController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
                     var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)

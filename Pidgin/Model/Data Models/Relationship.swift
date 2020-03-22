@@ -22,6 +22,8 @@ class Relationship {
     
     var id : String
     
+    var isFollowedBlocked : Bool
+    
     init(document : DocumentSnapshot) {
         let data = document.data()
         followed = data?["followed"] as? String ?? ""
@@ -33,6 +35,7 @@ class Relationship {
         
         followerUsername = data?["followerUsername"] as? String ?? ""
         followerProfileURL = data?["followerProfileURL"] as? String ?? ""
+        isFollowedBlocked = data?["isFollowedBlocked"] as? Bool ?? false
         
         self.id = document.documentID
     }
@@ -47,6 +50,7 @@ class Relationship {
         followedProfileURL = followedUser.profileURL ?? ""
         self.id = id
         self.isApproved = isApproved
+        self.isFollowedBlocked = false
     }
     
     func getFollowerAccount() -> Account{

@@ -55,6 +55,14 @@ struct Post{
     
     var isPrivate : Bool
     
+    var tags : [String]
+    
+    var document : DocumentSnapshot?
+    
+    var score : Double
+    
+    var isExplicit : Bool
+    
     init(document : DocumentSnapshot) {
         let data = document.data()
      photoURL = data?["photoURL"] as? String ?? ""
@@ -90,10 +98,14 @@ struct Post{
         self.dayNumber = data?["dayNumber"] as? Int ?? 0
         self.challengeDayID = data?["challengeDayID"] as? String ?? ""
         self.isPrivate = data?["isPrivate"] as? Bool ?? false
+        self.tags = data?["tags"] as? [String] ?? [String]()
+        self.score = data?["score"] as? Double ?? 0.0
+        self.isExplicit = data?["isExplicit"] as? Bool ?? false
+        self.document = document
         
     }
     
-    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool, challenge : Challenge?, challengeDay : ChallengeDay?) {
+    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool, challenge : Challenge?, challengeDay : ChallengeDay?, tags : [String]) {
         self.photoURL = photoURL
         self.caption = caption
         self.publishDate = publishDate
@@ -118,6 +130,9 @@ struct Post{
         self.dayNumber = challengeDay?.day ?? 0
         self.challengeDayID = challengeDay?.id ?? ""
         self.isPrivate = User.shared.isPrivate
+        self.score = 0.0
+        self.tags = tags
+        self.isExplicit = false
     }
   
     init(post : Post) {
@@ -158,7 +173,11 @@ extension Post : DatabaseRepresentation{
                                     "hasChallenge": self.hasChallenge,
                                     "dayNumber" : self.dayNumber,
                                     "challengeDayID" : self.challengeDayID,
-                                    "isPrivate" : self.isPrivate]
+                                    "isPrivate" : self.isPrivate,
+                                    "tags" : self.tags,
+                                    "score" : self.score,
+                                    "isExplicit" : self.isExplicit]
+        
         return rep
     }
     

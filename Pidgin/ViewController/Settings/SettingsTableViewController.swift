@@ -37,7 +37,8 @@ class SettingsTableViewController: UITableViewController {
         print("log out button pressed")
         
         let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .alert)
-        
+        alert.popoverPresentationController?.sourceView = self.view
+        alert.popoverPresentationController?.sourceRect = self.view.frame
         alert.addAction(UIAlertAction(title: "Log Out", style: .default, handler: { (action) in
             self.returnToLoginScreen()
             
@@ -74,6 +75,11 @@ class SettingsTableViewController: UITableViewController {
             switch indexPath.row {
             case 0:
                 let vc = EditProfileViewController()
+                navigationController?.pushViewController(vc, animated: true)
+            case 1:
+                return
+            case 2:
+                let vc = storyboard?.instantiateViewController(identifier: "BlockedUsersViewController") as! BlockedUsersViewController
                 navigationController?.pushViewController(vc, animated: true)
             default:
                 return

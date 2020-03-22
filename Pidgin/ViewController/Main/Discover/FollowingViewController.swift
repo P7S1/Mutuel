@@ -11,26 +11,17 @@ import DeepDiff
 import FirebaseFirestore
 import AVKit
 import SkeletonView
- protocol PostViewDelegate {
-    func preparePostsFor(indexPath: IndexPath, posts : [Post], lastDocument : DocumentSnapshot?, loadedAllPosts : Bool)
-}
 class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
     var followingDelegate : ExploreViewControllerDelegate?
     
-    var postDelegate : PostViewDelegate?
-    
     var posts = [Post]()
     
     var shouldQuery = true
     
-    var indexPath : IndexPath?
-    
     let cache = NSCache<NSString, User>()
-    
-    var activityIndicator : UIActivityIndicatorView!
     
    var shouldContinuePlaying = false
     
@@ -48,21 +39,15 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     let refreshControl = UIRefreshControl()
     
+    var startingPostsCount = 1
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-
-        self.activityIndicator = UIActivityIndicatorView(style: .large)
-        self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
-        
-        
-        self.activityIndicator.hidesWhenStopped = true
-        
-        collectionView.addSubview(activityIndicator)
-        
-        activityIndicator.startAnimating()
+        self.startingPostsCount = posts.count
+        self.collectionView.activityIndicator(show: true)
         
        // collectionView.contentInsetAdjustmentBehavior = .never
    
@@ -76,12 +61,11 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         query = db.collection("users").document(uid).collection("feed").limit(to: 10).order(by: "publishDate", descending: true) 
         originalQuery = query
-            getMorePosts(removeAll: false)
         }else{
-            activityIndicator.stopAnimating()
             navigationItem.largeTitleDisplayMode = .never
             navigationItem.title = navTitle
         }
+        getMorePosts(removeAll: false)
         
         refreshControl.tintColor = .secondaryLabel
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
@@ -102,7 +86,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.indexPath = nil
         self.shouldContinuePlaying = false
         if let visibleIndexPath = self.getVisibleCellsIndexPath(),
             let cell = collectionView.cellForItem(at: visibleIndexPath) as? FollowingCollectionViewCell{
@@ -114,9 +97,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        if collectionView.indexPathsForVisibleItems.count > 0{
-        postDelegate?.preparePostsFor(indexPath: collectionView.indexPathsForVisibleItems[0], posts: posts, lastDocument: self.lastDocument, loadedAllPosts: self.loadedAllPosts)
-        }
         
         super.viewWillDisappear(animated)
         
@@ -148,10 +128,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if let path = indexPath{
-            collectionView.collectionViewLayout.invalidateLayout()
-            self.collectionView.scrollToItem(at: path, at: [.centeredVertically], animated: false)
-        }
         
     }
     
@@ -163,7 +139,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         
         query?.getDocuments { (snapshot, error) in
                 if error == nil{
-                    if snapshot!.count < 10{
+                    if snapshot!.count-self.startingPostsCount < 10{
                         self.loadedAllPosts = true
                     }
                     let old = self.posts
@@ -180,7 +156,6 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
 
                     }
                     DispatchQueue.main.async {
-                        self.activityIndicator.stopAnimating()
                         self.collectionView.activityIndicator(show: false)
                         self.refreshControl.endRefreshing()
                     }
@@ -200,6 +175,9 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
      func repost(oldPost : Post){
         if oldPost.creatorID != User.shared.uid{
         let controller = UIAlertController(title: "Confirm", message: "Are you sure you want to repost this?", preferredStyle: .alert)
+            
+        controller.popoverPresentationController?.sourceView = self.view
+        controller.popoverPresentationController?.sourceRect = self.view.frame
         
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
             controller.dismiss(animated: true, completion: nil)
@@ -356,9 +334,13 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
             cell.moreTapAction = {
                 () in
                 let alertController = UIAlertController(title: nil, message: nil , preferredStyle: .actionSheet)
+                alertController.popoverPresentationController?.sourceView = cell.contentView
+                alertController.popoverPresentationController?.sourceRect = cell.moreButton.frame
                 if post.creatorID == User.shared.uid{
                     alertController.addAction(UIAlertAction(title: "Delete Post", style: .destructive, handler: { (action) in
                         let alertC = UIAlertController(title: "Delete Post?", message: "Are you sure you want to delete this?", preferredStyle: .alert)
+                        alertC.popoverPresentationController?.sourceView = self.view
+                        alertC.popoverPresentationController?.sourceRect = self.view.frame
                         alertC.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
                             FollowersHelper.deletePost(post: post)
                             if let index = self.posts.firstIndex(of: post){

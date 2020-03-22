@@ -163,6 +163,8 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     @objc func repostsTapped(){
         if post.creatorID != User.shared.uid && post.originalCreatorID != User.shared.uid{
         let controller = UIAlertController(title: "Confirm", message: "Are you sure you want to repost this?", preferredStyle: .alert)
+        controller.popoverPresentationController?.sourceView = self.view
+        controller.popoverPresentationController?.sourceRect = self.repostsStackView.frame
         
         controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
             controller.dismiss(animated: true, completion: nil)

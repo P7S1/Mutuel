@@ -197,6 +197,8 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
     func swiftyCamDidFailToConfigure(_ swiftyCam: SwiftyCamViewController) {
         let message = NSLocalizedString("Unable to capture media", comment: "Alert message when something goes wrong during capture session configuration")
         let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+        alertController.popoverPresentationController?.sourceView = self.view
+        alertController.popoverPresentationController?.sourceRect = self.view.frame
         alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
     }

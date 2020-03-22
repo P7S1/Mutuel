@@ -116,6 +116,9 @@ class ChatInfoViewController: UIViewController {
         if channel.groupChat {
             let alert = UIAlertController(title: "Leave \(displayname)", message: "Are you sure you want to leave \(displayname)?. You will have to be added again", preferredStyle: .alert)
             
+            alert.popoverPresentationController?.sourceView = self.view
+            alert.popoverPresentationController?.sourceRect = self.leaveGroupButton.frame
+            
             alert.addAction(UIAlertAction(title: "Leave", style: .default, handler: { (action) in
             print("user leaving group")
             FollowersHelper().leaveChat(channel: self.channel)
@@ -127,7 +130,8 @@ class ChatInfoViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         }else{
             let alert = UIAlertController(title: "Block \(self.displayname)", message: "Are you sure you want to block \(self.displayname)? This will make you both unfollow each other.", preferredStyle: .alert)
-            
+            alert.popoverPresentationController?.sourceView = self.view
+            alert.popoverPresentationController?.sourceRect = self.leaveGroupButton.frame
             alert.addAction(UIAlertAction(title: "Block", style: .default, handler: { (action) in
             
                 

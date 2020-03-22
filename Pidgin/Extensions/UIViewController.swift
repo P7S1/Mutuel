@@ -13,6 +13,8 @@ import NotificationBannerSwift
 extension UIViewController{
     func returnToLoginScreen(){
         let alert = UIAlertController(title: "Logged Out", message: "You have been logged out, please log back in.", preferredStyle: .alert)
+        alert.popoverPresentationController?.sourceView = self.view
+        alert.popoverPresentationController?.sourceRect = self.view.frame
         User.shared.invalidateToken { (completion) in
             User.shared.invalidateUser()
             alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: { (action) in

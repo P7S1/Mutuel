@@ -11,6 +11,7 @@
 		DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */; };
 		DF0002DF2385E0CD00654EAC /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */; };
 		DF086D8423C4197B00D3CCA0 /* FredokaOne-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */; };
+		DF09BCFF242527C0008568B0 /* CategoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF09BCFE242527C0008568B0 /* CategoryItem.swift */; };
 		DF14F8B2240F1E6B00E95E39 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */; };
 		DF14F8B42410188900E95E39 /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8B32410188800E95E39 /* CALayer.swift */; };
 		DF14F8E22411B3B900E95E39 /* BPCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8CD2411B3B800E95E39 /* BPCollectionViewCell.swift */; };
@@ -66,6 +67,7 @@
 		DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661A3B238B12880042B7AD /* WebViewController.swift */; };
 		DF661AFC23F8CBE3006702C7 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF661AFB23F8CBE3006702C7 /* Relationship.swift */; };
 		DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6A20AD23B1EF0400949CED /* VideoHelper.swift */; };
+		DF6FE6B02427241E00CB990B /* BlockedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6FE6AF2427241E00CB990B /* BlockedUser.swift */; };
 		DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721523C68D3400F00DF0 /* SignUpViewController.swift */; };
 		DF70721823C695A500F00DF0 /* UsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70721723C695A500F00DF0 /* UsernameViewController.swift */; };
 		DF73728A23C1899D003ED359 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF73728923C1899D003ED359 /* CommentsViewController.swift */; };
@@ -78,6 +80,8 @@
 		DF7D0AC923B9B63900B33E40 /* FollowingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */; };
 		DF7D0ACB23BA3AAF00B33E40 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */; };
 		DF7F05BF240CAFAC0016F58A /* PhotoPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7F05BE240CAFAC0016F58A /* PhotoPickerViewController.swift */; };
+		DF815FA72427BA3D0008856E /* BlockedUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF815FA62427BA3D0008856E /* BlockedUserTableViewCell.swift */; };
+		DF815FA92427BAC80008856E /* BlockedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF815FA82427BAC80008856E /* BlockedUsersViewController.swift */; };
 		DF8608A02409AE70003E1C77 /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF86089F2409AE70003E1C77 /* UISearchBar.swift */; };
 		DF8608A3240BA946003E1C77 /* CarbonSwipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8608A2240BA945003E1C77 /* CarbonSwipe.swift */; };
 		DF8608A5240BB408003E1C77 /* RelationshipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8608A4240BB408003E1C77 /* RelationshipViewController.swift */; };
@@ -90,6 +94,7 @@
 		DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */; };
 		DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */; };
 		DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597F23D14A72004666DD /* VideoIcon.swift */; };
+		DFA2BC472425D55400E0FAEB /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA2BC462425D55400E0FAEB /* CategoriesViewController.swift */; };
 		DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFADF6FB2357F23F00383627 /* CameraVC.swift */; };
 		DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC30E0223C7F104000704EC /* PlayerContainerView.swift */; };
 		DFD10ED6234EE72C002616B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD10ED5234EE72C002616B4 /* AppDelegate.swift */; };
@@ -140,6 +145,7 @@
 		DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfoViewController.swift; sourceTree = "<group>"; };
 		DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FredokaOne-Regular.otf"; sourceTree = "<group>"; };
+		DF09BCFE242527C0008568B0 /* CategoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryItem.swift; sourceTree = "<group>"; };
 		DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		DF14F8B32410188800E95E39 /* CALayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayer.swift; sourceTree = "<group>"; };
 		DF14F8CD2411B3B800E95E39 /* BPCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BPCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -197,6 +203,7 @@
 		DF661A3B238B12880042B7AD /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		DF661AFB23F8CBE3006702C7 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		DF6A20AD23B1EF0400949CED /* VideoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHelper.swift; sourceTree = "<group>"; };
+		DF6FE6AF2427241E00CB990B /* BlockedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUser.swift; sourceTree = "<group>"; };
 		DF70721523C68D3400F00DF0 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		DF70721723C695A500F00DF0 /* UsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameViewController.swift; sourceTree = "<group>"; };
 		DF73728923C1899D003ED359 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
@@ -209,6 +216,8 @@
 		DF7D0AC823B9B63900B33E40 /* FollowingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingCollectionViewCell.swift; sourceTree = "<group>"; };
 		DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		DF7F05BE240CAFAC0016F58A /* PhotoPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerViewController.swift; sourceTree = "<group>"; };
+		DF815FA62427BA3D0008856E /* BlockedUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserTableViewCell.swift; sourceTree = "<group>"; };
+		DF815FA82427BAC80008856E /* BlockedUsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersViewController.swift; sourceTree = "<group>"; };
 		DF86089F2409AE70003E1C77 /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
 		DF8608A2240BA945003E1C77 /* CarbonSwipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarbonSwipe.swift; sourceTree = "<group>"; };
 		DF8608A4240BB408003E1C77 /* RelationshipViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationshipViewController.swift; sourceTree = "<group>"; };
@@ -221,6 +230,7 @@
 		DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePicture.swift; sourceTree = "<group>"; };
 		DF9E597F23D14A72004666DD /* VideoIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoIcon.swift; sourceTree = "<group>"; };
+		DFA2BC462425D55400E0FAEB /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		DFADF6FB2357F23F00383627 /* CameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
 		DFC30E0223C7F104000704EC /* PlayerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerContainerView.swift; sourceTree = "<group>"; };
 		DFD10ED5234EE72C002616B4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -397,6 +407,8 @@
 				DF41B3452413F3CD00F5B31F /* ActivityItem.swift */,
 				DFF66B8E24208EC1003F82DB /* Challenge.swift */,
 				DFF66B9024209247003F82DB /* ChallengeDay.swift */,
+				DF09BCFE242527C0008568B0 /* CategoryItem.swift */,
+				DF6FE6AF2427241E00CB990B /* BlockedUser.swift */,
 			);
 			path = "Data Models";
 			sourceTree = "<group>";
@@ -425,6 +437,7 @@
 				DF7D0ACA23BA3AAF00B33E40 /* PostViewController.swift */,
 				DFF66B8A24208D86003F82DB /* ChallengesViewController.swift */,
 				DFF66B9224209F23003F82DB /* ChallengeDayViewController.swift */,
+				DFA2BC462425D55400E0FAEB /* CategoriesViewController.swift */,
 			);
 			path = Discover;
 			sourceTree = "<group>";
@@ -552,6 +565,7 @@
 				DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */,
 				DF5A223223D5F35D00BA053F /* ReAuthenticationViewController.swift */,
 				DF5A223423D5FAF000BA053F /* ChangePasswordViewController.swift */,
+				DF815FA82427BAC80008856E /* BlockedUsersViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -659,6 +673,7 @@
 				DFF66B8C24208DF2003F82DB /* ChallengesCollectionViewCell.swift */,
 				DFF66B942420A2B1003F82DB /* ChallengeDayTableViewCell.swift */,
 				DFED88BE24232AE600D9969B /* FollowRequestTableViewCell.swift */,
+				DF815FA62427BA3D0008856E /* BlockedUserTableViewCell.swift */,
 			);
 			path = "Reusable Cells";
 			sourceTree = "<group>";
@@ -686,7 +701,6 @@
 				DF4F7A05234C239A001D6CE8 /* Frameworks */,
 				DF4F7A06234C239A001D6CE8 /* Resources */,
 				1E1743FECD9D002036473B76 /* [CP] Embed Pods Frameworks */,
-				EDD8D9038BFCB53E458F195B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -793,23 +807,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EDD8D9038BFCB53E458F195B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pidgin/Pods-Pidgin-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -827,6 +824,7 @@
 				DFF66B9324209F23003F82DB /* ChallengeDayViewController.swift in Sources */,
 				DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */,
 				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
+				DF09BCFF242527C0008568B0 /* CategoryItem.swift in Sources */,
 				DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */,
 				DF5A223723D67F8200BA053F /* ForgotPasswordViewController.swift in Sources */,
 				DF14F8B42410188900E95E39 /* CALayer.swift in Sources */,
@@ -837,6 +835,7 @@
 				DF14F8E42411B3B900E95E39 /* BPAlignment.swift in Sources */,
 				DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */,
 				DF14F8EA2411B3B900E95E39 /* BPCellConfigFile.swift in Sources */,
+				DF6FE6B02427241E00CB990B /* BlockedUser.swift in Sources */,
 				DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */,
 				DF2C741E2423CA1E0020D76C /* AuthorizationButton.swift in Sources */,
 				DF14F8E72411B3B900E95E39 /* BPImageType.swift in Sources */,
@@ -853,6 +852,7 @@
 				DFF66B9124209247003F82DB /* ChallengeDay.swift in Sources */,
 				DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */,
 				DFEFCAC923F38C5B00397091 /* Date.swift in Sources */,
+				DFA2BC472425D55400E0FAEB /* CategoriesViewController.swift in Sources */,
 				DFE9E6ED240EEFE100131CBF /* GiphyHelper.swift in Sources */,
 				DFDD9ECE234FDD5D007A3177 /* VirtualFaceContent.swift in Sources */,
 				DF215B082356673700EE67D3 /* SwiftyCamViewControllerDelegate.swift in Sources */,
@@ -921,6 +921,8 @@
 				DF661A3C238B12880042B7AD /* WebViewController.swift in Sources */,
 				DF562A3323BE3E9F00CC43D3 /* Comment.swift in Sources */,
 				DF8608A5240BB408003E1C77 /* RelationshipViewController.swift in Sources */,
+				DF815FA72427BA3D0008856E /* BlockedUserTableViewCell.swift in Sources */,
+				DF815FA92427BAC80008856E /* BlockedUsersViewController.swift in Sources */,
 				DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */,
 				DF2C7420242441830020D76C /* UIImageView.swift in Sources */,
 				DF7D0ABD23B7104900B33E40 /* ExploreViewController.swift in Sources */,

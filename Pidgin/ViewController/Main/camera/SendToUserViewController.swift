@@ -13,7 +13,7 @@ import SkeletonView
 import GiphyCoreSDK
 import Lightbox
 import CollectionViewWaterfallLayout
-
+import Kingfisher
 class SendToUserViewController: UIViewController {
     var video : URL?
     var image = UIImage()
@@ -34,6 +34,8 @@ class SendToUserViewController: UIViewController {
     var challenge : Challenge?
     
     var challengeDay : ChallengeDay?
+    
+    var tags : [String] = [String]()
 
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -140,7 +142,12 @@ class SendToUserViewController: UIViewController {
 
     
     @objc func sendPressed(){
+        
         print("send pressed")
+        
+        if tags.isEmpty{
+            ProgressHUD.showError("You must select atleast one tag")
+        }else{
         sendButton.isEnabled = false
         ProgressHUD.show("Posting")
         
@@ -164,6 +171,7 @@ class SendToUserViewController: UIViewController {
         }
         
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+        }
     }
     
     
@@ -239,7 +247,8 @@ class SendToUserViewController: UIViewController {
                         postID: ref.documentID,
                         isGIF: self.isGIF,
                         challenge: self.challenge,
-                        challengeDay: self.challengeDay)
+                        challengeDay: self.challengeDay,
+                        tags : self.tags)
         ref.setData(post.representation)
         ProgressHUD.showSuccess("Post Successful")
     }
@@ -287,16 +296,51 @@ extension  SendToUserViewController : UICollectionViewDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return categories.count
+        return CategoryItem.getCategoryArray().count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "categoryCell", for: indexPath)
         
+        let item = CategoryItem.getCategoryArray()[indexPath.row]
+        
+        let backgroundImage = cell.viewWithTag(1) as! AnimatedImageView
+        let colorView = cell.viewWithTag(2)
+        let titleLabel = cell.viewWithTag(3) as! UILabel
+        let selectedView = cell.viewWithTag(4) as! UIStackView
+        
+        selectedView.isHidden = !tags.contains(item.id)
+        
+        backgroundImage.kf.setImage(with: item.url)
+        colorView?.backgroundColor = item.color
+        titleLabel.text = item.displayName
+        
+        
         cell.contentView.layer.masksToBounds = true
         cell.contentView.layer.cornerRadius = 10
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let item = CategoryItem.getCategoryArray()[indexPath.row]
+        
+        if self.tags.contains(item.id){
+            tags.removeAll { (tag) -> Bool in
+                return tag == item.id
+            }
+        }else{
+        if tags.count < 1{
+        self.tags.append(item.id)
+        }else if tags.count <= 0{
+        }else{
+            ProgressHUD.showError("You can only select one tag")
+        }
+        }
+        
+        collectionView.reloadItems(at: [indexPath])
+    }
+    
     
     
 }

@@ -109,7 +109,8 @@ class EditProfileViewController: FormViewController {
     @objc func profilePictureTapped(){
        print("did recognize tap")
         let alertController = UIAlertController(title: nil, message: nil , preferredStyle: .actionSheet)
-        
+        alertController.popoverPresentationController?.sourceView = self.view
+        alertController.popoverPresentationController?.sourceRect = self.view.frame
         alertController.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: { (action) in
             print("chose take photo")
             

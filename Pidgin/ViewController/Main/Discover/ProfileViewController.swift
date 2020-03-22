@@ -46,6 +46,10 @@ class ProfileViewController: UIViewController{
     
     var userRequested  = false
     
+    var userBlocked = false
+    
+    var blockedUser : BlockedUser?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let backButton = UIBarButtonItem()
@@ -117,6 +121,8 @@ class ProfileViewController: UIViewController{
                         self.profileDelegate?.didFinishFetchingRelationship(relationship: relationship)
                         if relationship.isApproved{
                             self.setFollowingState()
+                        }else if relationship.isFollowedBlocked {
+                            self.setBlockedState()
                         }else{
                             self.setRequestedState()
                         }
@@ -168,12 +174,28 @@ class ProfileViewController: UIViewController{
     
     @IBAction func handleMoreButtonPressed(_ sender: Any) {
         let alertController = UIAlertController(title: user?.name, message:"@\(user?.username ?? "Unknown")" , preferredStyle: .actionSheet)
+        alertController.popoverPresentationController?.sourceView = self.view
+        alertController.popoverPresentationController?.sourceRect = self.moreButton.frame
         if self.user?.uid != User.shared.uid{
             alertController.addAction(UIAlertAction(title: "Block \(user?.name ?? "")", style: .default, handler: { (action) in
                 print("blocking user")
                 let alert = UIAlertController(title: "Block \(self.user?.name ?? "")", message: "Are you sure you want to block \(self.user?.name ?? "")? This will make you both unfollow each other.", preferredStyle: .alert)
+                alert.popoverPresentationController?.sourceView = self.view
+                alert.popoverPresentationController?.sourceRect = self.moreButton.frame
                 
                 alert.addAction(UIAlertAction(title: "Block", style: .destructive, handler: { (action) in
+                    
+                    self.followButton.isEnabled = false
+                    let blockedUser = BlockedUser(user: self.user ?? Account())
+                    blockedUser.blockUser { (completed) in
+                        if completed{
+                            ProgressHUD.showSuccess("User Blocked")
+                            self.setBlockedState()
+                        }
+                    }
+                    
+                    
+                    
                 
                     
                 }))
@@ -254,6 +276,7 @@ class ProfileViewController: UIViewController{
         followButton.backgroundColor = .systemGray6
         self.userFollows = false
         self.userRequested = true
+        self.userBlocked = false
     }
     
     func setFollowingState(){
@@ -262,6 +285,7 @@ class ProfileViewController: UIViewController{
         followButton.backgroundColor = .systemGray6
         self.userFollows = true
         self.userRequested = false
+        self.userBlocked = false
     }
     
     func setNotFollowingState(){
@@ -270,6 +294,16 @@ class ProfileViewController: UIViewController{
         followButton.backgroundColor = .systemBlue
         self.userFollows = false
         self.userRequested = false
+        self.userBlocked = false
+    }
+    
+    func setBlockedState(){
+        followButton.setTitle("UNBLOCK", for: .normal)
+        followButton.setTitleColor(.systemPink, for: .normal)
+        followButton.backgroundColor = .systemGray6
+        self.userFollows = false
+        self.userRequested = false
+        self.userBlocked = true
     }
     
     @IBAction func didPressFollowButton(_ sender: Any) {
@@ -290,7 +324,7 @@ class ProfileViewController: UIViewController{
                         self.setNotFollowingState()
                     }
                 }
-            }else{
+            }else if !userBlocked {
                 FollowersHelper().follow(followeeUser: followee) { (success) in
                     if success{
                         self.followButton.isEnabled = true
@@ -306,6 +340,13 @@ class ProfileViewController: UIViewController{
                         }
                     }
                 }
+            }else{
+                self.blockedUser?.unblockUser(completion: { (completion) in
+                    if completion{
+                        self.setNotFollowingState()
+                    }
+                })
+                
             }
         }else{
             print("failed to follow user")
