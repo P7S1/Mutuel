@@ -11,6 +11,7 @@ import FirebaseFirestore
 import DeepDiff
 import GiphyUISDK
 import GiphyCoreSDK
+import DZNEmptyDataSet
 import SkeletonView
 class CommentsViewController: UIViewController {
     
@@ -45,6 +46,8 @@ class CommentsViewController: UIViewController {
     var navTitle = "Comments"
     
     var commentCount = 0
+    
+    var footer : UIView?
     private enum Constants {
         static let numberOfCommentsToLoad: Int = 10
     }
@@ -59,6 +62,8 @@ class CommentsViewController: UIViewController {
         navigationItem.title = navTitle
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.emptyDataSetSource = self
         textView.delegate = self
         textView.clipsToBounds = false
         textView.layer.cornerRadius = 10
@@ -72,13 +77,13 @@ class CommentsViewController: UIViewController {
         tableView.addSubview(refreshControl)
         
         if isReplying && commentReply != nil{
-            originalQuery = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+            originalQuery = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").document(commentReply!.commentID).collection("replies").order(by: "creationDate", descending: true).limit(to: Constants.numberOfCommentsToLoad)
             
 
             
         }else{
             if originalQuery == nil{
-         originalQuery = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").order(by: "creationDate").limit(to: Constants.numberOfCommentsToLoad)
+                originalQuery = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("comments").order(by: "creationDate", descending : true).limit(to: Constants.numberOfCommentsToLoad)
             }
         }
     
@@ -108,19 +113,20 @@ class CommentsViewController: UIViewController {
                 for document in snapshot!.documents{
                     let comment = Comment(document: document)
                     if !newItems.contains(comment){
-                    newItems.append(comment)
+                    newItems.insert(comment, at: 0)
                     }
                     self.lastDocument = document
                 }
                 if snapshot!.documents.count < Constants.numberOfCommentsToLoad{
                     self.loadedAllDocuments = true
-                    self.tableView.reloadData()
                 }
                 let changes = diff(old: old, new: newItems)
                 self.tableView.reload(changes: changes, section: 0, updateData: {
                     self.comments = newItems
+                    self.tableView.reloadEmptyDataSet()
                 })
                 self.refreshControl.endRefreshing()
+                self.footer?.activityIndicator(show: false)
             }else{
                 print(error!.localizedDescription)
             }
@@ -156,6 +162,7 @@ class CommentsViewController: UIViewController {
                 let changes = diff(old: old, new: newItems)
                 self.tableView.reload(changes: changes, section: 0, updateData: {
                     self.comments = newItems
+                    self.tableView.reloadEmptyDataSet()
                 })
                 self.media = nil
                 self.gifButton.setImage(nil, for: .normal)
@@ -231,10 +238,10 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
         
         cell.likeTapAction = {
         () in
-            var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID)
+            var docRef = db.collection("users").document(comment.postCreatorID).collection("posts").document(comment.postID).collection("comments").document(comment.commentID).collection("likes").document(User.shared.uid!)
             
             if self.isReplying && self.commentReply != nil{
-                docRef =  db.collection("users").document(self.post.originalCreatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID)
+                docRef =  db.collection("users").document(self.post.originalCreatorID).collection("posts").document(self.post.originalPostID).collection("comments").document(self.commentReply!.commentID).collection("replies").document(comment.commentID).collection("likes").document(User.shared.uid!)
             }
             cell.likeButton.isEnabled = false
             guard let uid = User.shared.uid else { return }
@@ -244,8 +251,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                     return uid == id
                 }
                 self.replaceComment(comment: comment)
-                docRef.updateData(["likes" : FieldValue.arrayRemove([uid]),
-                                   "likesCount" : FieldValue.increment(-1.0)]) { (error) in
+                docRef.delete() { (error) in
                 if error == nil{
                 cell.likeButton.isEnabled = true
                 }else{
@@ -256,8 +262,8 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
             cell.setLikedState()
             comment.likes.append(uid)
                 self.replaceComment(comment: comment)
-             docRef.updateData(["likes" : FieldValue.arrayUnion([uid]),
-                                "likesCount" : FieldValue.increment(1.0)]) { (error) in
+             let like = CommentLike(commentID: comment.commentID)
+                docRef.setData(like.representation) { (error) in
                     if error == nil{
                     cell.likeButton.isEnabled = true
                     }else{
@@ -303,6 +309,7 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
                             if let index = self.comments.firstIndex(of: comment){
                                 self.comments.remove(at: index)
                                 tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                                self.tableView.reloadEmptyDataSet()
                             }
                         }else{
                             ProgressHUD.showError("Error")
@@ -370,11 +377,11 @@ extension CommentsViewController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        footer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         if self.loadedAllDocuments{
-        footer.activityIndicator(show: false)
+            footer?.activityIndicator(show: false)
         }else{
-        footer.activityIndicator(show: true)
+            footer?.activityIndicator(show: true)
         }
         return footer
     }
@@ -442,3 +449,30 @@ extension CommentsViewController : GifDelegate{
 }
 
 
+extension CommentsViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+         return UIImage.init(systemName: "bubble.left.and.bubble.right", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+    }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "No Comments", attributes: EmptyStateAttributes.shared.title)
+    }
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "You can comment gifs, text, or both", attributes: EmptyStateAttributes.shared.subtitle)
+    }
+    
+    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
+        return self.comments.isEmpty
+    }
+
+    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    
+}

@@ -11,6 +11,7 @@ import CollectionViewWaterfallLayout
 import DeepDiff
 import FirebaseFirestore
 import SkeletonView
+import DZNEmptyDataSet
 public protocol ExploreViewControllerDelegate {
    func collectionViewScrolled(_ scrollView: UIScrollView)
 }
@@ -48,9 +49,13 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var isChallenge = false
     
+    var vc : ProfileViewController?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.emptyDataSetSource = self
+        collectionView.emptyDataSetDelegate = self
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -59,6 +64,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+
         
         if isUserProfile{
             navigationItem.largeTitleDisplayMode = .never
@@ -70,7 +76,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             appearance?.shadowColor = .clear
             navigationItem.standardAppearance = appearance
             
-            originalQuery = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true)
+            originalQuery = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).whereField("isPrivate", isEqualTo: user.isPrivate)
             query = originalQuery.limit(to: 20)
             
             if user.uid == User.shared.uid ?? ""{
@@ -144,7 +150,17 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             setBackBarButtonCustom()
         }
         
-        
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            // It's an iPhone
+            layout.columnCount = 2
+        case .pad:
+            // It's an iPad (or macOS Catalyst)
+            layout.columnCount = 3
+        default:
+            // Uh, oh! What could it be?
+            layout.columnCount = 2
+        }
         // Change individual layout attributes for the spacing between cells'
         layout.minimumColumnSpacing = 4
         layout.minimumInteritemSpacing = 4
@@ -169,6 +185,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         
         // Add the waterfall layout to your collection view
         collectionView.collectionViewLayout = layout
+        
     }
     
     
@@ -206,15 +223,21 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
                       }
                     
                           let changes = diff(old: old, new: newItems)
-                          self.collectionView.reload(changes: changes, section: 0, updateData: {
-                              self.posts = newItems
-                          })
+                    
+
+                        self.collectionView.reload(changes: changes, section: 0, updateData: {
+                            self.posts = newItems
+                            self.collectionView.reloadEmptyDataSet()
+                        })
+                    
+                          
                    
                   }else{
                       self.footer?.activityIndicator(show: false)
                       
                       print("there was an error \(error!)")
                   }
+                self.collectionView.reloadEmptyDataSet()
               }
         }
         
@@ -355,11 +378,11 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ProfileHeader", for: indexPath)
             if isUserProfile{
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
-            vc.user = user
-            vc.isCurrentUser = self.isCurrentUser
-            vc.profileDelegate = self
-            self.addChild(vc, in: header)
+                vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+                vc?.user = user
+                vc?.isCurrentUser = self.isCurrentUser
+                vc?.profileDelegate = self
+                self.addChild(vc!, in: header)
             }else{
                 let storyboard = UIStoryboard(name: "Discover", bundle: nil)
                 let vc = storyboard.instantiateViewController(identifier: "CategoriesViewController") as! CategoriesViewController
@@ -429,4 +452,73 @@ extension ExploreViewController : ProfileDelegate{
             footer?.activityIndicator(show: false)
         }
     }
+}
+
+extension ExploreViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+         if self.isUserProfile{
+             if self.vc?.userFollows ?? false || !self.user.isPrivate && !isCurrentUser{
+                return UIImage.init(systemName: "photo", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+             }else if self.user.uid == User.shared.uid{
+                return UIImage.init(systemName: "plus.app", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+                 
+             }else{
+                return UIImage.init(systemName: "lock.circle", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+             }
+             
+         }else{
+            return UIImage.init(systemName: "photo", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+         }
+    }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        if self.isUserProfile{
+            if self.vc?.userFollows ?? false || !self.user.isPrivate && !isCurrentUser{
+               return NSAttributedString(string: "No Posts", attributes: EmptyStateAttributes.shared.title)
+            }else if self.user.uid == User.shared.uid{
+               return NSAttributedString(string: "You Have No Posts", attributes: EmptyStateAttributes.shared.title)
+                
+            }else{
+               return NSAttributedString(string: "Account Is Private", attributes: EmptyStateAttributes.shared.title)
+            }
+            
+        }else{
+            return NSAttributedString(string: "No Posts Avaliable", attributes: EmptyStateAttributes.shared.title)
+        }
+    }
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        if self.isUserProfile{
+            
+            if self.vc?.userFollows ?? false || !self.user.isPrivate && !isCurrentUser{
+               return NSAttributedString(string: "This user has not posted anything yet", attributes: EmptyStateAttributes.shared.subtitle)
+            }else if self.user.uid == User.shared.uid{
+                
+                return NSAttributedString(string: "Tap the plus button at the bottom to make your first post!", attributes: EmptyStateAttributes.shared.subtitle)
+            }else{
+               return NSAttributedString(string: "You must follow them to view their content", attributes: EmptyStateAttributes.shared.subtitle)
+            }
+            
+        }else{
+            return NSAttributedString(string: "We couldn't find any posts", attributes: EmptyStateAttributes.shared.subtitle)
+        }
+    }
+    
+    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
+        if isUserProfile{
+            return self.posts.isEmpty
+        }else{
+        return self.posts.isEmpty && loadedAllPosts
+        }
+    }
+
+    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    
 }

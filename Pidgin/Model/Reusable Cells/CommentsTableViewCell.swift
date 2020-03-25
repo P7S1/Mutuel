@@ -83,7 +83,8 @@ class CommentsTableViewCell: UITableViewCell {
     func setGifMediaView(comment : Comment){
         gifView.layer.masksToBounds = true
         gifView.layer.cornerRadius = 10
-        if let id = comment.mediaID{
+        if !(comment.mediaID?.isEmpty ?? true){
+            let id = comment.mediaID!
             let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
             self.gifView.showAnimatedGradientSkeleton(usingGradient: gradient)
             GiphyCore.shared.gifByID(id) { (response, error) in

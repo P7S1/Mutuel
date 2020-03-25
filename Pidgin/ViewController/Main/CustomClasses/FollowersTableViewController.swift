@@ -10,6 +10,7 @@ import UIKit
 import FirebaseFirestore
 import FirebaseAuth
 import DeepDiff
+import DZNEmptyDataSet
 class FollowersTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
@@ -25,7 +26,7 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     var query : Query!
     
     var lastDocument : DocumentSnapshot?
-    
+     
     var loadedAllDocs = false
     
     var queryLimit = 25
@@ -38,6 +39,8 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.emptyDataSetSource = self
         navigationItem.largeTitleDisplayMode = .never
         formatForType()
         navigationItem.title = viewTitle
@@ -131,10 +134,12 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     }
     @IBAction func didTapCreateGroupButton(_ sender: Any) {
         print("did tap create group")
+        ProgressHUD.showError("Group chats are temporarily disabled")
+        /*
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "CreateGroupViewController") as! CreateGroupViewController
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true) */
     }
     
 
@@ -344,15 +349,60 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
 
 }
 
-extension UINavigationController {
+extension FollowersTableViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+        if type == "newMessage"{
+         return UIImage.init(systemName: "plus.bubble", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+        }else{
+         return UIImage.init(systemName: "person.badge.plus", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+        }
+    }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        var title = ""
+        
+        if type == "followers" || type == "newMessage"{
+            title = "No Followers"
+        }else if type == "following"{
+            title = "No Following"
+        }
+        
+        return NSAttributedString(string: title, attributes: EmptyStateAttributes.shared.title)
+    }
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        var subtitle = ""
+        if type == "followers"{
+            if user?.uid == User.shared.uid!{
+                subtitle = "Post more to gain more followers"
+            }else{
+                subtitle = "Nothing to see here"
+            }
+        }else if type == "following"{
+            if user?.uid == User.shared.uid!{
+                subtitle = "You are not following anybody"
+            }else{
+                subtitle = "Nothing to see here"
+            }
+        }else if type == "newMessage"{
+            subtitle = "You must have followers to chat"
+        }
+        
+        return NSAttributedString(string: subtitle, attributes: EmptyStateAttributes.shared.subtitle)
+    }
+    
+    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
+        return self.results.isEmpty
+    }
 
-  public func pushViewController(viewController: UIViewController,
-                                 animated: Bool,
-                                 completion: (() -> Void)?) {
-    CATransaction.begin()
-    CATransaction.setCompletionBlock(completion)
-    pushViewController(viewController, animated: animated)
-    CATransaction.commit()
-  }
-
+    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    
 }
+

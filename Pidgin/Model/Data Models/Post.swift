@@ -22,7 +22,7 @@ struct Post{
     
     var isVideo : Bool = false
     
-    var videoURL : String?
+    var videoURL : String
     
     var photoSize : CGSize
     
@@ -63,6 +63,10 @@ struct Post{
     
     var isExplicit : Bool
     
+    var storageRef : String
+    
+    var videoStorageRef : String
+    
     init(document : DocumentSnapshot) {
         let data = document.data()
      photoURL = data?["photoURL"] as? String ?? ""
@@ -73,7 +77,7 @@ struct Post{
         self.creatorID = creatorID
         isVideo = data?["isVideo"] as? Bool ?? false
         isGIF = data?["isGIF"] as? Bool ?? false
-        videoURL = data?["videoURL"] as? String
+        videoURL = data?["videoURL"] as? String ?? ""
         
         let width = data?["width"] as? CGFloat ?? 200
         let height = data?["height"] as? CGFloat ?? 200
@@ -101,17 +105,19 @@ struct Post{
         self.tags = data?["tags"] as? [String] ?? [String]()
         self.score = data?["score"] as? Double ?? 0.0
         self.isExplicit = data?["isExplicit"] as? Bool ?? false
+        self.storageRef = data?["storageRef"] as? String ?? ""
+        self.videoStorageRef = data?["videoStorageRef"] as? String ?? ""
         self.document = document
         
     }
     
-    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool, challenge : Challenge?, challengeDay : ChallengeDay?, tags : [String]) {
+    init(photoURL : String, caption : String, publishDate : Date, creatorID : String, isVideo : Bool, videoURL : String?, photoSize : CGSize, postID : String, isGIF : Bool, challenge : Challenge?, challengeDay : ChallengeDay?, tags : [String], storageRef : String, videoStorageRef : String) {
         self.photoURL = photoURL
         self.caption = caption
         self.publishDate = publishDate
         self.creatorID = creatorID
         self.isVideo = isVideo
-        self.videoURL = videoURL
+        self.videoURL = videoURL ?? ""
         self.photoSize = photoSize
         self.postID = postID
         self.isGIF = isGIF
@@ -133,6 +139,9 @@ struct Post{
         self.score = 0.0
         self.tags = tags
         self.isExplicit = false
+        self.storageRef = storageRef
+        self.videoStorageRef = videoStorageRef
+        
     }
   
     init(post : Post) {
@@ -156,7 +165,7 @@ extension Post : DatabaseRepresentation{
                                     "caption" : caption,
                                     "creatorID" : creatorID,
                                     "isVideo" : isVideo,
-                                    "videoURL" : videoURL as Any,
+                                    "videoURL" : videoURL,
                                     "width" : photoSize.width,
                                     "height" : photoSize.height,
                                     "isGIF" : self.isGIF,
@@ -176,7 +185,9 @@ extension Post : DatabaseRepresentation{
                                     "isPrivate" : self.isPrivate,
                                     "tags" : self.tags,
                                     "score" : self.score,
-                                    "isExplicit" : self.isExplicit]
+                                    "isExplicit" : self.isExplicit,
+                                    "storageRef" : self.storageRef,
+                                    "videoStorageRef" : self.videoStorageRef]
         
         return rep
     }

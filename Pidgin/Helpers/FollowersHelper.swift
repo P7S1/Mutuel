@@ -17,6 +17,7 @@ class FollowersHelper{
             if followee != user{
                 let docRef = db.collection("users").document(user).collection("relationships").document("\(user)_\(followee)")
                 let relationship = Relationship(followedUser: followeeUser, id: docRef.documentID, isApproved: !followeeUser.isPrivate)
+                print("relationship approvec:\(relationship.isApproved)")
                 docRef.setData(relationship.representation) { (error) in
                     if error == nil{
                         completion(true)
@@ -163,12 +164,15 @@ class FollowersHelper{
     static func deletePost(post : Post){
         let docRef = db.collection("users").document(post.creatorID).collection("posts").document(post.postID)
         docRef.delete(completion: nil)
+        if post.storageRef.isEmpty{
         if !post.isRepost{
         if !post.isGIF{
         FollowersHelper.deleteImage(at: post.photoURL)
             
-        if let url = post.videoURL{
-        FollowersHelper.deleteImage(at: url)
+            if !post.videoURL.isEmpty{
+            FollowersHelper.deleteImage(at: post.videoURL)
+            }
+        
         }
         }
         }

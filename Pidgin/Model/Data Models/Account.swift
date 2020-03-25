@@ -185,11 +185,11 @@ extension User : DatabaseRepresentation{
     
     var representation : [String : Any]{
         let rep : [String : Any] = [
-            "username":username as Any,
-            "email":email as Any,
-            "profilePicURL":profileURL as Any,
+            "username":username ?? "",
+            "email":email ?? "",
+            "profilePicURL":profileURL ?? "",
             "birthday":Timestamp(date: birthday ?? Date()),
-            "name": name as Any,
+            "name": name ?? "",
             "isPrivate": self.isPrivate]
         return rep
     }

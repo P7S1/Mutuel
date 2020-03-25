@@ -314,7 +314,7 @@ class ChatViewController: MessagesViewController {
     
     func getMessageArray(){
         let docRef = db.collection("channels").document(channel.id).collection("messages")
-        let query = docRef.order(by: "sentDate", descending: true).limit(to: 20)
+        let query = docRef.order(by: "sentDate", descending: true).whereField("members", arrayContains: User.shared.uid!).limit(to: 20)
         
         
         chatListener = query.addSnapshotListener { (snapshot, error) in
@@ -344,7 +344,7 @@ class ChatViewController: MessagesViewController {
             activityIndicator.startAnimating()
             currentlyLoadingMessages = true
         if let date = lastDate{
-       let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages")
+            let docRef = db.collection("channels").document(channel?.id ?? "").collection("messages").whereField("members", arrayContains: User.shared.uid!)
         let query = docRef.order(by: "sentDate", descending: true).limit(to: 30).start(after: [Timestamp(date: date)])
             query.getDocuments { (snapshot, error) in
                 if error == nil{
@@ -648,7 +648,7 @@ extension ChatViewController : MessageCellDelegate{
     }
 
 }
-extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UITextViewDelegate{
+extension ChatViewController : InputBarAccessoryViewDelegate, MessageLabelDelegate, UITextViewDelegate{
     
     func textViewDidChange(_ textView: UITextView) {
         if textView.text.isEmpty{
@@ -726,7 +726,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
       metadata.contentType = "image/jpeg"
       
       let imageName = [UUID().uuidString, String(Date().timeIntervalSince1970)].joined()
-        let imageRef = storage.child("channels").child(channelID).child(User.shared.uid ?? "").child(imageName)
+        let imageRef = storage.child("channels").child(channelID).child("users").child(User.shared.uid ?? "").child(imageName)
       imageRef.putData(data, metadata: metadata) { meta, error in
         if error == nil{
         imageRef.downloadURL { (url, error) in
@@ -771,7 +771,7 @@ extension ChatViewController : MessageInputBarDelegate, MessageLabelDelegate, UI
             print(error)
         }
 
-        let storageRef = Storage.storage().reference().child("channels").child(channelID).child(User.shared.uid ?? "").child(name)
+        let storageRef = Storage.storage().reference().child("channels").child(channelID).child("users").child(User.shared.uid ?? "").child(name)
         if let uploadData = data as Data? {
             storageRef.putData(uploadData, metadata: nil
                 , completion: { (metadata, error) in

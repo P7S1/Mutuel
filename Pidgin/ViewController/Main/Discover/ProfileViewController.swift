@@ -190,6 +190,7 @@ class ProfileViewController: UIViewController{
                     blockedUser.blockUser { (completed) in
                         if completed{
                             ProgressHUD.showSuccess("User Blocked")
+                            self.followButton.isEnabled = true
                             self.setBlockedState()
                         }
                     }
@@ -307,6 +308,7 @@ class ProfileViewController: UIViewController{
     }
     
     @IBAction func didPressFollowButton(_ sender: Any) {
+        print("did press follow button")
         if !isCurrentUser{
             followButton.isEnabled = false
         if let followee = self.user{
@@ -341,7 +343,9 @@ class ProfileViewController: UIViewController{
                     }
                 }
             }else{
+                print("unblocking user")
                 self.blockedUser?.unblockUser(completion: { (completion) in
+                    self.followButton.isEnabled = true
                     if completion{
                         self.setNotFollowingState()
                     }

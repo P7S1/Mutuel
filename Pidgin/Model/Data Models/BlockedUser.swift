@@ -53,6 +53,7 @@ class BlockedUser {
             if error == nil{
               completion(true)
             }else{
+                print("there was an error :\(error!.localizedDescription)")
               completion(false)
             }
         }

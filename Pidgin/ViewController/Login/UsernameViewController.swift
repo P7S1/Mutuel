@@ -65,7 +65,7 @@ class UsernameViewController: UIViewController, UITextFieldDelegate {
                         self.user.username = username
                         self.user.uid = Auth.auth().currentUser?.uid
                         self.user.email = Auth.auth().currentUser?.email
-                        let docRef = db.collection("users").document(Auth.auth().currentUser?.uid ?? "")
+                        let docRef = db.collection("users").document(Auth.auth().currentUser!.uid)
                         docRef.setData(self.user.representation, merge: true) { (error) in
                             if error == nil{
                                 ProgressHUD.dismiss()

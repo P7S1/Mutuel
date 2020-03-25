@@ -118,6 +118,17 @@ class GifViewController: UIViewController, UICollectionViewDelegate, UICollectio
         let layout = CollectionViewWaterfallLayout()
         
         collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 32, right: 0)
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            // It's an iPhone
+            layout.columnCount = 2
+        case .pad:
+            // It's an iPad (or macOS Catalyst)
+            layout.columnCount = 3
+        default:
+            // Uh, oh! What could it be?
+            layout.columnCount = 2
+        }
         
         layout.minimumColumnSpacing = 4
         layout.minimumInteritemSpacing = 4

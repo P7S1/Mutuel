@@ -16,7 +16,10 @@ class VideoManager{
         if let player = VideoManager.shared[post.postID] as? AVPlayerViewController{
             completion(true,player)
         }else{
-            if let stringUrl = post.videoURL, let url = URL(string: stringUrl){
+            let stringUrl = post.videoURL
+            if let url = URL(string: stringUrl){
+                
+                
                 let asset = AVAsset(url: url)
                 
                 let assetKeys = [

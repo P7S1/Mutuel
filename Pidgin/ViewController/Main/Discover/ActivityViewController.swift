@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseFirestore
+import DZNEmptyDataSet
 class ActivityViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -25,6 +26,8 @@ class ActivityViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.emptyDataSetSource = self
+        tableView.emptyDataSetDelegate = self
         
         if User.shared.isPrivate{
             followRequestsLabel.text = " \(User.shared.followRequestsCount) Follow Requests"
@@ -109,6 +112,34 @@ extension ActivityViewController : UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
+    }
+    
+    
+}
+
+extension ActivityViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+         return UIImage.init(systemName: "bolt", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+    }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "No Acitivty", attributes: EmptyStateAttributes.shared.title)
+    }
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "Your followers, reposts, and comments will appear here", attributes: EmptyStateAttributes.shared.subtitle)
+    }
+    
+    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
+        return self.items.isEmpty
+    }
+
+    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView!) -> Bool {
+        return true
     }
     
     

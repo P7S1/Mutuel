@@ -95,7 +95,9 @@
 		DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */; };
 		DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597F23D14A72004666DD /* VideoIcon.swift */; };
 		DFA2BC472425D55400E0FAEB /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA2BC462425D55400E0FAEB /* CategoriesViewController.swift */; };
+		DFA6A9F5242BE60E004A283B /* CommentLike.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA6A9F4242BE60E004A283B /* CommentLike.swift */; };
 		DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFADF6FB2357F23F00383627 /* CameraVC.swift */; };
+		DFB187DC2428803800457911 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB187DB2428803800457911 /* UINavigationController.swift */; };
 		DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC30E0223C7F104000704EC /* PlayerContainerView.swift */; };
 		DFD10ED6234EE72C002616B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD10ED5234EE72C002616B4 /* AppDelegate.swift */; };
 		DFDCA0A523C93D7700240CE7 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDCA0A423C93D7700240CE7 /* VideoManager.swift */; };
@@ -107,6 +109,7 @@
 		DFDE080E234D23880017BFDA /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE080D234D23880017BFDA /* DiscoverViewController.swift */; };
 		DFDE0815234D248E0017BFDA /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0814234D248E0017BFDA /* ChannelsViewController.swift */; };
 		DFDE0817234D292D0017BFDA /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0816234D292D0017BFDA /* TabBarController.swift */; };
+		DFDF7BF1242862D50003B983 /* EmptyStateAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDF7BF0242862D50003B983 /* EmptyStateAttributes.swift */; };
 		DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE792C123B650FF003F2456 /* RecordingButton.swift */; };
 		DFE9E6ED240EEFE100131CBF /* GiphyHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */; };
 		DFE9E6EF240EF06300131CBF /* GifViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE9E6EE240EF06200131CBF /* GifViewController.swift */; };
@@ -231,7 +234,9 @@
 		DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePicture.swift; sourceTree = "<group>"; };
 		DF9E597F23D14A72004666DD /* VideoIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoIcon.swift; sourceTree = "<group>"; };
 		DFA2BC462425D55400E0FAEB /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
+		DFA6A9F4242BE60E004A283B /* CommentLike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentLike.swift; sourceTree = "<group>"; };
 		DFADF6FB2357F23F00383627 /* CameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
+		DFB187DB2428803800457911 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		DFC30E0223C7F104000704EC /* PlayerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerContainerView.swift; sourceTree = "<group>"; };
 		DFD10ED5234EE72C002616B4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DFDCA0A423C93D7700240CE7 /* VideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoManager.swift; sourceTree = "<group>"; };
@@ -243,6 +248,7 @@
 		DFDE080D234D23880017BFDA /* DiscoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
 		DFDE0814234D248E0017BFDA /* ChannelsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		DFDE0816234D292D0017BFDA /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		DFDF7BF0242862D50003B983 /* EmptyStateAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateAttributes.swift; sourceTree = "<group>"; };
 		DFE792C123B650FF003F2456 /* RecordingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingButton.swift; sourceTree = "<group>"; };
 		DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyHelper.swift; sourceTree = "<group>"; };
 		DFE9E6EE240EF06200131CBF /* GifViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifViewController.swift; sourceTree = "<group>"; };
@@ -391,6 +397,7 @@
 				DF7D0AC423B83D9A00B33E40 /* DatabaseRepresentation.swift */,
 				DFDCA0A423C93D7700240CE7 /* VideoManager.swift */,
 				DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */,
+				DFDF7BF0242862D50003B983 /* EmptyStateAttributes.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -409,6 +416,7 @@
 				DFF66B9024209247003F82DB /* ChallengeDay.swift */,
 				DF09BCFE242527C0008568B0 /* CategoryItem.swift */,
 				DF6FE6AF2427241E00CB990B /* BlockedUser.swift */,
+				DFA6A9F4242BE60E004A283B /* CommentLike.swift */,
 			);
 			path = "Data Models";
 			sourceTree = "<group>";
@@ -656,6 +664,7 @@
 				DF14F8B32410188800E95E39 /* CALayer.swift */,
 				DFF66B962420AF42003F82DB /* UIColor.swift */,
 				DF2C741F242441830020D76C /* UIImageView.swift */,
+				DFB187DB2428803800457911 /* UINavigationController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -880,12 +889,14 @@
 				DF7D0AC123B8278E00B33E40 /* ExploreCollectionViewCell.swift in Sources */,
 				DFF3462B2367B002006AA467 /* ChannelTableViewCell.swift in Sources */,
 				DF14F8E62411B3B900E95E39 /* BPDirection.swift in Sources */,
+				DFDF7BF1242862D50003B983 /* EmptyStateAttributes.swift in Sources */,
 				DFF2D227240C9867004A1AF4 /* UploadViewController.swift in Sources */,
 				DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */,
 				DFEFCAC323F38B9800397091 /* Character.swift in Sources */,
 				DF14F8E22411B3B900E95E39 /* BPCollectionViewCell.swift in Sources */,
 				DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */,
 				DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */,
+				DFB187DC2428803800457911 /* UINavigationController.swift in Sources */,
 				DF14F8B2240F1E6B00E95E39 /* TimeInterval.swift in Sources */,
 				DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */,
 				DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */,
@@ -902,6 +913,7 @@
 				DF7D0ABF23B711F500B33E40 /* FollowingViewController.swift in Sources */,
 				DFF346262367A3FF006AA467 /* Channel.swift in Sources */,
 				DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */,
+				DFA6A9F5242BE60E004A283B /* CommentLike.swift in Sources */,
 				DF41B3432413F0E500F5B31F /* ActivityTableViewCell.swift in Sources */,
 				DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */,
 				DFDD9ECF234FDD5D007A3177 /* RemoteFaceFilter.swift in Sources */,
@@ -1087,7 +1099,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/MutuelDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1115,7 +1127,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/Pidgin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

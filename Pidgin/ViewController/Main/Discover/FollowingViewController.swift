@@ -11,6 +11,7 @@ import DeepDiff
 import FirebaseFirestore
 import AVKit
 import SkeletonView
+import DZNEmptyDataSet
 class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -53,6 +54,8 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
    
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.emptyDataSetDelegate = self
+        collectionView.emptyDataSetSource = self
 
         if shouldQuery{
             
@@ -164,6 +167,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
                         let changes = diff(old: old, new: newItems)
                         self.collectionView.reload(changes: changes, section: 0, updateData: {
                             self.posts = newItems
+                            self.collectionView.reloadEmptyDataSet()
                         })
                   
                 }else{
@@ -462,3 +466,30 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
 
 }
 
+extension FollowingViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+         return UIImage.init(systemName: "person.badge.plus", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+    }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "Empty Feed", attributes: EmptyStateAttributes.shared.title)
+    }
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "Follow some people to populate it", attributes: EmptyStateAttributes.shared.subtitle)
+    }
+    
+    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
+        return self.posts.isEmpty && shouldQuery
+    }
+
+    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    
+}

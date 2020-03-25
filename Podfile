@@ -25,7 +25,7 @@ target 'Pidgin' do
   pod 'Giphy'
   pod 'CropViewController'
   pod 'Hero'
-  pod 'WLEmptyState'
+  pod 'DZNEmptyDataSet'
   pod 'CollectionViewWaterfallLayout'
   pod 'SkeletonView'
   pod 'Firebase/Database'

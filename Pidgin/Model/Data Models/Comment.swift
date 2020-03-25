@@ -86,15 +86,15 @@ extension Comment : DatabaseRepresentation{
     var representation : [String : Any]{
         
         let rep : [String : Any] = [
-            "photoURL":photoURL as Any,
+            "photoURL":photoURL,
             "text":text,
-            "replyCreatorID":replyCreatorID as Any,
+            "replyCreatorID":replyCreatorID ?? "",
             "creatorID":creatorID,
             "commentID":commentID,
             "creatorUsername":creatorUsername,
             "postID":self.postID,
             "likes":self.likes,
-            "mediaID": self.mediaID as Any,
+            "mediaID": self.mediaID ?? "",
             "aspectRatio" : self.aspectRatio,
             "postCreatorID" : self.postCreatorID,
             "likesCount" : self.likesCount]

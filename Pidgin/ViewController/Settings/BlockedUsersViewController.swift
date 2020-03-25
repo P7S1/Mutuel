@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseFirestore
+import DZNEmptyDataSet
 class BlockedUsersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -22,6 +23,8 @@ class BlockedUsersViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.emptyDataSetSource = self
         
         let docRef = db.collection("users").document(User.shared.uid!).collection("blocked").limit(to: 25).order(by: "creationDate", descending: true)
         
@@ -89,13 +92,43 @@ extension BlockedUsersViewController : UITableViewDelegate, UITableViewDataSourc
         let user = users[indexPath.row]
         cell.username.text = user.username
         cell.unblockAction = { () in
-            self.users.remove(at: indexPath.row)
+            self.users.remove(at: self.users.firstIndex(where: { (test) -> Bool in
+                test.id == user.id
+            })!)
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
             user.unblockUser { (completion) in
                 print("user unblocked")
             }
         }
         return cell
+    }
+    
+    
+}
+
+extension BlockedUsersViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+         return UIImage.init(systemName: "hand.raised", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+    }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "No Blocked Users", attributes: EmptyStateAttributes.shared.title)
+    }
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "You have not blocked anyone", attributes: EmptyStateAttributes.shared.subtitle)
+    }
+    
+    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
+        return self.users.isEmpty
+    }
+
+    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView!) -> Bool {
+        return true
     }
     
     

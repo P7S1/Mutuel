@@ -11,6 +11,7 @@ import FirebaseFirestore
 import GiphyUISDK
 import GiphyCoreSDK
 import DeepDiff
+import DZNEmptyDataSet
 protocol ChannelDelegate {
     func updateChannel(channel : Channel)
 }
@@ -53,6 +54,8 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     configureNavItem(name: "Chats")
     tableView.delegate = self
     tableView.dataSource = self
+    tableView.emptyDataSetDelegate = self
+    tableView.emptyDataSetSource = self
     
     if let userID = User.shared.uid{
 
@@ -103,6 +106,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         let changes = diff(old: old, new: newItems)
         tableView.reload(changes: changes, section: 0, updateData: {
           channels = newItems
+          tableView.reloadEmptyDataSet()
         })
   
 
@@ -122,6 +126,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
             let changes = diff(old: old, new: newItems)
             tableView.reload(changes: changes, section: 0, updateData: {
               channels = newItems
+                tableView.reloadEmptyDataSet()
             })
         
   }
@@ -139,6 +144,7 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
         let changes = diff(old: old, new: newItems)
         tableView.reload(changes: changes, section: 0, updateData: {
           channels = newItems
+            tableView.reloadEmptyDataSet()
         })
     
   }
@@ -299,3 +305,30 @@ extension ChannelsViewController {
   
 }
 
+extension ChannelsViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate{
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+         return UIImage.init(systemName: "plus.bubble", withConfiguration: EmptyStateAttributes.shared.config)?.withTintColor(.label)
+    }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "No Chats", attributes: EmptyStateAttributes.shared.title)
+    }
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "Start a new chat today! You won't regret it.", attributes: EmptyStateAttributes.shared.subtitle)
+    }
+    
+    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
+        return self.channels.isEmpty
+    }
+
+    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    
+}

@@ -54,6 +54,12 @@ class SendToUserViewController: UIViewController {
             if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString) {
                 imageView.kf.setImage(with: gifURL)
                 photoSize = CGSize(width: 400, height: 400 * (1/media.aspectRatio))
+                
+                for tag in media.tags ?? [String](){
+                    if self.tags.count<6{
+                        self.tags.append(tag)
+                    }
+                }
                 calculateSize()
             } else{
              self.dismiss(animated: true, completion: nil)
@@ -153,19 +159,19 @@ class SendToUserViewController: UIViewController {
         
         if isGIF{
             if let gifString = media.url(rendition: .fixedWidth, fileType: .gif), let gifURL = URL(string: gifString){
-              self.saveToDatabase(photoURL: gifURL, videoURL: nil, isVideo: false)
+                self.saveToDatabase(photoURL: gifURL, videoURL: nil, isVideo: false, storageRef: "", videoStorageRef: "")
             }else{
                 self.dismiss(animated: true, completion: nil)
                 ProgressHUD.showError("Error")
             }
         }else{
-            postMedia(isVideo: false) { (photoURL) in
+            postMedia(isVideo: false) { (photoURL, storageRef) in
                 if self.video != nil{
-                    self.postMedia(isVideo: true) { (videoURL) in
-                        self.saveToDatabase(photoURL: photoURL, videoURL: videoURL, isVideo: true)
+                    self.postMedia(isVideo: true) { (videoURL, videoStorageRef) in
+                        self.saveToDatabase(photoURL: photoURL, videoURL: videoURL, isVideo: true, storageRef: storageRef,videoStorageRef: videoStorageRef)
                     }
                 }else{
-                    self.saveToDatabase(photoURL: photoURL, videoURL: nil, isVideo: false)
+                    self.saveToDatabase(photoURL: photoURL, videoURL: nil, isVideo: false, storageRef: storageRef, videoStorageRef: storageRef)
                 }
             }
         }
@@ -175,7 +181,7 @@ class SendToUserViewController: UIViewController {
     }
     
     
-    func postMedia(isVideo : Bool, completion: @escaping (URL) -> Void){
+    func postMedia(isVideo : Bool, completion: @escaping (URL,String) -> Void){
         var data0 = Data()
         var dataExtension = ".jpg"
         if !(isVideo){
@@ -190,12 +196,12 @@ class SendToUserViewController: UIViewController {
             dataExtension = ".mp4"
         }
             
-        let imageRef = Storage.storage().reference().child("posts").child(User.shared.uid ?? "").child("\(UUID().uuidString)+\(Date())\(dataExtension)")
+        let imageRef = Storage.storage().reference().child("posts").child(User.shared.uid!).child("\(UUID().uuidString)+\(Date())\(dataExtension)")
                 imageRef.putData(data0, metadata: nil) { (metaData, error) in
                     imageRef.downloadURL { (url, error) in
                         if error == nil {
                             if let downloadURL = url{
-                            completion(downloadURL)
+                                completion(downloadURL, imageRef.fullPath)
                             }
                         } else{
                             ProgressHUD.showError("Error")
@@ -224,7 +230,7 @@ class SendToUserViewController: UIViewController {
         navigationItem.rightBarButtonItems = [sendBarButton]
     }
     
-    func saveToDatabase(photoURL : URL, videoURL : URL?, isVideo : Bool){
+    func saveToDatabase(photoURL : URL, videoURL : URL?, isVideo : Bool, storageRef : String, videoStorageRef : String){
         let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
         if textView.text == "Write a caption..."{
             textView.text = ""
@@ -248,7 +254,9 @@ class SendToUserViewController: UIViewController {
                         isGIF: self.isGIF,
                         challenge: self.challenge,
                         challengeDay: self.challengeDay,
-                        tags : self.tags)
+                        tags : self.tags,
+                        storageRef : storageRef,
+                        videoStorageRef: videoStorageRef )
         ref.setData(post.representation)
         ProgressHUD.showSuccess("Post Successful")
     }

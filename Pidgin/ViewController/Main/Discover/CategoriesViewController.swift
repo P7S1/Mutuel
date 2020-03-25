@@ -42,8 +42,9 @@ extension CategoriesViewController: UICollectionViewDelegate, UICollectionViewDa
         
         let button = cell.viewWithTag(1) as! UIButton
         
-        if indexPath.row-1 <= 10{
-            let item = CategoryItem.getCategoryArray()[indexPath.row]
+        if indexPath.row > 0{
+            let index = indexPath.row-1
+            let item = CategoryItem.getCategoryArray()[index]
             button.setTitle(item.displayName, for: .normal)
             if item.color == UIColor.black{
             button.setTitleColor(.label, for: .normal)
@@ -65,8 +66,9 @@ extension CategoriesViewController: UICollectionViewDelegate, UICollectionViewDa
         
         vc.shouldquery = false
         
-        if indexPath.row-1 <= 10{
-            let item = CategoryItem.getCategoryArray()[indexPath.row]
+        if indexPath.row > 0{
+            let index = indexPath.row-1
+            let item = CategoryItem.getCategoryArray()[index]
             vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("isPrivate", isEqualTo: false).whereField("tags", arrayContainsAny: [item.id]).whereField("isExplicit", isEqualTo: false).order(by: "score", descending: true).limit(to: 20)
             vc.navigationItem.title = item.displayName
         }else{
