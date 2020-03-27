@@ -9,7 +9,7 @@
 import UIKit
 import  CollectionViewWaterfallLayout
 import FirebaseFirestore
-class ChallengesViewController: UIViewController {
+class ChallengesViewController: HomeViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -21,9 +21,8 @@ class ChallengesViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
 
-        
-        navigationItem.title = "Challenges"
-        navigationItem.largeTitleDisplayMode = .never
+        setupUI()
+        self.configureNavItem(name: "Challenges")
         
         let layout = CollectionViewWaterfallLayout()
         layout.minimumColumnSpacing = 8

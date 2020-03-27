@@ -267,6 +267,8 @@ PODS:
     - DeepDiff
     - libwebp
     - PINCache
+  - Google-Mobile-Ads-SDK (7.57.0):
+    - GoogleAppMeasurement (~> 6.0)
   - GoogleAppMeasurement (6.4.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
     - GoogleUtilities/MethodSwizzler (~> 6.0)
@@ -376,6 +378,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/Storage
   - Giphy
+  - Google-Mobile-Ads-SDK
   - Hero
   - Kingfisher
   - Lightbox
@@ -417,6 +420,7 @@ SPEC REPOS:
     - FirebaseMessaging
     - FirebaseStorage
     - Giphy
+    - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
@@ -475,6 +479,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 4ec33842d36b3319e062e51fb8b35a74f726950d
   FirebaseStorage: b43ee271294227e1a3225544b073f3b49b427f46
   Giphy: 36945d112701c49d29502d5fbb672f266114f09a
+  Google-Mobile-Ads-SDK: ec897018b9ab9b447e7aa4876e7f75aba13ba2de
   GoogleAppMeasurement: 6e68a94d0eaeb1d73ef6b0ed4f7334e29d63ae29
   GoogleDataTransport: b29a21d813e906014ca16c00897827e40e4a24ab
   GoogleDataTransportCCTSupport: 6f15a89b0ca35d6fa523e1f752ef818588885988
@@ -506,6 +511,6 @@ SPEC CHECKSUMS:
   SwipeTransitionAutoSwipeToDismiss: 8a477d96c7cefc133daf30ea60f627d4ab262498
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
 
-PODFILE CHECKSUM: d4fe73088485952a115b57fc85810fd7ed0d6647
+PODFILE CHECKSUM: 7b2da8e02e4f46da4b5380436060e316770b5477
 
 COCOAPODS: 1.8.4

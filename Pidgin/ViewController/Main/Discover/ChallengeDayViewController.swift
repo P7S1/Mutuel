@@ -46,8 +46,6 @@ class ChallengeDayViewController: UIViewController {
     
     @objc func notificationPressed(){
         updateNotificationItem(toggle: true)
-        
-        
     }
     
     func updateNotificationItem(toggle : Bool){

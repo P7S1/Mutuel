@@ -219,3 +219,14 @@ extension Post : Equatable, Comparable{
     
     
 }
+
+
+extension Post : Hashable{
+    static func == (lhs: Post, rhs: Post) -> Bool {
+        return lhs.postID == rhs.postID
+    }
+    
+    func hash(into hasher: inout Hasher) {
+  
+    }
+}

@@ -25,17 +25,17 @@ struct CategoryItem {
     static func getCategoryArray() -> [CategoryItem]{
         var output : [CategoryItem] = [CategoryItem]()
         
-        output.append(CategoryItem(displayName: "Funny", color: .systemIndigo, urlString: "https://media.giphy.com/media/ZqlvCTNHpqrio/giphy.gif", id: "funny"))
+        output.append(CategoryItem(displayName: "Funny", color: .systemPurple, urlString: "https://media.giphy.com/media/ZqlvCTNHpqrio/giphy.gif", id: "funny"))
         
         output.append(CategoryItem(displayName: "Music", color: .systemGreen, urlString: "https://media.giphy.com/media/3oxHQERYBueKZdAb9m/giphy.gif", id: "music"))
         
-        output.append(CategoryItem(displayName: "News", color: .systemBlue, urlString: "https://media.giphy.com/media/xUNemVaUZFSgHxvQXK/giphy.gif", id: "news"))
+        output.append(CategoryItem(displayName: "News", color: .systemRed, urlString: "https://media.giphy.com/media/xUNemVaUZFSgHxvQXK/giphy.gif", id: "news"))
         
-        output.append(CategoryItem(displayName: "Sports", color: .systemOrange, urlString: "https://media.giphy.com/media/k481R5ERN7jJm/giphy.gif", id: "sports"))
+        output.append(CategoryItem(displayName: "Sports", color: .systemBlue, urlString: "https://media.giphy.com/media/k481R5ERN7jJm/giphy.gif", id: "sports"))
         
-        output.append(CategoryItem(displayName: "Food", color: .systemRed, urlString: "https://media.giphy.com/media/EDV30lQQ9VW5q/giphy.gif", id: "food"))
+        output.append(CategoryItem(displayName: "Food", color: .systemOrange, urlString: "https://media.giphy.com/media/EDV30lQQ9VW5q/giphy.gif", id: "food"))
         
-        output.append(CategoryItem(displayName: "TV/Movies", color: .systemPurple, urlString: "https://media.giphy.com/media/jpQkuoHi7JZY14yIZf/giphy.gif", id: "tv_movies"))
+        output.append(CategoryItem(displayName: "TV/Movies", color: .systemIndigo, urlString: "https://media.giphy.com/media/jpQkuoHi7JZY14yIZf/giphy.gif", id: "tv_movies"))
         
         output.append(CategoryItem(displayName: "Edits", color: .sunFlower, urlString: "https://media.giphy.com/media/3o7qE8wyh4RkaoaZDG/giphy.gif", id: "edits"))
         

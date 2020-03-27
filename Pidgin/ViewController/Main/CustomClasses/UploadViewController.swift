@@ -52,11 +52,7 @@ class UploadViewController: UIViewController, CarbonTabSwipeNavigationDelegate, 
         
         challengeVC = discoverStoryboard.instantiateViewController(withIdentifier: "ChallengesViewController") as? ChallengesViewController
         
-        var items = ["Photo", "GIF", "Challenge", "Camera"]
-        
-        if isChallenge{
-            items.remove(at: 2)
-        }
+        let items = ["Photo", "GIF", "Camera"]
         
         let carbonTabSwipeNavigation = CarbonSwipe(items: items, delegate: self)
         carbonTabSwipeNavigation.configure(items: items, vc: self)
@@ -77,12 +73,6 @@ class UploadViewController: UIViewController, CarbonTabSwipeNavigationDelegate, 
          return photoVC
         }else if index == 1{
          return gifVC
-        }else if index == 2{
-            if isChallenge{
-                return cameraVC
-            }else{
-         return challengeVC
-            }
         }else{
          return cameraVC
         }

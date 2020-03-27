@@ -16,6 +16,7 @@ target 'Pidgin' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Messaging'
   pod 'Firebase/Storage'
+  pod 'Google-Mobile-Ads-SDK'
   pod 'MessageKit'
   pod 'Eureka'
   pod 'NotificationBannerSwift'

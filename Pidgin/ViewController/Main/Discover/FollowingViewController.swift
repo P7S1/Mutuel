@@ -12,13 +12,14 @@ import FirebaseFirestore
 import AVKit
 import SkeletonView
 import DZNEmptyDataSet
+import GoogleMobileAds
 class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
     var followingDelegate : ExploreViewControllerDelegate?
     
-    var posts = [Post]()
+    var posts = [AnyHashable]()
     
     var shouldQuery = true
     
@@ -42,6 +43,10 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var startingPostsCount = 1
     
+    var adLoader : GADAdLoader!
+    
+    var pendingAds : [GADUnifiedNativeAd] = [GADUnifiedNativeAd]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let backButton = UIBarButtonItem()
@@ -56,13 +61,14 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         collectionView.dataSource = self
         collectionView.emptyDataSetDelegate = self
         collectionView.emptyDataSetSource = self
-
+        setUpAds()
+        self.adLoader.load(GADRequest())
         if shouldQuery{
             
             guard let uid = User.shared.uid else{
                 fatalError("NO USER ID FOUND")
             }
-        query = db.collection("users").document(uid).collection("feed").limit(to: 10).order(by: "publishDate", descending: true) 
+        query = db.collection("users").document(uid).collection("feed").limit(to: 7).order(by: "publishDate", descending: true)
         originalQuery = query
         }else{
             navigationItem.largeTitleDisplayMode = .never
@@ -91,9 +97,10 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidAppear(animated)
         self.shouldContinuePlaying = false
         if let visibleIndexPath = self.getVisibleCellsIndexPath(),
-            let cell = collectionView.cellForItem(at: visibleIndexPath) as? FollowingCollectionViewCell{
-            if posts[visibleIndexPath.row].isVideo{
-                cell.playerContainerView.initialize(post: posts[visibleIndexPath.row], shouldPlay: false)
+            let cell = collectionView.cellForItem(at: visibleIndexPath) as? FollowingCollectionViewCell, let post = posts[visibleIndexPath.row] as? Post{
+            
+            if post.isVideo{
+                cell.playerContainerView.initialize(post: post, shouldPlay: false)
             }
         }
         self.scrollViewDidEndDecelerating(collectionView)
@@ -142,14 +149,12 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
         
         query?.getDocuments { (snapshot, error) in
                 if error == nil{
-                    if snapshot!.count-self.startingPostsCount < 10{
-                        self.loadedAllPosts = true
-                    }
                     let old = self.posts
                     if removeAll{
                         self.posts.removeAll()
                     }
                     var newItems = self.posts
+                    
                     for document in snapshot!.documents{
                         let post = Post(document: document)
                         self.lastDocument = document
@@ -157,6 +162,13 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
                             newItems.append(post)
                         }
 
+                    }
+                    
+                    if snapshot!.count-self.startingPostsCount < 7{
+                        self.loadedAllPosts = true
+                    }else if !self.pendingAds.isEmpty{
+                        newItems.insert(self.pendingAds[0], at: newItems.count-Int.random(in: 3...4))
+                        self.pendingAds.remove(at: 0)
                     }
                     DispatchQueue.main.async {
                         self.collectionView.activityIndicator(show: false)
@@ -168,6 +180,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
                         self.collectionView.reload(changes: changes, section: 0, updateData: {
                             self.posts = newItems
                             self.collectionView.reloadEmptyDataSet()
+                            self.adLoader.load(GADRequest())
                         })
                   
                 }else{
@@ -239,12 +252,13 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if let post = posts[indexPath.row] as? Post{
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FollowingCollectionViewCell", for: indexPath) as! FollowingCollectionViewCell
         
         
         
         let gradient = SkeletonGradient(baseColor: UIColor.secondarySystemBackground)
-        let post = posts[indexPath.row]
         
         
         if post.hasChallenge{
@@ -412,6 +426,51 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         cell.profilePictureView.layer.cornerRadius = cell.profilePictureView.frame.height/2
 
         return cell
+        }else{
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FollowingAdCollectionViewCell", for: indexPath) as! FollowingAdCollectionViewCell
+            let nativeAd = posts[indexPath.row] as! GADUnifiedNativeAd
+            let width = collectionView.bounds.width - 16
+                
+                let ratio = 1/nativeAd.mediaContent.aspectRatio
+            var height = (self.view.frame.width-16) * ratio
+                height = height + 68
+                if height < width{
+                    height = width
+                }
+
+                if height >= collectionView.bounds.height - 68{
+                    height = collectionView.bounds.height - 68
+                }
+                
+                cell.height.constant = height
+            
+            cell.adView.nativeAd = nativeAd
+            cell.adView.mediaView?.mediaContent = nativeAd.mediaContent
+            cell.adView.mediaView?.layer.masksToBounds = true
+            cell.adView.mediaView?.layer.cornerRadius = 10
+            (cell.adView.headlineView as? UILabel)?.text = nativeAd.headline
+
+            (cell.adView.callToActionView as? UIButton)?.setTitle(nativeAd.callToAction, for: .normal)
+            (cell.adView.callToActionView as? UIButton)?.roundCorners()
+            cell.adView.callToActionView?.isHidden = nativeAd.callToAction == nil
+
+            (cell.adView.iconView as? UIImageView)?.image = nativeAd.icon?.image
+            cell.adView.iconView?.isHidden = nativeAd.icon == nil
+            cell.adView.iconView?.layer.masksToBounds = true
+            cell.adView.iconView?.layer.cornerRadius = (cell.adView.iconView?.frame.height ?? 0)/2
+
+            (cell.adView.advertiserView as? UILabel)?.text = nativeAd.advertiser
+            cell.adView.advertiserView?.isHidden = nativeAd.advertiser == nil
+
+            // In order for the SDK to process touch events properly, user interaction
+            // should be disabled.
+            cell.adView.callToActionView?.isUserInteractionEnabled = false
+
+            
+            
+            
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -433,18 +492,21 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if let post = posts[indexPath.row] as? Post{
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "PostViewController") as! PostViewController
        // vc.postDelegate = self
-        vc.post = posts[indexPath.row]
+        vc.post = post
         shouldContinuePlaying = true
         navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         guard let visibleIndexPath = self.getVisibleCellsIndexPath() else { return }
-        if let cell = collectionView.cellForItem(at: visibleIndexPath) as? FollowingCollectionViewCell{
-            cell.setUpPlayer(post: posts[visibleIndexPath.row])
+        if let cell = collectionView.cellForItem(at: visibleIndexPath) as? FollowingCollectionViewCell, let post = posts[visibleIndexPath.row] as? Post{
+            cell.setUpPlayer(post: post)
    
         }
     }
@@ -491,5 +553,31 @@ extension FollowingViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelega
         return true
     }
     
+    
+}
+
+extension FollowingViewController : GADAdLoaderDelegate,GADUnifiedNativeAdLoaderDelegate  {
+    
+    func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
+        print("did recieve ad")
+        
+        self.pendingAds.append(nativeAd)
+    }
+    
+    
+    func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
+        print("there was an ad loading error: \(error.localizedDescription)")
+    }
+    
+    func setUpAds(){
+        let mediaOptions = GADNativeAdMediaAdLoaderOptions()
+        mediaOptions.mediaAspectRatio = .portrait
+        adLoader = GADAdLoader(adUnitID: "ca-app-pub-3940256099942544/2521693316",
+            rootViewController: self,
+            adTypes: [ GADAdLoaderAdType.unifiedNative ],
+            options: [mediaOptions])
+        adLoader.delegate = self
+        adLoader.load(GADRequest())
+    }
     
 }

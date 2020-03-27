@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseFirestore
 import DZNEmptyDataSet
-class ActivityViewController: UIViewController {
+class ActivityViewController: HomeViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -24,10 +24,15 @@ class ActivityViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
+        configureNavItem(name: "Activity")
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
+        
+        self.originalQuery = db.collection("users").document(User.shared.uid!).collection("activity").limit(to: 16).order(by: "date", descending: true)
         
         if User.shared.isPrivate{
             followRequestsLabel.text = " \(User.shared.followRequestsCount) Follow Requests"
@@ -100,7 +105,6 @@ extension ActivityViewController : UITableViewDelegate, UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "ActivityTableViewCell") as! ActivityTableViewCell
         
         let activityItem = items[indexPath.row]
-        cell.title.text = activityItem.title
         cell.subtitle.text = activityItem.subtitle
         cell.date.text = activityItem.date.getElapsedInterval()
         
@@ -111,7 +115,7 @@ extension ActivityViewController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+        return 60
     }
     
     

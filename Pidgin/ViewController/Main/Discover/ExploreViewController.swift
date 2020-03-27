@@ -12,6 +12,7 @@ import DeepDiff
 import FirebaseFirestore
 import SkeletonView
 import DZNEmptyDataSet
+import GoogleMobileAds
 public protocol ExploreViewControllerDelegate {
    func collectionViewScrolled(_ scrollView: UIScrollView)
 }
@@ -19,7 +20,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var posts = [Post]()
+    var posts = [AnyHashable]()
     
     var exploreDelegate : ExploreViewControllerDelegate?
     
@@ -51,6 +52,10 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var vc : ProfileViewController?
     
+    var adLoader : GADAdLoader!
+    
+    var pendingAds : [GADUnifiedNativeAd] = [GADUnifiedNativeAd]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,13 +64,15 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        setUpAds()
+        
         
         setUpCollectionView()
         let backButton = UIBarButtonItem()
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
 
-        
+        self.adLoader.load(GADRequest())
         if isUserProfile{
             navigationItem.largeTitleDisplayMode = .never
             navigationItem.title = ""
@@ -77,7 +84,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             navigationItem.standardAppearance = appearance
             
             originalQuery = db.collection("users").document(user.uid ?? "").collection("posts").order(by: "publishDate", descending: true).whereField("isPrivate", isEqualTo: user.isPrivate)
-            query = originalQuery.limit(to: 20)
+            query = originalQuery.limit(to: 15)
             
             if user.uid == User.shared.uid ?? ""{
             getMorePosts(removeAll: false)
@@ -98,7 +105,6 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         if isPresented{
            self.setDismissButton()
         }
-        
         // Do any additional setup after loading the view.
     }
     
@@ -198,36 +204,44 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
         DispatchQueue.main.async {
             self.query.getDocuments { (snapshot, error) in
                   if error == nil{
-                      if snapshot!.count < 20{
+                    let old = self.posts
+                    var newItems = old
+                    
+                    if removeAll{
+                        newItems.removeAll()
+                    }
+                    
+                    for document in snapshot!.documents{
+                                  let post = Post(document: document)
+                                newItems.append(post)
+                                  self.lastDocument = document
+                               /* if !old.contains(where: post){
+                                  newItems.append(post)
+                                  } */
+    
+                              }
+                    
+                      if snapshot!.count < 15{
                           self.loadedAllPosts = true
                           self.updateFooter()
                           self.footer?.activityIndicator(show: false)
-                      }
-                      let old = self.posts
-                      if removeAll{
-                          self.posts.removeAll()
-                      }
-                      var newItems = self.posts
-                      for document in snapshot!.documents{
-                          let post = Post(document: document)
-                          self.lastDocument = document
-                          if !self.posts.contains(post){
-                          newItems.append(post)
-                          }
-                          
-            
-                      }
+                      }else if !self.pendingAds.isEmpty{
+                        newItems.insert(self.pendingAds[0], at: newItems.count-Int.random(in: 7...11))
+                        self.pendingAds.remove(at: 0)
+                    }
+                    
                   
                       DispatchQueue.main.async {
                           self.refreshControl.endRefreshing()
                       }
-                    
+                        
                           let changes = diff(old: old, new: newItems)
                     
 
                         self.collectionView.reload(changes: changes, section: 0, updateData: {
                             self.posts = newItems
                             self.collectionView.reloadEmptyDataSet()
+                            self.adLoader.load(GADRequest())
                         })
                     
                           
@@ -290,8 +304,8 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        if let post = posts[indexPath.row] as? Post{
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreCollectionViewCell", for: indexPath) as! ExploreCollectionViewCell
-        let post = posts[indexPath.row]
         
         cell.imageView.clipsToBounds = true
         cell.imageView.layer.cornerRadius = 10
@@ -304,23 +318,48 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
                 cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
             }
-        
-         
-        
-        
+
         cell.playButton.isHidden = !(post.isVideo)
         cell.playButton.shouldBlink = false
         return cell
+        }else{
+            print("found an ad!")
+            let nativeAd = posts[indexPath.row] as! GADUnifiedNativeAd
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExploreAdCollectionViewCell", for: indexPath) as! ExploreAdCollectionViewCell
+            
+            cell.setUpView()
+            
+            cell.adView.nativeAd = nativeAd
+            cell.adView.mediaView?.mediaContent = nativeAd.mediaContent
+            
+            (cell.adView.headlineView as? UILabel)?.text = nativeAd.headline
+            
+            (cell.adView.advertiserView as? UILabel)?.text = nativeAd.advertiser
+            cell.adView.advertiserView?.isHidden = nativeAd.advertiser == nil
+            
+            (cell.adView.callToActionView as? UIButton)?.setTitle(nativeAd.callToAction, for: .normal)
+            (cell.adView.callToActionView as? UIButton)?.isUserInteractionEnabled = false
+            cell.adView.callToActionView?.isHidden = nativeAd.callToAction == nil
+            
+            cell.adView.callToActionView?.isUserInteractionEnabled = false
+            (cell.adView.callToActionView as? UIButton)?.roundCorners()
+            
+            
+            
+            return cell
+            
+        }
     }
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let post = posts[indexPath.row] as? Post{
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
          let vc = storyboard.instantiateViewController(withIdentifier: "FollowingViewController") as! FollowingViewController
         vc.shouldQuery = false
         //vc.postDelegate = self
         var query = self.originalQuery
-        let post = posts[indexPath.row]
+
         if self.isChallenge && !post.tags.isEmpty && post.tags.count <= 10 {
             query = originalQuery.whereField("tags", arrayContainsAny: post.tags)
         }
@@ -334,7 +373,9 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
             vc.navTitle = self.navigationItem.title ?? "Trending"
         }
         willPresentAView = true
-         navigationController?.pushViewController(vc, animated: true)
+            navigationController?.pushViewController(vc, animated: true)
+            
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -369,7 +410,13 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
 
 extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
     func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        posts[indexPath.row].photoSize
+        if let post = posts[indexPath.row] as? Post{
+            return post.photoSize
+        }else{
+            let ad = posts[indexPath.row] as! GADUnifiedNativeAd
+            let aspectRatio = ad.mediaContent.aspectRatio
+            return CGSize(width: 100 * aspectRatio, height: 140)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -378,7 +425,7 @@ extension ExploreViewController : CollectionViewWaterfallLayoutDelegate{
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ProfileHeader", for: indexPath)
             if isUserProfile{
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+                vc = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileViewController
                 vc?.user = user
                 vc?.isCurrentUser = self.isCurrentUser
                 vc?.profileDelegate = self
@@ -522,3 +569,32 @@ extension ExploreViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
     
     
 }
+
+
+extension ExploreViewController : GADAdLoaderDelegate,GADUnifiedNativeAdLoaderDelegate  {
+    
+    func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
+        print("did recieve ad")
+        
+        self.pendingAds.append(nativeAd)
+    }
+    
+    
+    func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: GADRequestError) {
+        print("there was an ad loading error: \(error.localizedDescription)")
+    }
+    
+    func setUpAds(){
+        let mediaOptions = GADNativeAdMediaAdLoaderOptions()
+        mediaOptions.mediaAspectRatio = .portrait
+        adLoader = GADAdLoader(adUnitID: "ca-app-pub-3940256099942544/3986624511",
+            rootViewController: self,
+            adTypes: [ GADAdLoaderAdType.unifiedNative ],
+            options: [mediaOptions])
+        adLoader.delegate = self
+        adLoader.load(GADRequest())
+    }
+    
+}
+
+

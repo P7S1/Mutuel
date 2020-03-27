@@ -141,7 +141,7 @@ class ProfileViewController: UIViewController{
            
         
         }else{
-            followButton.setTitle("ACTIVITY", for: .normal)
+            followButton.setTitle("EDIT PROFILE", for: .normal)
             followButton.setTitleColor(.systemGreen, for: .normal)
             followButton.backgroundColor = .systemGray6
             followButton.isEnabled = true
@@ -357,7 +357,7 @@ class ProfileViewController: UIViewController{
         }
         }else{
             self.followButton.isEnabled = true
-            let vc = ActivityItemsViewController()
+            let vc = EditProfileViewController()
             self.navigationController?.pushViewController(vc, animated: true)
             print("did press avtivity")
         }

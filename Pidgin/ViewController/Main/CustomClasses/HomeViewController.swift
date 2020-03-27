@@ -153,9 +153,9 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         
             let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass", withConfiguration: medium), style: .plain, target: self, action: #selector(searchButtonPressed))
         
-        let challengeButton = UIBarButtonItem(image: UIImage(systemName: "rosette", withConfiguration: medium), style: .plain, target: self, action: #selector(challengesButtonPressed))
+       // let challengeButton = UIBarButtonItem(image: UIImage(systemName: "rosette", withConfiguration: medium), style: .plain, target: self, action: #selector(challengesButtonPressed))
             
-        navigationItem.leftBarButtonItems = [searchButton,chatButton,challengeButton]
+        navigationItem.leftBarButtonItems = [searchButton,chatButton]
 
     }
     
@@ -180,14 +180,14 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         self.present(search, animated: true, completion: nil)
     }
     
-    @objc func challengesButtonPressed(){
+  /*  @objc func challengesButtonPressed(){
        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ChallengesViewController") as! ChallengesViewController
         
         navigationController?.pushViewController(vc, animated: true)
         
         
-    }
+    } */
     @objc func profileBarButtonPressed(){
         print("profile bar button item pressed")
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)

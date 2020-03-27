@@ -53,7 +53,7 @@ extension CategoriesViewController: UICollectionViewDelegate, UICollectionViewDa
             }
         }else{
             button.setTitle("Latest", for: .normal)
-            button.setTitleColor(.secondaryLabel, for: .normal)
+            button.setTitleColor(.label, for: .normal)
         }
         button.roundCorners()
         button.isEnabled = false

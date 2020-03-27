@@ -10,6 +10,9 @@
 		45510183AFEC6B64C197D702 /* Pods_Pidgin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890848BD05BB331D25C48BBF /* Pods_Pidgin.framework */; };
 		DF0002DD2384B34000654EAC /* ChatInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */; };
 		DF0002DF2385E0CD00654EAC /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */; };
+		DF042056242D371900942AE3 /* DiffAware.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF042055242D371900942AE3 /* DiffAware.swift */; };
+		DF04205A242D474000942AE3 /* PostItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF042059242D473F00942AE3 /* PostItem.swift */; };
+		DF04205C242D6EF600942AE3 /* FollowingAdCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF04205B242D6EF600942AE3 /* FollowingAdCollectionViewCell.swift */; };
 		DF086D8423C4197B00D3CCA0 /* FredokaOne-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */; };
 		DF09BCFF242527C0008568B0 /* CategoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF09BCFE242527C0008568B0 /* CategoryItem.swift */; };
 		DF14F8B2240F1E6B00E95E39 /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */; };
@@ -40,7 +43,6 @@
 		DF3C1A0E2398138000106964 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3C1A0D2398138000106964 /* HomeViewController.swift */; };
 		DF41B3432413F0E500F5B31F /* ActivityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */; };
 		DF41B3462413F3CD00F5B31F /* ActivityItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3452413F3CD00F5B31F /* ActivityItem.swift */; };
-		DF41B34A2413FD5C00F5B31F /* ActivityItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF41B3492413FD5C00F5B31F /* ActivityItemsViewController.swift */; };
 		DF469B7E237910E400CDB540 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B7D237910E400CDB540 /* ProfileViewController.swift */; };
 		DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B7F2379FAD300CDB540 /* FollowersHelper.swift */; };
 		DF469B84237B47B600CDB540 /* FollowersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */; };
@@ -98,6 +100,7 @@
 		DFA6A9F5242BE60E004A283B /* CommentLike.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA6A9F4242BE60E004A283B /* CommentLike.swift */; };
 		DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFADF6FB2357F23F00383627 /* CameraVC.swift */; };
 		DFB187DC2428803800457911 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB187DB2428803800457911 /* UINavigationController.swift */; };
+		DFB5FAA5242D092200CBB0C7 /* ExploreAdCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB5FAA4242D092200CBB0C7 /* ExploreAdCollectionViewCell.swift */; };
 		DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC30E0223C7F104000704EC /* PlayerContainerView.swift */; };
 		DFD10ED6234EE72C002616B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD10ED5234EE72C002616B4 /* AppDelegate.swift */; };
 		DFDCA0A523C93D7700240CE7 /* VideoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDCA0A423C93D7700240CE7 /* VideoManager.swift */; };
@@ -147,6 +150,9 @@
 		975932F6AC981DA2C7602780 /* Pods-Pidgin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pidgin.debug.xcconfig"; path = "Target Support Files/Pods-Pidgin/Pods-Pidgin.debug.xcconfig"; sourceTree = "<group>"; };
 		DF0002DC2384B34000654EAC /* ChatInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInfoViewController.swift; sourceTree = "<group>"; };
 		DF0002DE2385E0CD00654EAC /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		DF042055242D371900942AE3 /* DiffAware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffAware.swift; sourceTree = "<group>"; };
+		DF042059242D473F00942AE3 /* PostItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostItem.swift; sourceTree = "<group>"; };
+		DF04205B242D6EF600942AE3 /* FollowingAdCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingAdCollectionViewCell.swift; sourceTree = "<group>"; };
 		DF086D8323C4196700D3CCA0 /* FredokaOne-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FredokaOne-Regular.otf"; sourceTree = "<group>"; };
 		DF09BCFE242527C0008568B0 /* CategoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryItem.swift; sourceTree = "<group>"; };
 		DF14F8B1240F1E6B00E95E39 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
@@ -177,7 +183,6 @@
 		DF3C1A0D2398138000106964 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		DF41B3422413F0E500F5B31F /* ActivityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTableViewCell.swift; sourceTree = "<group>"; };
 		DF41B3452413F3CD00F5B31F /* ActivityItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityItem.swift; sourceTree = "<group>"; };
-		DF41B3492413FD5C00F5B31F /* ActivityItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityItemsViewController.swift; sourceTree = "<group>"; };
 		DF469B7D237910E400CDB540 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		DF469B7F2379FAD300CDB540 /* FollowersHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersHelper.swift; sourceTree = "<group>"; };
 		DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersTableViewController.swift; sourceTree = "<group>"; };
@@ -237,6 +242,7 @@
 		DFA6A9F4242BE60E004A283B /* CommentLike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentLike.swift; sourceTree = "<group>"; };
 		DFADF6FB2357F23F00383627 /* CameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
 		DFB187DB2428803800457911 /* UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
+		DFB5FAA4242D092200CBB0C7 /* ExploreAdCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreAdCollectionViewCell.swift; sourceTree = "<group>"; };
 		DFC30E0223C7F104000704EC /* PlayerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerContainerView.swift; sourceTree = "<group>"; };
 		DFD10ED5234EE72C002616B4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DFDCA0A423C93D7700240CE7 /* VideoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoManager.swift; sourceTree = "<group>"; };
@@ -417,6 +423,7 @@
 				DF09BCFE242527C0008568B0 /* CategoryItem.swift */,
 				DF6FE6AF2427241E00CB990B /* BlockedUser.swift */,
 				DFA6A9F4242BE60E004A283B /* CommentLike.swift */,
+				DF042059242D473F00942AE3 /* PostItem.swift */,
 			);
 			path = "Data Models";
 			sourceTree = "<group>";
@@ -437,7 +444,6 @@
 			children = (
 				DFDE080D234D23880017BFDA /* DiscoverViewController.swift */,
 				DF469B7D237910E400CDB540 /* ProfileViewController.swift */,
-				DF41B3492413FD5C00F5B31F /* ActivityItemsViewController.swift */,
 				DF1726162413EA1700209146 /* ActivityViewController.swift */,
 				DF7D0ABC23B7104900B33E40 /* ExploreViewController.swift */,
 				DF21A43F2365731B00E39A55 /* ResultsTableViewController.swift */,
@@ -665,6 +671,7 @@
 				DFF66B962420AF42003F82DB /* UIColor.swift */,
 				DF2C741F242441830020D76C /* UIImageView.swift */,
 				DFB187DB2428803800457911 /* UINavigationController.swift */,
+				DF042055242D371900942AE3 /* DiffAware.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -683,6 +690,8 @@
 				DFF66B942420A2B1003F82DB /* ChallengeDayTableViewCell.swift */,
 				DFED88BE24232AE600D9969B /* FollowRequestTableViewCell.swift */,
 				DF815FA62427BA3D0008856E /* BlockedUserTableViewCell.swift */,
+				DFB5FAA4242D092200CBB0C7 /* ExploreAdCollectionViewCell.swift */,
+				DF04205B242D6EF600942AE3 /* FollowingAdCollectionViewCell.swift */,
 			);
 			path = "Reusable Cells";
 			sourceTree = "<group>";
@@ -858,6 +867,7 @@
 				DF4BC420234D8267001AD00D /* UIImageExtensions.swift in Sources */,
 				DFF3DBD323DD163200557BC8 /* CommentsSectionViewController.swift in Sources */,
 				DF4BC40C234D8267001AD00D /* ColorsCollectionViewDelegate.swift in Sources */,
+				DF04205C242D6EF600942AE3 /* FollowingAdCollectionViewCell.swift in Sources */,
 				DFF66B9124209247003F82DB /* ChallengeDay.swift in Sources */,
 				DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */,
 				DFEFCAC923F38C5B00397091 /* Date.swift in Sources */,
@@ -878,6 +888,7 @@
 				DFE9E6EF240EF06300131CBF /* GifViewController.swift in Sources */,
 				DF14F8ED2411B3B900E95E39 /* BubblePictures.swift in Sources */,
 				DF6A20AE23B1EF0400949CED /* VideoHelper.swift in Sources */,
+				DF04205A242D474000942AE3 /* PostItem.swift in Sources */,
 				DF4BC429234D8267001AD00D /* UIImageViewExtensions.swift in Sources */,
 				DFDE0815234D248E0017BFDA /* ChannelsViewController.swift in Sources */,
 				DF3C1A0E2398138000106964 /* HomeViewController.swift in Sources */,
@@ -894,9 +905,11 @@
 				DFEFCABD23F3406F00397091 /* ReplyHeaderViewController.swift in Sources */,
 				DFEFCAC323F38B9800397091 /* Character.swift in Sources */,
 				DF14F8E22411B3B900E95E39 /* BPCollectionViewCell.swift in Sources */,
+				DFB5FAA5242D092200CBB0C7 /* ExploreAdCollectionViewCell.swift in Sources */,
 				DF9510162360DAB4006B3B44 /* LoginViewController.swift in Sources */,
 				DF215B0C2356673700EE67D3 /* PreviewView.swift in Sources */,
 				DFB187DC2428803800457911 /* UINavigationController.swift in Sources */,
+				DF042056242D371900942AE3 /* DiffAware.swift in Sources */,
 				DF14F8B2240F1E6B00E95E39 /* TimeInterval.swift in Sources */,
 				DF9510182360DAC2006B3B44 /* WelcomeViewController.swift in Sources */,
 				DFC30E0323C7F104000704EC /* PlayerContainerView.swift in Sources */,
@@ -917,7 +930,6 @@
 				DF41B3432413F0E500F5B31F /* ActivityTableViewCell.swift in Sources */,
 				DFEE6F45239BA9030097EA52 /* ProgressHUD.m in Sources */,
 				DFDD9ECF234FDD5D007A3177 /* RemoteFaceFilter.swift in Sources */,
-				DF41B34A2413FD5C00F5B31F /* ActivityItemsViewController.swift in Sources */,
 				DFE792C223B65100003F2456 /* RecordingButton.swift in Sources */,
 				DF209AC523F701DC00E031DB /* UIView.swift in Sources */,
 				DFADF6FC2357F23F00383627 /* CameraVC.swift in Sources */,
@@ -1099,7 +1111,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/MutuelDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1127,7 +1139,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/Pidgin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

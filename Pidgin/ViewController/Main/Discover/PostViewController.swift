@@ -12,6 +12,7 @@ import AVKit
 import Lightbox
 import FirebaseDatabase
 import Kingfisher
+import Photos
 class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var contentView: UIView!
@@ -29,6 +30,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     @IBOutlet weak var repostsImageView: UIImageView!
     @IBOutlet weak var repostsLabel: UILabel!
     
+    @IBOutlet weak var saveStackView: UIStackView!
     @IBOutlet weak var timeLabel: UILabel!
     
     
@@ -150,6 +152,9 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
         let repost = UITapGestureRecognizer(target: self, action: #selector(repostsTapped))
         repostsStackView.addGestureRecognizer(repost)
         
+        let save = UITapGestureRecognizer(target: self, action: #selector(saveTapped))
+        self.saveStackView.addGestureRecognizer(save)
+        
         
     }
     
@@ -219,6 +224,41 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     override func handleDismissButton() {
         super.handleDismissButton()
         shouldContinuePlaying = true
+    }
+    
+    @objc func saveTapped(){
+        if post.isVideo{
+            ProgressHUD.show("Saving video...")
+            guard let url = URL(string: post?.videoURL ?? "") else{ return }
+            DispatchQueue.global(qos: .background).async {
+                if let urlData = NSData(contentsOf: url)
+                {
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0];
+                    let filePath="\(documentsPath)/tempFile.mp4"
+                    DispatchQueue.main.async {
+                        urlData.write(toFile: filePath, atomically: true)
+                        PHPhotoLibrary.shared().performChanges({
+                            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: URL(fileURLWithPath: filePath))
+                        }) { completed, error in
+                            if completed {
+                                ProgressHUD.showSuccess("Video saved successfully")
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }else{
+            ProgressHUD.show("Image saved successfully")
+            guard let image = imageView.image else {
+                print("invalid image")
+                ProgressHUD.dismiss()
+                return
+                
+            }
+            
+            UIImageWriteToSavedPhotosAlbum(image, nil,nil, nil)
+        }
     }
     
   /*  @objc func handlePan(gestureRecognizer:UIPanGestureRecognizer) {

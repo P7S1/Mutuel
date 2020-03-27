@@ -25,9 +25,10 @@ class PlayerContainerView: UIView {
      }
     
     func initialize(post : Post, shouldPlay :  Bool){
-        DispatchQueue.main.async {
-        if post.isVideo{
         self.backgroundColor = .clear
+        self.isHidden = false
+        if post.isVideo{
+            
         VideoManager().requestPlayer(post: post) { (completion, playerController) in
             if completion{
                 let player = playerController?.player
@@ -37,10 +38,10 @@ class PlayerContainerView: UIView {
                 if self.playerLayer != nil{
                 self.layer.addSublayer(self.playerLayer!)
                 } */
-                self.isHidden = false
                 (self.layer as! AVPlayerLayer).player?.isMuted = self.isMuted
                 if shouldPlay{
                 (self.layer as! AVPlayerLayer).player?.play()
+                    
                 }
                 /*(self.layer as! AVPlayerLayer).player?.preroll(atRate: 2, completionHandler: { (completion) in
                     if completion{
@@ -64,7 +65,7 @@ class PlayerContainerView: UIView {
             print("post must be a video")
             self.pause()
         }
-        }
+        
     }
     
     func play(){
@@ -75,15 +76,15 @@ class PlayerContainerView: UIView {
         self.initialize(post: post)
         }
         } */
-        DispatchQueue.main.async {
+        (self.layer as! AVPlayerLayer).player?.isMuted = self.isMuted
         /*    do {
                 try AVAudioSession.sharedInstance().setCategory(.multiRoute)
             } catch(let error) {
                 print(error.localizedDescription)
             } */
-            (self.layer as! AVPlayerLayer).player?.isMuted = self.isMuted
+            
             (self.layer as! AVPlayerLayer).player?.play()
-        }
+        
     }
     
     func pause(){
@@ -100,10 +101,9 @@ class PlayerContainerView: UIView {
     }
 
 @objc func playerItemDidReachEnd(notification: Notification) {
-    DispatchQueue.main.async {
         if let playerItem = notification.object as? AVPlayerItem {
             playerItem.seek(to: CMTime.zero, completionHandler: nil)
         }
-    }
+    
 }
 }

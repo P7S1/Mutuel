@@ -24,7 +24,7 @@ class EditProfileViewController: FormViewController {
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         NotificationCenter.default.addObserver(self, selector: #selector(presentNotification), name: NSNotification.Name(rawValue: "presentNotification"), object: nil)
         saveChangesButton()
-            navigationItem.title = "Account Settings"
+            navigationItem.title = "Edit Profile"
             form +++ Section("")
                 <<< ViewRow<ProfilePicture>("view") { (row) in
                     row.title = nil // optional

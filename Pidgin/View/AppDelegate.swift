@@ -15,6 +15,7 @@ import FirebaseDatabase
 import NotificationBannerSwift
 import AVFoundation
 import DZNEmptyDataSet
+import GoogleMobileAds
 let db = Firestore.firestore()
 
 var ref: DatabaseReference!
@@ -41,6 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           print("Could not authenticate with the Svrf API: \(err)")
         })
         FirebaseApp.configure()
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers =
+        [ "cd909356c46c0ab3c0152ac8f5ecb896" ]
         ref = Database.database().reference()
         Giphy.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
         GiphyViewController.trayHeightMultiplier = 1
@@ -131,7 +135,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().compactAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().tintColor = .label
-        UITabBar.appearance().tintColor = .label
+        UITabBar.appearance().tintColor = .systemPink
         UITabBar.appearance().backgroundColor = .systemBackground
 
     }
