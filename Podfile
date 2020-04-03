@@ -32,7 +32,11 @@ target 'Pidgin' do
   pod 'Firebase/Database'
   pod "SwipeTransition"
   pod "SwipeTransitionAutoSwipeBack"      # if needed
-  pod "SwipeTransitionAutoSwipeToDismiss" # if needed
   pod 'CarbonKit'
+  pod 'SPPermissions/Notification'
+  pod 'SPPermissions/Camera'
+  pod 'SPPermissions/Microphone'
+  pod 'SPPermissions/PhotoLibrary'
+  pod 'AwesomeSpotlightView'
 end
 

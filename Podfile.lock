@@ -160,6 +160,7 @@ PODS:
     - abseil/meta/type_traits
   - Alamofire (4.8.2)
   - Analytics (3.7.1)
+  - AwesomeSpotlightView (0.1.9)
   - BoringSSL-GRPC (0.0.3):
     - BoringSSL-GRPC/Implementation (= 0.0.3)
     - BoringSSL-GRPC/Interface (= 0.0.3)
@@ -172,7 +173,7 @@ PODS:
   - CropViewController (2.5.2)
   - DeepDiff (2.3.1)
   - DZNEmptyDataSet (1.8.1)
-  - Eureka (5.2.0)
+  - Eureka (5.2.1)
   - Firebase/Analytics (6.21.0):
     - Firebase/Core
   - Firebase/Auth (6.21.0):
@@ -352,6 +353,15 @@ PODS:
   - Protobuf (3.11.4)
   - SkeletonView (1.8.6)
   - SnapKit (5.0.1)
+  - SPPermissions/Camera (5.3):
+    - SPPermissions/Core
+  - SPPermissions/Core (5.3)
+  - SPPermissions/Microphone (5.3):
+    - SPPermissions/Core
+  - SPPermissions/Notification (5.3):
+    - SPPermissions/Core
+  - SPPermissions/PhotoLibrary (5.3):
+    - SPPermissions/Core
   - SvrfGLTFSceneKit (1.5.1)
   - SvrfSDK (3.2.1):
     - Alamofire (~> 4.8.2)
@@ -360,12 +370,11 @@ PODS:
   - SwipeTransition (0.4.2)
   - SwipeTransitionAutoSwipeBack (0.4.2):
     - SwipeTransition (~> 0.4.2)
-  - SwipeTransitionAutoSwipeToDismiss (0.4.2):
-    - SwipeTransition (~> 0.4.2)
   - ViewRow (0.8):
     - Eureka (>= 5.0.0)
 
 DEPENDENCIES:
+  - AwesomeSpotlightView
   - CarbonKit
   - CollectionViewWaterfallLayout
   - CropViewController
@@ -386,10 +395,13 @@ DEPENDENCIES:
   - NextLevel
   - NotificationBannerSwift
   - SkeletonView
+  - SPPermissions/Camera
+  - SPPermissions/Microphone
+  - SPPermissions/Notification
+  - SPPermissions/PhotoLibrary
   - SvrfSDK
   - SwipeTransition
   - SwipeTransitionAutoSwipeBack
-  - SwipeTransitionAutoSwipeToDismiss
   - ViewRow
 
 SPEC REPOS:
@@ -397,6 +409,7 @@ SPEC REPOS:
     - abseil
     - Alamofire
     - Analytics
+    - AwesomeSpotlightView
     - BoringSSL-GRPC
     - Cache
     - CarbonKit
@@ -445,17 +458,18 @@ SPEC REPOS:
     - Protobuf
     - SkeletonView
     - SnapKit
+    - SPPermissions
     - SvrfGLTFSceneKit
     - SvrfSDK
     - SwipeTransition
     - SwipeTransitionAutoSwipeBack
-    - SwipeTransitionAutoSwipeToDismiss
     - ViewRow
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   Analytics: f82f3cd6d3c8fbfd76ce25773199576656981a4a
+  AwesomeSpotlightView: 97e84d680c82649898213088bb13134317ab4150
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   Cache: 807c5d86d01a177f06ede9865add3aea269bbfd4
   CarbonKit: b60e24dbdb47179990d5e074efa87ab819c8de98
@@ -463,7 +477,7 @@ SPEC CHECKSUMS:
   CropViewController: 1aac40093c5739e60d992b04724a55d12a689a4c
   DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  Eureka: 820a761c700f6eaab3b60758f138e0d9b99072b3
+  Eureka: c883105488e05bc65539f583246ecf9657cabbfe
   Firebase: f378c80340dd41c0ad0914af740c021eb282a04b
   FirebaseAnalytics: a1a0b3327ceb5cd5b4bacffdb293f6c909aa087d
   FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae
@@ -504,13 +518,13 @@ SPEC CHECKSUMS:
   Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
   SkeletonView: 0bf463145522c0c551b76a829b397e2a15a16d46
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SPPermissions: a8056ef987855e8b231481f61bd8b4cbd3fcfd80
   SvrfGLTFSceneKit: 6572849d8b42e779c2e816e666def4e344d4f081
   SvrfSDK: f9e20f968c5bca4421b7ed4a4d58e220973bdcb6
   SwipeTransition: 03f6f995646bdff37946af75c442692b011cb348
   SwipeTransitionAutoSwipeBack: 64605a9e0d9bef917ba23f26f23bbe3ce8af4158
-  SwipeTransitionAutoSwipeToDismiss: 8a477d96c7cefc133daf30ea60f627d4ab262498
   ViewRow: 8da541e9c019f3be63f4e28f311a62cac2045ecf
 
-PODFILE CHECKSUM: 7b2da8e02e4f46da4b5380436060e316770b5477
+PODFILE CHECKSUM: 5038404ec949932d59e5f0e57879800e4c63137b
 
 COCOAPODS: 1.8.4

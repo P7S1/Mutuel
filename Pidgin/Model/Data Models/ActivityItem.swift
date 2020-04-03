@@ -8,7 +8,7 @@
 
 import Foundation
 import FirebaseFirestore
-
+import DeepDiff
 struct ActivityItem {
     var senderUsername : String
     var senderID : String
@@ -110,6 +110,22 @@ struct ActivityItem {
     }
 }
 
+extension ActivityItem : DiffAware{
+    var diffId: UUID? {
+        let id = UUID(uuidString: self.id)
+        return id
+    }
+    
+    typealias DiffId = UUID?
+    
+
+    static func compareContent(_ a: ActivityItem, _ b: ActivityItem) -> Bool {
+        return (a.id == b.id)
+        
+    }
+    
+}
+
 
 enum ActivityType {
     case comment
@@ -132,3 +148,4 @@ enum ActivityType {
         }
     }
 }
+

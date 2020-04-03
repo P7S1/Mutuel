@@ -83,8 +83,8 @@ class ARCameraVC: UIViewController {
         let captureTap = UITapGestureRecognizer(target: self, action: #selector(takePhoto))
         captureButton.addGestureRecognizer(captureTap)
         
-        let videoPress = UILongPressGestureRecognizer(target: self, action: #selector(startRecording))
-        captureButton.addGestureRecognizer(videoPress)
+        /*let videoPress = UILongPressGestureRecognizer(target: self, action: #selector(startRecording))
+        captureButton.addGestureRecognizer(videoPress) */
         
         
         getTrendingFilters()

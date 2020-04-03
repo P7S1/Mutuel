@@ -28,9 +28,11 @@ class ChallengesViewController: HomeViewController {
         layout.minimumColumnSpacing = 8
         layout.minimumInteritemSpacing = 8
         layout.columnCount = 1
-        
+        layout.headerHeight = 34
+        layout.headerInset = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 9)
         collectionView.collectionViewLayout = layout
         
+        collectionView.register(SubtitleLabelCollectionReusableView.self, forSupplementaryViewOfKind:  CollectionViewWaterfallElementKindSectionHeader, withReuseIdentifier: "SubtitleLabelCollectionReusableView")
         
         
         
@@ -76,6 +78,7 @@ extension ChallengesViewController : UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ChallengesCollectionViewCell", for: indexPath) as! ChallengesCollectionViewCell
         
         let challenge = challenges[indexPath.row]
@@ -98,11 +101,20 @@ extension ChallengesViewController : UICollectionViewDelegate, UICollectionViewD
     }
     
     
+    
+    
 }
 
 extension ChallengesViewController: CollectionViewWaterfallLayoutDelegate{
     func collectionView(_ collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 200)
+        return CGSize(width: collectionView.frame.width, height: self.view.frame.height/3)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SubtitleLabelCollectionReusableView", for: indexPath) as! SubtitleLabelCollectionReusableView
+        
+    }
+    
+    
 }
 

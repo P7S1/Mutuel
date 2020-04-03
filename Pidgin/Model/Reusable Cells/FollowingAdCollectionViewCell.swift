@@ -10,6 +10,7 @@ import UIKit
 import GoogleMobileAds
 class FollowingAdCollectionViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var adLabel: UIView!
     @IBOutlet weak var adView: GADUnifiedNativeAdView!
     @IBOutlet weak var height: NSLayoutConstraint!
 }

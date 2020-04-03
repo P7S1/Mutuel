@@ -22,6 +22,7 @@ var ref: DatabaseReference!
 
 var userListener: ListenerRegistration?
 var appDidLoad = false
+var firstLaunch = false
 @UIApplicationMain
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -43,10 +44,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-        GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers =
-        [ "cd909356c46c0ab3c0152ac8f5ecb896" ]
+       /* GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers =
+        [ "cd909356c46c0ab3c0152ac8f5ecb896" ] */
         ref = Database.database().reference()
-        Giphy.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8")
+        Giphy.configure(apiKey: "jqEwvwCYxQjIehwIZpHnLKns5NMG0rd8", verificationMode: false)
         GiphyViewController.trayHeightMultiplier = 1
         if #available(iOS 13.0, *) {
             configureNavBariOS13()
@@ -146,6 +147,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             userListener = ref.addSnapshotListener { (snapshot, error) in
             if error == nil{
+                self.checkIfFirstTimeLaunching()
                 User.shared.convertFromDocument(dictionary: snapshot!)
                 if User.shared.username != nil{
                 if !appDidLoad{
@@ -154,8 +156,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     UIApplication.shared.windows.first?.rootViewController = vc
                     appDidLoad = true
                 }
-                        let pushManager = PushNotificationManager(userID: id)
-                        pushManager.registerForPushNotifications()
                  
                 }else{
                     print("User has invalid username")
@@ -169,6 +169,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
 }
+    
+    func checkIfFirstTimeLaunching(){
+        let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
+        if launchedBefore  {
+            print("Not first launch.")
+            firstLaunch = false
+        } else {
+            print("First launch, setting UserDefault.")
+            firstLaunch = true
+            UserDefaults.standard.set(true, forKey: "launchedBefore")
+        }
+    }
     
     func presentUsernameVC(){
         let storyboard = UIStoryboard.init(name: "Login", bundle: nil)

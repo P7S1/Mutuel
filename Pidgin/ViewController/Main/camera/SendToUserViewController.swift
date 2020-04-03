@@ -14,6 +14,7 @@ import GiphyCoreSDK
 import Lightbox
 import CollectionViewWaterfallLayout
 import Kingfisher
+import StoreKit
 class SendToUserViewController: UIViewController {
     var video : URL?
     var image = UIImage()
@@ -22,6 +23,7 @@ class SendToUserViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var containerView: UIView!
     
+    @IBOutlet weak var playButton: UIImageView!
     let sendButton = UIButton.init(type: .custom)
     
     var isGIF = false
@@ -84,6 +86,8 @@ class SendToUserViewController: UIViewController {
         containerView.addGestureRecognizer(tap)
         
         challengeLabel.text = challengeDay?.activity ?? ""
+        
+        playButton.isHidden = video == nil
         
         setUpCollectionView()
         
@@ -176,7 +180,9 @@ class SendToUserViewController: UIViewController {
             }
         }
         
-        self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+            self.view.window!.rootViewController?.dismiss(animated: true, completion: {
+                SKStoreReviewController.requestReview()
+            })
         }
     }
     
@@ -315,7 +321,7 @@ extension  SendToUserViewController : UICollectionViewDelegate, UICollectionView
         let backgroundImage = cell.viewWithTag(1) as! AnimatedImageView
         let colorView = cell.viewWithTag(2)
         let titleLabel = cell.viewWithTag(3) as! UILabel
-        let selectedView = cell.viewWithTag(4) as! UIStackView
+        let selectedView = cell.viewWithTag(4) as! UIImageView
         
         selectedView.isHidden = !tags.contains(item.id)
         

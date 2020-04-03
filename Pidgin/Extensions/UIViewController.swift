@@ -10,6 +10,7 @@ import Foundation
 import FirebaseAuth
 import Lightbox
 import NotificationBannerSwift
+import SPPermissions
 extension UIViewController{
     func returnToLoginScreen(){
         let alert = UIAlertController(title: "Logged Out", message: "You have been logged out, please log back in.", preferredStyle: .alert)
@@ -163,4 +164,103 @@ extension UIViewController{
             containerView.addSubview(controller.view)
         }
     
+    
+    
+}
+
+
+extension UIViewController : SPPermissionsDelegate, SPPermissionsDataSource{
+    func showPerimissionsVC(){
+        
+        let controller = SPPermissions.dialog([.camera, .photoLibrary, .microphone])
+
+        // Ovveride texts in controller
+        controller.titleText = "Make A Post"
+        controller.headerText = "Permissions Required"
+        controller.footerText = "These permissions are required for you to post photos from your gallery and to take photos and videos "
+
+        // Set `DataSource` or `Delegate` if need.
+        // By default using project texts and icons.
+        controller.dataSource = self
+        controller.delegate = self
+
+        // Always use this method for present
+        controller.present(on: self)
+        
+    }
+    
+    public func configure(_ cell: SPPermissionTableViewCell, for permission: SPPermission) -> SPPermissionTableViewCell {
+        
+        if permission == .camera{
+            cell.permissionDescriptionLabel.text = "Take photos and videos"
+        } else if permission == .microphone{
+            cell.permissionDescriptionLabel.text = "Record audio in videos"
+        } else if permission == .photoLibrary{
+            cell.permissionDescriptionLabel.text = "Import photos and videos from your camera roll"
+        }
+        cell.iconView.color = .label
+        cell.button.allowedBackgroundColor = .systemPink
+        cell.button.allowTitleColor = .systemPink
+        return cell
+    }
+    
+    public func deniedData(for permission: SPPermission) -> SPPermissionDeniedAlertData? {
+        if permission == .photoLibrary ||
+         permission == .camera ||
+         permission == .microphone{
+            let data = SPPermissionDeniedAlertData()
+            data.alertOpenSettingsDeniedPermissionTitle = "Permission was denied"
+            data.alertOpenSettingsDeniedPermissionDescription = "Please go to Settings and allow the permission."
+            data.alertOpenSettingsDeniedPermissionButtonTitle = "Settings"
+            data.alertOpenSettingsDeniedPermissionCancelTitle = "Cancel"
+            return data
+        } else {
+            // If returned nil, alert will not show.
+            return nil
+        }
+    }
+    
+    @objc public func didHide(permissions ids: [Int]) {
+        if (SPPermission.camera.isAuthorized &&
+            SPPermission.microphone.isAuthorized &&
+            SPPermission.photoLibrary.isAuthorized) {
+            
+            showUploadVC(challenge: nil, day: nil, isChallenge: false)
+            
+        }
+    }
+    
+    func showUploadVC(challenge : Challenge?, day : ChallengeDay?, isChallenge: Bool){
+        let vc = UploadViewController()
+        vc.challenge = challenge
+        vc.isChallenge = isChallenge
+        vc.challengeDay = day
+        self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+    }
+    
+    func launchUploadVCIfPossible(challenge : Challenge?, day : ChallengeDay?, isChallenge: Bool){
+        if SPPermission.camera.isAuthorized &&
+                       SPPermission.microphone.isAuthorized &&
+                       SPPermission.photoLibrary.isAuthorized {
+                       
+            showUploadVC(challenge: challenge, day: day, isChallenge: isChallenge)
+                       
+                   }else{
+                       showPerimissionsVC()
+
+                   }
+    }
+    
+    func showShareAppDialog(){
+        // text to share
+        let link = "https://itunes.apple.com/app/id1498709902?action=write-review"
+        let text = "Follow me on Mutuel @\(User.shared.username!). Here is the download link: \(link)"
+
+        // set up activity view controller
+        let textToShare = [ text ]
+        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        // present the view controller
+        self.present(activityViewController, animated: true, completion: nil)
+    }
 }

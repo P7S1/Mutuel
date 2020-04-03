@@ -133,7 +133,20 @@ class ChatInfoViewController: UIViewController {
             alert.popoverPresentationController?.sourceView = self.view
             alert.popoverPresentationController?.sourceRect = self.leaveGroupButton.frame
             alert.addAction(UIAlertAction(title: "Block", style: .default, handler: { (action) in
-            
+                
+                let docRef = db.collection("users").document(self.channel.getSenderID())
+                
+                docRef.getDocument { (document, error) in
+                    let user = Account()
+                    user.convertFromDocument(dictionary: document!)
+                    let blockedUser = BlockedUser(user: user)
+                    blockedUser.blockUser { (completion) in
+                        if completion{
+                            ProgressHUD.showSuccess("User Blocked Successfully")
+                            self.navigationController?.popToRootViewController(animated: true)
+                        }
+                    }
+                }
                 
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in

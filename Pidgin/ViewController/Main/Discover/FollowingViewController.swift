@@ -68,18 +68,20 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
             guard let uid = User.shared.uid else{
                 fatalError("NO USER ID FOUND")
             }
-        query = db.collection("users").document(uid).collection("feed").limit(to: 7).order(by: "publishDate", descending: true)
-        originalQuery = query
+        originalQuery = db.collection("users").document(uid).collection("feed").order(by: "publishDate", descending: true)
+            query = originalQuery?.limit(to: 7)
         }else{
             navigationItem.largeTitleDisplayMode = .never
             navigationItem.title = navTitle
         }
+   
         getMorePosts(removeAll: false)
         
         refreshControl.tintColor = .secondaryLabel
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         collectionView.addSubview(refreshControl)
-        collectionView.alwaysBounceVertical = true
+        collectionView.alwaysBounceVertical = false
+        collectionView.decelerationRate = .normal
         
         self.view.isSkeletonable = true
         
@@ -89,7 +91,7 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     @objc func refresh(){
         lastDocument = nil
         loadedAllPosts = false
-        query = originalQuery
+        query = originalQuery?.limit(to: 7)
         getMorePosts(removeAll: true)
     }
     
@@ -100,10 +102,10 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
             let cell = collectionView.cellForItem(at: visibleIndexPath) as? FollowingCollectionViewCell, let post = posts[visibleIndexPath.row] as? Post{
             
             if post.isVideo{
-                cell.playerContainerView.initialize(post: post, shouldPlay: false)
+                cell.playerContainerView.initialize(post: post, shouldPlay: true)
             }
         }
-        self.scrollViewDidEndDecelerating(collectionView)
+       // self.scrollViewDidEndDecelerating(collectionView)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -143,50 +145,53 @@ class FollowingViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func getMorePosts(removeAll : Bool){
         
-                if let lastDoc = lastDocument{
-                    query = query?.start(afterDocument: lastDoc)
-                }
-        
-        query?.getDocuments { (snapshot, error) in
-                if error == nil{
-                    let old = self.posts
-                    if removeAll{
-                        self.posts.removeAll()
+        DispatchQueue.global(qos: .background).async {
+            if let lastDoc = self.lastDocument{
+                self.query = self.query?.start(afterDocument: lastDoc)
                     }
-                    var newItems = self.posts
-                    
-                    for document in snapshot!.documents{
-                        let post = Post(document: document)
-                        self.lastDocument = document
-                        if !self.posts.contains(post){
-                            newItems.append(post)
+            self.query?.getDocuments { (snapshot, error) in
+                    if error == nil{
+                        let old = self.posts
+                        if removeAll{
+                            self.posts.removeAll()
                         }
+                        var newItems = self.posts
+                        
+                        for document in snapshot!.documents{
+                            let post = Post(document: document)
+                            self.lastDocument = document
+                            if !self.posts.contains(post){
+                                newItems.append(post)
+                            }
 
+                        }
+                        
+                        if snapshot!.count-self.startingPostsCount < 7{
+                            self.loadedAllPosts = true
+                        }else if !self.pendingAds.isEmpty{
+                            newItems.insert(self.pendingAds[0], at: newItems.count-Int.random(in: 3...4))
+                            self.pendingAds.remove(at: 0)
+                        }
+                        DispatchQueue.main.async {
+                        
+                            self.collectionView.activityIndicator(show: false)
+                            if self.refreshControl.isRefreshing{
+                            self.refreshControl.endRefreshing()
+                            }
+                            let changes = diff(old: old, new: newItems)
+                            self.collectionView.reload(changes: changes, section: 0, updateData: {
+                                self.posts = newItems
+                                self.collectionView.reloadEmptyDataSet()
+                                self.adLoader.load(GADRequest())
+                            })
+                        }
+                      
+                    }else{
+                        print("there was an error : \(error!)")
                     }
-                    
-                    if snapshot!.count-self.startingPostsCount < 7{
-                        self.loadedAllPosts = true
-                    }else if !self.pendingAds.isEmpty{
-                        newItems.insert(self.pendingAds[0], at: newItems.count-Int.random(in: 3...4))
-                        self.pendingAds.remove(at: 0)
-                    }
-                    DispatchQueue.main.async {
-                        self.collectionView.activityIndicator(show: false)
-                        self.refreshControl.endRefreshing()
-                    }
-                
-           
-                        let changes = diff(old: old, new: newItems)
-                        self.collectionView.reload(changes: changes, section: 0, updateData: {
-                            self.posts = newItems
-                            self.collectionView.reloadEmptyDataSet()
-                            self.adLoader.load(GADRequest())
-                        })
-                  
-                }else{
-                    print("there was an error : \(error!)")
                 }
-            }
+        }
+                
     }
     
      func repost(oldPost : Post){
@@ -444,6 +449,9 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
                 
                 cell.height.constant = height
             
+            cell.adLabel.layer.masksToBounds = true
+            cell.adLabel.layer.cornerRadius = cell.adLabel.frame.height/2
+            
             cell.adView.nativeAd = nativeAd
             cell.adView.mediaView?.mediaContent = nativeAd.mediaContent
             cell.adView.mediaView?.layer.masksToBounds = true
@@ -464,7 +472,8 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
 
             // In order for the SDK to process touch events properly, user interaction
             // should be disabled.
-            cell.adView.callToActionView?.isUserInteractionEnabled = false
+            (cell.adView.callToActionView as? UIButton)?.isUserInteractionEnabled = false
+            
 
             
             
@@ -541,6 +550,16 @@ extension FollowingViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelega
         return NSAttributedString(string: "Follow some people to populate it", attributes: EmptyStateAttributes.shared.subtitle)
     }
     
+    func emptyDataSet(_ scrollView: UIScrollView!, didTap button: UIButton!) {
+           self.showShareAppDialog()
+           
+       }
+       
+       
+    func buttonTitle(forEmptyDataSet scrollView: UIScrollView!, for state: UIControl.State) -> NSAttributedString! {
+           return NSAttributedString(string: "Invite Friends", attributes: EmptyStateAttributes.shared.button)
+       }
+    
     func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
         return self.posts.isEmpty && shouldQuery
     }
@@ -572,7 +591,7 @@ extension FollowingViewController : GADAdLoaderDelegate,GADUnifiedNativeAdLoader
     func setUpAds(){
         let mediaOptions = GADNativeAdMediaAdLoaderOptions()
         mediaOptions.mediaAspectRatio = .portrait
-        adLoader = GADAdLoader(adUnitID: "ca-app-pub-3940256099942544/2521693316",
+        adLoader = GADAdLoader(adUnitID: "ca-app-pub-7404153809143887/2990527942",
             rootViewController: self,
             adTypes: [ GADAdLoaderAdType.unifiedNative ],
             options: [mediaOptions])

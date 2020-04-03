@@ -13,6 +13,7 @@ import GiphyUISDK
 import GiphyCoreSDK
 import DZNEmptyDataSet
 import SkeletonView
+
 class CommentsViewController: UIViewController {
     
     var commentsDelegate : ExploreViewControllerDelegate?
@@ -172,7 +173,7 @@ class CommentsViewController: UIViewController {
             }
         }
     }
-    
+
     /*
     // MARK: - Navigation
 

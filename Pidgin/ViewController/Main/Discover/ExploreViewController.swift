@@ -92,7 +92,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             
         }else{
-            originalQuery = query
+      
             getMorePosts(removeAll: false)
             setUpRefresh()
         }
@@ -117,7 +117,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     @objc func refresh(){
         lastDocument = nil
         loadedAllPosts = false
-        query = originalQuery
+        query = originalQuery.limit(to: 15)
         getMorePosts(removeAll: true)
     }
     
@@ -196,13 +196,15 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
     
     
     func getMorePosts(removeAll : Bool){
-        
+        query = self.originalQuery.limit(to: 15)
         if let doc = self.lastDocument{
             query = query.start(afterDocument: doc)
         }
         
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .background).async {
             self.query.getDocuments { (snapshot, error) in
+                DispatchQueue.main.async {
+                    
                   if error == nil{
                     let old = self.posts
                     var newItems = old
@@ -229,11 +231,11 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
                         newItems.insert(self.pendingAds[0], at: newItems.count-Int.random(in: 7...11))
                         self.pendingAds.remove(at: 0)
                     }
-                    
-                  
-                      DispatchQueue.main.async {
+
+                        if self.refreshControl.isRefreshing{
                           self.refreshControl.endRefreshing()
-                      }
+                        }
+                      
                         
                           let changes = diff(old: old, new: newItems)
                     
@@ -252,6 +254,7 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
                       print("there was an error \(error!)")
                   }
                 self.collectionView.reloadEmptyDataSet()
+                }
               }
         }
         
@@ -363,8 +366,8 @@ extension ExploreViewController: UICollectionViewDataSource, UICollectionViewDel
         if self.isChallenge && !post.tags.isEmpty && post.tags.count <= 10 {
             query = originalQuery.whereField("tags", arrayContainsAny: post.tags)
         }
-        query = query?.start(atDocument: post.document!).limit(to: 10)
-        vc.query = query
+        query = query?.start(atDocument: post.document!)
+            vc.query = query?.limit(to: 15)
         vc.originalQuery = query
         vc.lastDocument = nil
         if isUserProfile{
@@ -567,6 +570,20 @@ extension ExploreViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegate
         return true
     }
     
+    func emptyDataSet(_ scrollView: UIScrollView!, didTap button: UIButton!) {
+        self.showShareAppDialog()
+        
+    }
+    
+    
+    func buttonTitle(forEmptyDataSet scrollView: UIScrollView!, for state: UIControl.State) -> NSAttributedString! {
+        if user.uid == User.shared.uid!{
+            return NSAttributedString(string: "Invite Friends", attributes: EmptyStateAttributes.shared.button)
+        }else{
+            return NSAttributedString(string: "")
+        }
+    }
+    
     
 }
 
@@ -575,7 +592,7 @@ extension ExploreViewController : GADAdLoaderDelegate,GADUnifiedNativeAdLoaderDe
     
     func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADUnifiedNativeAd) {
         print("did recieve ad")
-        
+
         self.pendingAds.append(nativeAd)
     }
     
@@ -587,7 +604,7 @@ extension ExploreViewController : GADAdLoaderDelegate,GADUnifiedNativeAdLoaderDe
     func setUpAds(){
         let mediaOptions = GADNativeAdMediaAdLoaderOptions()
         mediaOptions.mediaAspectRatio = .portrait
-        adLoader = GADAdLoader(adUnitID: "ca-app-pub-3940256099942544/3986624511",
+        adLoader = GADAdLoader(adUnitID: "ca-app-pub-7404153809143887/5759327366",
             rootViewController: self,
             adTypes: [ GADAdLoaderAdType.unifiedNative ],
             options: [mediaOptions])
@@ -595,6 +612,6 @@ extension ExploreViewController : GADAdLoaderDelegate,GADUnifiedNativeAdLoaderDe
         adLoader.load(GADRequest())
     }
     
+    
+    
 }
-
-

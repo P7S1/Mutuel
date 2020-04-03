@@ -148,7 +148,7 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
         navigationController?.navigationBar.prefersLargeTitles = true
 
     
-            let medium = UIImage.SymbolConfiguration(weight: .medium)
+            let medium = UIImage.SymbolConfiguration(weight: .semibold)
             let chatButton = UIBarButtonItem(image: UIImage(systemName: "plus.bubble", withConfiguration: medium), style: .plain, target: self, action: #selector(chatButtonPressed))
         
             let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass", withConfiguration: medium), style: .plain, target: self, action: #selector(searchButtonPressed))
@@ -221,6 +221,8 @@ class HomeViewController : UIViewController, UIScrollViewDelegate, UISearchBarDe
             self.blurEffectView.removeFromSuperview()
         }
     }
+    
+    
     
     
 

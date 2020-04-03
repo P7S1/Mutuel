@@ -37,7 +37,7 @@ struct CategoryItem {
         
         output.append(CategoryItem(displayName: "TV/Movies", color: .systemIndigo, urlString: "https://media.giphy.com/media/jpQkuoHi7JZY14yIZf/giphy.gif", id: "tv_movies"))
         
-        output.append(CategoryItem(displayName: "Edits", color: .sunFlower, urlString: "https://media.giphy.com/media/3o7qE8wyh4RkaoaZDG/giphy.gif", id: "edits"))
+        output.append(CategoryItem(displayName: "Beauty", color: .sunFlower, urlString: "https://media.giphy.com/media/11vTDBYfVO52qk/giphy.gif", id: "beauty"))
         
         output.append(CategoryItem(displayName: "Animals/Nature", color: .nephritis, urlString: "https://media.giphy.com/media/kreQ1pqlSzftm/giphy.gif", id: "animals_nature"))
         
@@ -45,9 +45,14 @@ struct CategoryItem {
         
         output.append(CategoryItem(displayName: "Fashion/Design", color: .alizarin, urlString: "https://media.giphy.com/media/QCDgYrgrfggee4MDPD/giphy.gif", id: "fashion_design"))
         
-        output.append(CategoryItem(displayName: "Dance", color: .systemTeal, urlString: "https://media.giphy.com/media/3o6ZtgnmZDZeAshxYY/giphy.gif", id: "dance"))
+        output.append(CategoryItem(displayName: "Self-Love", color: .systemPurple, urlString: "https://media.giphy.com/media/XbsB79zhtQB9eUsBaU/giphy.gif", id: "Self-Love"))
+        
         
         output.append(CategoryItem(displayName: "DIY/Hacks", color: .pumpkin, urlString: "https://media.giphy.com/media/3oKIPqsXYcdjcBcXL2/giphy.gif", id: "diy_hacks"))
+        
+        output.append(CategoryItem(displayName: "Dance", color: .systemPurple, urlString: "https://media.giphy.com/media/3o6ZtgnmZDZeAshxYY/giphy.gif", id: "dance"))
+        
+        output.append(CategoryItem(displayName: "Just 4 Fun", color: .systemTeal, urlString: "https://media.giphy.com/media/mGuuaZ84ou7KM/giphy.gif", id: "just4fun"))
     
         
         

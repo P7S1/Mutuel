@@ -30,7 +30,8 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         self.configureNavItem(name: "Trending")
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         exploreVC = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as? ExploreViewController
-        exploreVC.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("isPrivate", isEqualTo: false).order(by: "score", descending: true).whereField("isExplicit", isEqualTo: false).limit(to: 20)
+        exploreVC.originalQuery = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("isPrivate", isEqualTo: false).order(by: "score", descending: true).whereField("isExplicit", isEqualTo: false)
+        exploreVC.query = exploreVC.originalQuery
         exploreVC.isChallenge = true
         exploreVC.exploreDelegate = self
         
@@ -41,33 +42,7 @@ class DiscoverViewController: HomeViewController, ExploreViewControllerDelegate,
         let items = ["Trending", "Following"]
         let carbonTabSwipeNavigation = CarbonSwipe(items: items, delegate: self)
         carbonTabSwipeNavigation.configure(items: items, vc: self)
-    
         
-        //Camera
-        AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
-            if response {
-                //access granted
-            } else {
-
-            }
-        }
-        //Microphone
-        AVCaptureDevice.requestAccess(for: AVMediaType.audio) { (response) in
-            if response{
-                
-            } else{
-                
-            }
-        }
-        //Photos
-        let photos = PHPhotoLibrary.authorizationStatus()
-        if photos == .notDetermined {
-            PHPhotoLibrary.requestAuthorization({status in
-                if status == .authorized{
-                
-                } else {}
-            })
-        }
         // Do any additional setup after loading the view.
     }
     

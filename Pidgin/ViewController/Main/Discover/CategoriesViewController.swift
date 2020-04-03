@@ -16,6 +16,7 @@ class CategoriesViewController: UIViewController {
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
+        navigationItem.largeTitleDisplayMode = .never
         // Do any additional setup after loading the view.
     }
     
@@ -69,11 +70,13 @@ extension CategoriesViewController: UICollectionViewDelegate, UICollectionViewDa
         if indexPath.row > 0{
             let index = indexPath.row-1
             let item = CategoryItem.getCategoryArray()[index]
-            vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("isPrivate", isEqualTo: false).whereField("tags", arrayContainsAny: [item.id]).whereField("isExplicit", isEqualTo: false).order(by: "score", descending: true).limit(to: 20)
+            vc.originalQuery = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("isPrivate", isEqualTo: false).whereField("tags", arrayContainsAny: [item.id]).whereField("isExplicit", isEqualTo: false).order(by: "score", descending: true)
+            vc.query = vc.originalQuery.limit(to: 15)
             vc.navigationItem.title = item.displayName
         }else{
             vc.navigationItem.title = "Latest"
-            vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("isPrivate", isEqualTo: false).order(by: "publishDate", descending: true).limit(to: 20)
+            vc.originalQuery = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("isPrivate", isEqualTo: false).order(by: "publishDate", descending: true)
+            vc.query = vc.originalQuery.limit(to: 15)
         }
         
         navigationController?.pushViewController(vc, animated: true)

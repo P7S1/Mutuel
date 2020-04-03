@@ -28,13 +28,13 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>To Take Photos and Video</string>
+	<string>Allow you to take photos and vidoes for posts, this is also required to allow the AR Camera to use Apple&apos;s TrueDepth API. Please see our Privacy Policy in the app settings for more details.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>To Record Audio With Video</string>
+	<string>Allows you to record audio for your video posts within the regular Camera and the AR Camera</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Export AR Media</string>
+	<string>Allows you to use your own photos and videos for posts</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Export AR Media</string>
+	<string>Allows you to download photos and videos into your photo library</string>
 	<key>SVRF_API_KEY</key>
 	<string>0e3b5b79f2dfa52d9bbf437fab983fc4</string>
 	<key>UIAppFonts</key>

@@ -9,7 +9,6 @@
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
-import AuthenticationServices
 class LoginViewController: UIViewController {
     
     @IBOutlet weak var username: UITextField!
@@ -20,7 +19,7 @@ class LoginViewController: UIViewController {
         
     @IBOutlet weak var errorText: UILabel!
     
-    @IBOutlet var signUpButton: ASAuthorizationAppleIDButton!
+    @IBOutlet var signUpButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +34,7 @@ class LoginViewController: UIViewController {
         
         errorText.isHidden = true
         
-        signUpButton = ASAuthorizationAppleIDButton.init(authorizationButtonType: .continue, authorizationButtonStyle: .whiteOutline)
-        signUpButton.layer.masksToBounds = true
-        signUpButton.layer.cornerRadius = signUpButton.frame.height
-        
-
+        signUpButton.roundCorners()
         // Do any additional setup after loading the view.
     }
     

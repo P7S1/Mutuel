@@ -230,7 +230,7 @@ class ProfileViewController: UIViewController{
             let storyboard = UIStoryboard(name: "Settings", bundle: nil)
             let vc = storyboard.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController
         navigationController?.pushViewController(vc, animated: true)
-        }else{
+      }else if relationship?.isApproved ?? false{
         if let id1 = User.shared.uid, let id2 = user?.uid{
         let docRef = db.collection("channels").document(FollowersHelper().getChannelID(id1: id1, id2: id2))
             docRef.getDocument { (snapshot, error) in
@@ -243,6 +243,8 @@ class ProfileViewController: UIViewController{
             }
         }
             
+      }else{
+        ProgressHUD.showError("You must follow this user to message them")
         }
     }
     
@@ -313,19 +315,20 @@ class ProfileViewController: UIViewController{
             followButton.isEnabled = false
         if let followee = self.user{
             if userFollows || userRequested{
-                FollowersHelper().unFollow(followeeUser: followee) { (success) in
-                    if success{
-                        self.setNotFollowingState()
+                if followee.isPrivate && relationship?.isApproved == true{
+                    let activityVC = UIAlertController(title: "Are you sure you want to unfollow this user?", message: "Their account is set to private, so you will have to follow them again", preferredStyle: .alert)
+                    activityVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+                        activityVC.dismiss(animated: true, completion: nil)
                         self.followButton.isEnabled = true
-                        if self.userFollows{
-                        DispatchQueue.main.async {
-                            self.user?.followersCount = (self.user?.followersCount ?? 0) - 1
-                            self.followers.text = "\((self.user?.followersCount ?? 0) )"
-                        }
-                        }
-                        self.setNotFollowingState()
-                    }
+                    }))
+                    activityVC.addAction(UIAlertAction(title: "Unfollow", style: .destructive, handler: { (action) in
+                        self.unfollow(followee: followee)
+                    }))
+                    self.present(activityVC, animated: true, completion: nil)
+                }else{
+                    unfollow(followee: followee)
                 }
+                
             }else if !userBlocked {
                 FollowersHelper().follow(followeeUser: followee) { (success) in
                     if success{
@@ -360,6 +363,22 @@ class ProfileViewController: UIViewController{
             let vc = EditProfileViewController()
             self.navigationController?.pushViewController(vc, animated: true)
             print("did press avtivity")
+        }
+    }
+    
+    func unfollow(followee : Account){
+        FollowersHelper().unFollow(followeeUser: followee) { (success) in
+            if success{
+                self.setNotFollowingState()
+                self.followButton.isEnabled = true
+                if self.userFollows{
+                DispatchQueue.main.async {
+                    self.user?.followersCount = (self.user?.followersCount ?? 0) - 1
+                    self.followers.text = "\((self.user?.followersCount ?? 0) )"
+                }
+                }
+                self.setNotFollowingState()
+            }
         }
     }
     

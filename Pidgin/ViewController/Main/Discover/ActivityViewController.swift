@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseFirestore
 import DZNEmptyDataSet
+import DeepDiff
 class ActivityViewController: HomeViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -19,6 +20,8 @@ class ActivityViewController: HomeViewController {
     
     @IBOutlet weak var followRequestsLabel: UILabel!
     @IBOutlet weak var viewRequestsButton: UIButton!
+    
+    let refreshControl = UIRefreshControl()
     
     
     override func viewDidLoad() {
@@ -36,27 +39,17 @@ class ActivityViewController: HomeViewController {
         
         if User.shared.isPrivate{
             followRequestsLabel.text = " \(User.shared.followRequestsCount) Follow Requests"
+
             viewRequestsButton.roundCorners()
         }else{
-            followRequestsLabel.isHidden = true
+            followRequestsLabel.text = "Your account is set to public"
             viewRequestsButton.isHidden = true
-            tableView.contentInset = UIEdgeInsets(top: -50, left: 0, bottom: 0, right: 0)
         }
         
         
-        
-        
-        originalQuery.getDocuments { (snapshot, error) in
-            if error == nil{
-                for document in snapshot!.documents{
-                    let item = ActivityItem(document: document)
-                    self.items.append(item)
-                }
-                self.tableView.reloadData()
-            }else{
-                print("there was an error \(error!)")
-            }
-        }
+        self.extendedLayoutIncludesOpaqueBars = true
+        setUpRefresh()
+        getItems(removeAll: false)
         // Do any additional setup after loading the view.
     }
     
@@ -64,6 +57,42 @@ class ActivityViewController: HomeViewController {
         print("Followers label tapped")
                let vc = storyboard?.instantiateViewController(identifier: "FollowRequestTableViewController") as! FollowRequestTableViewController
                navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func getItems(removeAll : Bool){
+        originalQuery.getDocuments { (snapshot, error) in
+            if error == nil{
+                let old = self.items
+                var newItems = self.items
+                if removeAll{
+                    newItems.removeAll()
+                }
+                for document in snapshot!.documents{
+                    let item = ActivityItem(document: document)
+                    newItems.append(item)
+                }
+                let changes = diff(old: old, new: newItems)
+                
+                self.refreshControl.endRefreshing()
+                    self.tableView.reload(changes: changes, section: 0, updateData: {
+                        self.items = newItems
+                        self.tableView.reloadEmptyDataSet()
+                    })
+            }else{
+                print("there was an error \(error!)")
+            }
+        }
+    }
+    
+
+    func setUpRefresh(){
+        refreshControl.tintColor = .secondaryLabel
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        tableView.addSubview(refreshControl)
+    }
+    
+    @objc func refresh(){
+        getItems(removeAll: true)
     }
     
 
@@ -133,6 +162,16 @@ extension ActivityViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegat
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
         return NSAttributedString(string: "Your followers, reposts, and comments will appear here", attributes: EmptyStateAttributes.shared.subtitle)
     }
+    
+    func emptyDataSet(_ scrollView: UIScrollView!, didTap button: UIButton!) {
+           self.showShareAppDialog()
+           
+       }
+       
+       
+    func buttonTitle(forEmptyDataSet scrollView: UIScrollView!, for state: UIControl.State) -> NSAttributedString! {
+           return NSAttributedString(string: "Invite Friends", attributes: EmptyStateAttributes.shared.button)
+       }
     
     func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
         return self.items.isEmpty

@@ -102,17 +102,8 @@ class CameraVC: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         vc.isHeroEnabled = true
         vc.hero.modalAnimationType = .selectBy(presenting:.zoom, dismissing:.zoomOut)
         vc.modalPresentationStyle = .fullScreen
-        
+        vc.cameraDelegate = self
         navigationController?.pushViewController(vc, animated: true)
-    }
-    @IBAction func presentGallery(_ sender: Any) {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.mediaTypes = ["public.image", "public.movie"]
-        picker.sourceType = .photoLibrary
-        picker.videoMaximumDuration = 30
-        picker.allowsEditing = true
-        self.present(picker, animated: true, completion: nil)
     }
     
     @objc func takeAPhoto(){
@@ -358,42 +349,14 @@ extension CameraVC : RecordingButtonDelegate{
     
 }
 
-extension CameraVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-    func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        let storyboard = UIStoryboard(name: "PhotoEditor", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "PhotoEditorViewController") as! PhotoEditorViewController
-        
-        vc.modalPresentationStyle = .fullScreen
-        
-        if let mediaType = info[UIImagePickerController.InfoKey.mediaType] as? String {
-
-            if mediaType  == "public.image" {
-                // 1
-                if let newImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
-                    vc.photo = newImage
-                    vc.checkVideoOrIamge = true
-                }
-                  
-            }
-            if mediaType == "public.movie" {
-                print("Video Selected")
-                if let url = info[UIImagePickerController.InfoKey.mediaURL] as? URL{
-                    vc.videoURL = url
-                    vc.checkVideoOrIamge = false
-                }
-            }
-            
-            picker.dismiss(animated: true, completion: nil)
-            present(vc, animated: true, completion: nil)
-        }
-      print("uploading image")
+extension CameraVC : CameraDelegate{
+    func didFinishProcessingVideo(url: URL) {
+        cameraVCDelegate?.didFinishProcessingVideo(url: url)
     }
-
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-      picker.dismiss(animated: true, completion: nil)
+    
+    func didTakePhoto(image: UIImage) {
+        cameraVCDelegate?.didTakePhoto(image: image)
     }
+    
+    
 }
-
-

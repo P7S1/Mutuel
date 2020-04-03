@@ -42,67 +42,67 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
         }
     }
     
-
+    
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         print("did receive registration token")
-       // updateFirestorePushTokenIfNeeded()
+        // updateFirestorePushTokenIfNeeded()
     }
-        func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        if let app = UIApplication.shared.delegate as? AppDelegate, let window = app.window {
             
-            if let app = UIApplication.shared.delegate as? AppDelegate, let window = app.window {
-                
-                guard let tabbarController = window.rootViewController as? TabBarController else {
-                    // your rootViewController is no UITabbarController
-                    return
-                }
-                guard let selectedNavigationController = tabbarController.selectedViewController as? UINavigationController else {
-                    // the selected viewController in your tabbarController is no navigationController!
-                    return
-                }
-                
-                let userInfo = response.notification.request.content.userInfo
-                
-                if let chatID = userInfo["channelID"] as? String{
-                    let docRef = db.collection("channels").document(chatID)
-                    docRef.getDocument { (snapshot, error) in
-                        if error == nil{
-                            let channel = Channel(document: snapshot!)
-                            let vc = ChatViewController()
-                            vc.channel = channel
-                            selectedNavigationController.pushViewController(vc, animated: true)
-                        }
+            guard let tabbarController = window.rootViewController as? TabBarController else {
+                // your rootViewController is no UITabbarController
+                return
+            }
+            guard let selectedNavigationController = tabbarController.selectedViewController as? UINavigationController else {
+                // the selected viewController in your tabbarController is no navigationController!
+                return
+            }
+            
+            let userInfo = response.notification.request.content.userInfo
+            
+            if let chatID = userInfo["channelID"] as? String{
+                let docRef = db.collection("channels").document(chatID)
+                docRef.getDocument { (snapshot, error) in
+                    if error == nil{
+                        let channel = Channel(document: snapshot!)
+                        let vc = ChatViewController()
+                        vc.channel = channel
+                        selectedNavigationController.pushViewController(vc, animated: true)
                     }
-                }else if let postID = userInfo["postID"] as? String, let userID = userInfo["userID"] as? String {
-                   let docRef = db.collection("users").document(userID).collection("posts").document(postID)
-                    docRef.getDocument { (snapshot, error) in
-                        if error == nil{
-                            let post = Post(document: snapshot!)
-                            
-                            let storyboard = UIStoryboard(name: "Discover", bundle: nil)
-                             let vc = storyboard.instantiateViewController(withIdentifier: "PostViewController") as! PostViewController
-                             vc.post = post
-                             selectedNavigationController.pushViewController(vc, animated: true)
-                            
-                        }
+                }
+            }else if let postID = userInfo["postID"] as? String, let userID = userInfo["userID"] as? String {
+                let docRef = db.collection("users").document(userID).collection("posts").document(postID)
+                docRef.getDocument { (snapshot, error) in
+                    if error == nil{
+                        let post = Post(document: snapshot!)
+                        
+                        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+                        let vc = storyboard.instantiateViewController(withIdentifier: "PostViewController") as! PostViewController
+                        vc.post = post
+                        selectedNavigationController.pushViewController(vc, animated: true)
+                        
                     }
-                    
-                }else if let followerID = userInfo["followerID"] as? String{
-                    let docRef = db.collection("users").document(followerID)
-                    docRef.getDocument { (snapshot, error) in
-                        if error == nil{
-                            let user = Account()
-                            user.convertFromDocument(dictionary: snapshot!)
-                            let storyboard = UIStoryboard(name: "Discover", bundle: nil)
-                            let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
-                            vc.user = user
-                            vc.isUserProfile = true
-                            selectedNavigationController.pushViewController(vc, animated: true)
-                            
-                        }
+                }
+                
+            }else if let followerID = userInfo["followerID"] as? String{
+                let docRef = db.collection("users").document(followerID)
+                docRef.getDocument { (snapshot, error) in
+                    if error == nil{
+                        let user = Account()
+                        user.convertFromDocument(dictionary: snapshot!)
+                        let storyboard = UIStoryboard(name: "Discover", bundle: nil)
+                        let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
+                        vc.user = user
+                        vc.isUserProfile = true
+                        selectedNavigationController.pushViewController(vc, animated: true)
+                        
                     }
                 }
             }
-
+        }
+        
         
         completionHandler()
     }

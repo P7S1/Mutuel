@@ -109,8 +109,8 @@ class EditProfileViewController: FormViewController {
     @objc func profilePictureTapped(){
        print("did recognize tap")
         let alertController = UIAlertController(title: nil, message: nil , preferredStyle: .actionSheet)
-        alertController.popoverPresentationController?.sourceView = self.view
-        alertController.popoverPresentationController?.sourceRect = self.view.frame
+        alertController.popoverPresentationController?.sourceView = self.cellView
+        alertController.popoverPresentationController?.sourceRect = self.cellView.frame
         alertController.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: { (action) in
             print("chose take photo")
             
@@ -135,7 +135,9 @@ class EditProfileViewController: FormViewController {
         
         if let image = profileImage{
             if let url = User.shared.profileURL{
+                if !url.isEmpty{
             FollowersHelper.deleteImage(at: url)
+                }
             }
             let _ = FollowersHelper().uploadPicture(data1: image.jpegData(compressionQuality: 0.1), imageName: "profile")
         }

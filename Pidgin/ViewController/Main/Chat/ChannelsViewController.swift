@@ -12,6 +12,7 @@ import GiphyUISDK
 import GiphyCoreSDK
 import DeepDiff
 import DZNEmptyDataSet
+import SPPermissions
 protocol ChannelDelegate {
     func updateChannel(channel : Channel)
 }
@@ -50,6 +51,8 @@ class ChannelsViewController: HomeViewController, UITableViewDelegate,UITableVie
     
   override func viewDidLoad() {
     super.viewDidLoad()
+    let pushManager = PushNotificationManager(userID: User.shared.uid!)
+    pushManager.registerForPushNotifications()
     setupUI()
     configureNavItem(name: "Chats")
     tableView.delegate = self
@@ -318,6 +321,16 @@ extension ChannelsViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegat
         return NSAttributedString(string: "Start a new chat today! You won't regret it.", attributes: EmptyStateAttributes.shared.subtitle)
     }
     
+    func emptyDataSet(_ scrollView: UIScrollView!, didTap button: UIButton!) {
+           self.showShareAppDialog()
+           
+       }
+       
+       
+    func buttonTitle(forEmptyDataSet scrollView: UIScrollView!, for state: UIControl.State) -> NSAttributedString! {
+           return NSAttributedString(string: "Invite Friends", attributes: EmptyStateAttributes.shared.button)
+       }
+    
     func emptyDataSetShouldDisplay(_ scrollView: UIScrollView!) -> Bool {
         return self.channels.isEmpty
     }
@@ -332,3 +345,4 @@ extension ChannelsViewController : DZNEmptyDataSetSource, DZNEmptyDataSetDelegat
     
     
 }
+    

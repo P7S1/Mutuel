@@ -23,10 +23,10 @@ class UsernameViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var continueButton: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
     
+    @IBOutlet weak var privacySwitch: UISwitch!
     let allowedCharacters = CharacterSet(charactersIn:"0123456789abcdefghijklmnopqrstuvxyz_.").inverted
     
     var usernameDelegate : UsernameViewControllerDelegate?
-    
     var user = User()
     
     override func viewDidLoad() {
@@ -65,9 +65,11 @@ class UsernameViewController: UIViewController, UITextFieldDelegate {
                         self.user.username = username
                         self.user.uid = Auth.auth().currentUser?.uid
                         self.user.email = Auth.auth().currentUser?.email
+                        self.user.isPrivate = self.privacySwitch.isOn
                         let docRef = db.collection("users").document(Auth.auth().currentUser!.uid)
                         docRef.setData(self.user.representation, merge: true) { (error) in
                             if error == nil{
+                                User.shared = self.user
                                 ProgressHUD.dismiss()
                                 appDidLoad = false
                                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "logUserIn"), object: nil)

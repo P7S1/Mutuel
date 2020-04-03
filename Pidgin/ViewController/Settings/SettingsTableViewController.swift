@@ -77,7 +77,7 @@ class SettingsTableViewController: UITableViewController {
                 let vc = EditProfileViewController()
                 navigationController?.pushViewController(vc, animated: true)
             case 1:
-                return
+                showShareAppDialog()
             case 2:
                 let vc = storyboard?.instantiateViewController(identifier: "BlockedUsersViewController") as! BlockedUsersViewController
                 navigationController?.pushViewController(vc, animated: true)
@@ -86,29 +86,34 @@ class SettingsTableViewController: UITableViewController {
             }
         case 1:
             switch indexPath.row {
-
-            case 2:
+                
+            case 0:
+                launchWebView(title: "About", link: "https://www.mutuel.live/")
+            case 1:
                 requestReviewManually()
+            case 2:
+                launchIGISafari()
             default:
                 return
             }
         case 2:
             switch indexPath.row {
             case 0:
-                launchWebView(title: "Report bug/feedback")
+                launchIGISafari()
             case 1:
-                launchWebView(title: "Contact")
+                launchIGISafari()
             case 2:
-                launchWebView(title: "Beta testers")
+                guard let url = URL(string: "https://testflight.apple.com/join/e39lzipr") else { return }
+                UIApplication.shared.openURL(url)
             default:
                 return
             }
         case 3:
             switch indexPath.row {
             case 0:
-                launchWebView(title: "Privacy Policy")
+                launchWebView(title: "Privacy Policy", link: "https://www.mutuel.live/privacy-policy-1")
             case 1:
-                launchWebView(title: "Terms and Conditions")
+                launchWebView(title: "Terms of Service", link: "https://www.mutuel.live/terms-of-service")
             default:
                 return
             }
@@ -117,10 +122,11 @@ class SettingsTableViewController: UITableViewController {
         }
     }
     
-    func launchWebView(title : String){
+    func launchWebView(title : String, link : String){
         print("launch webview")
         let vc = WebViewController()
-        vc.title = title
+        vc.navTitle = title
+        vc.url = URL(string: link)
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -133,10 +139,15 @@ class SettingsTableViewController: UITableViewController {
         }
     }
     
+    func launchIGISafari(){
+        guard let url = URL(string: "https://www.instagram.com/officialmutuel/") else { return }
+        UIApplication.shared.openURL(url)
+    }
+    
     func requestReviewManually() {
         // Note: Replace the XXXXXXXXXX below with the App Store ID for your app
         //       You can find the App Store ID in your app's product URL
-        guard let writeReviewURL = URL(string: "https://itunes.apple.com/app/id1477275391?action=write-review")
+        guard let writeReviewURL = URL(string: "https://itunes.apple.com/app/id1498709902?action=write-review")
             else { fatalError("Expected a valid URL") }
         UIApplication.shared.open(writeReviewURL, options: [:], completionHandler: nil)
     }

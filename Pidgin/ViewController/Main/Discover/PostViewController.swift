@@ -13,6 +13,8 @@ import Lightbox
 import FirebaseDatabase
 import Kingfisher
 import Photos
+import SPPermissions
+import AwesomeSpotlightView
 class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var contentView: UIView!
@@ -118,7 +120,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
        // panGR.delegate = self
        // view.addGestureRecognizer(panGR)
         print("height : \(post.photoSize)")
-        
+
         self.view.layoutIfNeeded()
         // Do any additional setup after loading the view.
     }
@@ -227,7 +229,22 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     }
     
     @objc func saveTapped(){
+        if post.isGIF{
+            ProgressHUD.showError("Unable to save gifs")
+        }else{
+        if SPPermission.photoLibrary.isAuthorized {
+                   
+                    save()
+               }else{
+                   showPhotosPerimissionsVC()
+
+               }
+        }
+    }
+    
+    func save(){
         if post.isVideo{
+            recordSaveInDatabase()
             ProgressHUD.show("Saving video...")
             guard let url = URL(string: post?.videoURL ?? "") else{ return }
             DispatchQueue.global(qos: .background).async {
@@ -249,7 +266,7 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
             }
             
         }else{
-            ProgressHUD.show("Image saved successfully")
+            ProgressHUD.showSuccess("Image saved successfully")
             guard let image = imageView.image else {
                 print("invalid image")
                 ProgressHUD.dismiss()
@@ -259,6 +276,12 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
             
             UIImageWriteToSavedPhotosAlbum(image, nil,nil, nil)
         }
+    }
+    
+    func recordSaveInDatabase(){
+        let docRef = db.collection("users").document(post.originalCreatorID).collection("posts").document(post.originalPostID).collection("downloads").document(User.shared.uid!)
+        
+        docRef.setData(["User.shared.uid" : true])
     }
     
   /*  @objc func handlePan(gestureRecognizer:UIPanGestureRecognizer) {
@@ -306,4 +329,33 @@ class PostViewController: UIViewController, UIScrollViewDelegate, UIGestureRecog
     }
     */
 
+}
+
+
+extension PostViewController{
+    func showPhotosPerimissionsVC(){
+        
+        let controller = SPPermissions.dialog([.photoLibrary])
+
+        // Ovveride texts in controller
+        controller.titleText = "Save Photo/Video"
+        controller.headerText = "Permissions Required"
+        controller.footerText = "These permissions are required for you to save photos and videos from posts "
+
+        // Set `DataSource` or `Delegate` if need.
+        // By default using project texts and icons.
+        controller.dataSource = self
+        controller.delegate = self
+
+        // Always use this method for present
+        controller.present(on: self)
+        
+    }
+    
+    public override func didHide(permissions ids: [Int]) {
+        if SPPermission.photoLibrary.isAuthorized {
+            save()
+        }
+    }
+    
 }

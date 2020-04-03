@@ -9,6 +9,8 @@
 import UIKit
 import FirebaseMessaging
 import FirebaseFirestore
+import SPPermissions
+import AwesomeSpotlightView
 class ChallengeDayViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -19,6 +21,8 @@ class ChallengeDayViewController: UIViewController {
     
     var notificationButton : UIBarButtonItem!
     
+    var pendingDay : ChallengeDay?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +31,8 @@ class ChallengeDayViewController: UIViewController {
         backButton.title = " " //in your case it will be empty or you can put the title of your choice
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
     
+        self.navigationItem.largeTitleDisplayMode = .never
+        
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -40,6 +46,9 @@ class ChallengeDayViewController: UIViewController {
         updateNotificationItem(toggle: false)
         
         self.days = challenge.days
+        
+        
+        checkIfFirstTimeLaunchingChallenge()
 
         // Do any additional setup after loading the view.
     }
@@ -130,11 +139,9 @@ extension ChallengeDayViewController: UITableViewDelegate, UITableViewDataSource
         
         cell.makeAPostAction = {
             () in
-        let vc = UploadViewController()
-            vc.challengeDay = day
-            vc.challenge = self.challenge
-            vc.isChallenge = true
-            self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+            self.pendingDay = day
+            self.launchUploadVCIfPossible(challenge: self.challenge, day: day, isChallenge: true)
+            
         }
     
         let dayInterval = abs(challenge.startDate.interval(ofComponent: .day, fromDate: Date()))+1
@@ -173,9 +180,44 @@ extension ChallengeDayViewController: UITableViewDelegate, UITableViewDataSource
         let vc = storyboard.instantiateViewController(identifier: "ExploreViewController") as! ExploreViewController
         vc.isUserProfile = false
             vc.isChallenge = false
-            vc.query = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("challengeDayID", isEqualTo: day.id).order(by: "score", descending: true).whereField("isExplicit", isEqualTo: false).whereField("isPrivate", isEqualTo: false).limit(to: 20)
+            vc.originalQuery = db.collectionGroup("posts").whereField("isRepost", isEqualTo: false).whereField("challengeDayID", isEqualTo: day.id).order(by: "score", descending: true).whereField("isExplicit", isEqualTo: false).whereField("isPrivate", isEqualTo: false)
+            vc.query = vc.originalQuery.limit(to: 15)
         vc.navigationItem.title = day.activity
         navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+    override func didHide(permissions ids: [Int]) {
+        if (SPPermission.camera.isAuthorized &&
+            SPPermission.microphone.isAuthorized &&
+            SPPermission.photoLibrary.isAuthorized) {
+            
+            showUploadVC(challenge: challenge, day: self.pendingDay, isChallenge: true)
+            
+        }
+    }
+    
+    func showSpotlightView(){
+        let window = UIApplication.shared.keyWindow
+        let topPadding = window?.safeAreaInsets.top
+        let frame = CGRect(x: self.view.frame.width-50-4, y: topPadding ?? 0, width: 50, height: 50)
+        let spotlight = AwesomeSpotlight(withRect: frame, shape: .circle, text: "Tap the bell to recieve notificaitons to post for this challenge", isAllowPassTouchesThroughSpotlight: true)
+        
+        let spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [spotlight])
+        spotlightView.cutoutRadius = 8
+        tabBarController?.view.addSubview(spotlightView)
+        spotlightView.start()
+    }
+    
+    func checkIfFirstTimeLaunchingChallenge(){
+        let key = "launchedChallenge_\(challenge.id)"
+        let launchedBefore = UserDefaults.standard.bool(forKey: key)
+        if launchedBefore  {
+            print("Not first launch.")
+        } else {
+            print("First launch, setting UserDefault.")
+            showSpotlightView()
+            UserDefaults.standard.set(true, forKey: key)
         }
     }
     

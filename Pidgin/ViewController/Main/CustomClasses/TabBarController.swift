@@ -8,9 +8,9 @@
 
 import UIKit
 import Hero
-
+import AwesomeSpotlightView
 class TabBarController: UITabBarController, UITabBarControllerDelegate{
-    
+
     let gradientlayer = CAGradientLayer()
     
     override func viewDidLoad() {
@@ -63,19 +63,43 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate{
  
         viewControllers = [homeViewController,challengeVC, actionViewController, activityVC, secondViewController]
         
-
+        
+        if firstLaunch{
+        showSpotlightView()
+        }
     }
     
     
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 
         if viewController.isKind(of: UploadViewController.self) {
-            let vc = UploadViewController()
-            self.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+            
+            launchUploadVCIfPossible(challenge: nil, day: nil, isChallenge: false)
+            
             return false
         }
 
         return true
     }
-
+    
+    func showSpotlightView(){
+        let middle = self.view.frame.width/2
+        let window = UIApplication.shared.keyWindow
+        let topPadding = window?.safeAreaInsets.top ?? 0
+        let rect = CGRect(x: middle-25, y: self.view.frame.height+8-50-topPadding, width: 50, height: 50)
+        
+        let spotlight = AwesomeSpotlight(withRect: rect, shape: .circle, text: "Tap the plus to post photos, videos, gifs, or use AR filters", isAllowPassTouchesThroughSpotlight: true)
+        
+        let spotlightView = AwesomeSpotlightView(frame: view.frame, spotlight: [spotlight])
+        spotlightView.cutoutRadius = 8
+        view.addSubview(spotlightView)
+        spotlightView.start()
+    }
 }
+    
+    
+    
+    
+
+
+

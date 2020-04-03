@@ -27,7 +27,7 @@ class FollowRequestTableViewController: UIViewController {
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
         navigationItem.title = "Follow Requests"
-        
+        navigationItem.largeTitleDisplayMode = .never
         tableView.delegate = self
         tableView.dataSource = self
         tableView.emptyDataSetSource = self
