@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GADApplicationIdentifier</key>
@@ -28,7 +28,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow you to take photos and vidoes for posts, this is also required to allow the AR Camera to use Apple&apos;s TrueDepth API. Please see our Privacy Policy in the app settings for more details.</string>
+	<string>Allow you to take photos and vidoes for posts, this is also required to allow the AR Camera to use Apple's TrueDepth API. Please see our Privacy Policy in the app settings for more details.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allows you to record audio for your video posts within the regular Camera and the AR Camera</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

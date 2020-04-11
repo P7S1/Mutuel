@@ -149,6 +149,12 @@ class User : Account{
         uid = nil
         name = nil
         birthday = nil
+        followersCount = nil
+        followingCount = nil
+        profileURL = nil
+        isPrivate = false
+        followRequestsCount = 0
+        
     }
     
     func invalidateToken(completion: @escaping (Bool) -> Void){

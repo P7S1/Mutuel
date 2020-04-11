@@ -197,7 +197,7 @@ class SendToUserViewController: UIViewController {
                 try data0 = NSData(contentsOf: video!) as Data
             } catch {
                 ProgressHUD.showError("error")
-                print(error)
+                print(error.localizedDescription)
             }
             dataExtension = ".mp4"
         }
@@ -211,7 +211,7 @@ class SendToUserViewController: UIViewController {
                             }
                         } else{
                             ProgressHUD.showError("Error")
-                            print("error uploading picture")
+                            print("error uploading picture :\(error!.localizedDescription)")
                             
                         }
                     }
@@ -237,7 +237,7 @@ class SendToUserViewController: UIViewController {
     }
     
     func saveToDatabase(photoURL : URL, videoURL : URL?, isVideo : Bool, storageRef : String, videoStorageRef : String){
-        let ref = db.collection("users").document(User.shared.uid ?? "").collection("posts").document()
+        let ref = db.collection("users").document(User.shared.uid!).collection("posts").document()
         if textView.text == "Write a caption..."{
             textView.text = ""
         }
@@ -263,8 +263,15 @@ class SendToUserViewController: UIViewController {
                         tags : self.tags,
                         storageRef : storageRef,
                         videoStorageRef: videoStorageRef )
-        ref.setData(post.representation)
-        ProgressHUD.showSuccess("Post Successful")
+        ref.setData(post.representation) { (error) in
+            if error == nil{
+             ProgressHUD.showSuccess("Post Successful")
+            }else{
+                ProgressHUD.showError("error")
+                print("there was an error: \(error!.localizedDescription)")
+            }
+        }
+        
     }
     
 
@@ -348,7 +355,15 @@ extension  SendToUserViewController : UICollectionViewDelegate, UICollectionView
         self.tags.append(item.id)
         }else if tags.count <= 0{
         }else{
-            ProgressHUD.showError("You can only select one tag")
+            let oldItem = self.tags[0]
+            self.tags.removeAll()
+            self.tags.append(item.id)
+            if let index = CategoryItem.getCategoryArray().firstIndex(where: { (item) -> Bool in
+                return oldItem  == item.id
+            }){
+            let indexP = IndexPath(row: index, section: 0)
+            self.collectionView.reloadItems(at: [indexP] )
+            }
         }
         }
         
