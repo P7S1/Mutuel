@@ -27,6 +27,8 @@ ${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework
 ${BUILT_PRODUCTS_DIR}/SPPermissions/SPPermissions.framework
 ${BUILT_PRODUCTS_DIR}/SkeletonView/SkeletonView.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
+${PODS_ROOT}/SnapSDK/SCSDKCreativeKit.framework
+${PODS_ROOT}/SnapSDK/SCSDKCoreKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfGLTFSceneKit/SvrfGLTFSceneKit.framework
 ${BUILT_PRODUCTS_DIR}/SvrfSDK/SvrfSDK.framework
 ${BUILT_PRODUCTS_DIR}/SwipeTransition/SwipeTransition.framework

@@ -46,6 +46,9 @@
 		DF469B7E237910E400CDB540 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B7D237910E400CDB540 /* ProfileViewController.swift */; };
 		DF469B802379FAD300CDB540 /* FollowersHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B7F2379FAD300CDB540 /* FollowersHelper.swift */; };
 		DF469B84237B47B600CDB540 /* FollowersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */; };
+		DF4889852444FA2300260710 /* SnapchatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4889842444FA2300260710 /* SnapchatHelper.swift */; };
+		DF488987244500A300260710 /* SnapchatSticker.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF488986244500A300260710 /* SnapchatSticker.xib */; };
+		DF4889892445032900260710 /* SnapchatSticker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4889882445032900260710 /* SnapchatSticker.swift */; };
 		DF4BC415234D8267001AD00D /* ARCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4BC3F2234D8266001AD00D /* ARCameraVC.swift */; };
 		DF4BC41D234D8267001AD00D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF4BC3FB234D8266001AD00D /* Main.storyboard */; };
 		DF4F7A18234C23A3001D6CE8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DF4F7A16234C23A3001D6CE8 /* LaunchScreen.storyboard */; };
@@ -85,6 +88,8 @@
 		DF95103E236244D8006B3B44 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */; };
 		DF9E597E23CFEE4D004666DD /* ProfilePicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */; };
 		DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9E597F23D14A72004666DD /* VideoIcon.swift */; };
+		DFA08E1824453086004EFE29 /* SnapchatUserSticker.xib in Resources */ = {isa = PBXBuildFile; fileRef = DFA08E1724453086004EFE29 /* SnapchatUserSticker.xib */; };
+		DFA08E1A244532B6004EFE29 /* SnapchatUserSticker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA08E19244532B6004EFE29 /* SnapchatUserSticker.swift */; };
 		DFA281DF242EFBD400052697 /* SubtitleLabelCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA281DE242EFBD400052697 /* SubtitleLabelCollectionReusableView.swift */; };
 		DFA2BC472425D55400E0FAEB /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA2BC462425D55400E0FAEB /* CategoriesViewController.swift */; };
 		DFA6A9F5242BE60E004A283B /* CommentLike.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA6A9F4242BE60E004A283B /* CommentLike.swift */; };
@@ -176,6 +181,9 @@
 		DF469B7D237910E400CDB540 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		DF469B7F2379FAD300CDB540 /* FollowersHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersHelper.swift; sourceTree = "<group>"; };
 		DF469B83237B47B600CDB540 /* FollowersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersTableViewController.swift; sourceTree = "<group>"; };
+		DF4889842444FA2300260710 /* SnapchatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapchatHelper.swift; sourceTree = "<group>"; };
+		DF488986244500A300260710 /* SnapchatSticker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SnapchatSticker.xib; sourceTree = "<group>"; };
+		DF4889882445032900260710 /* SnapchatSticker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapchatSticker.swift; sourceTree = "<group>"; };
 		DF4BC3F2234D8266001AD00D /* ARCameraVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARCameraVC.swift; sourceTree = "<group>"; };
 		DF4BC3FC234D8266001AD00D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DF4F7A08234C239A001D6CE8 /* Mutuel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mutuel.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -219,6 +227,8 @@
 		DF95103D236244D8006B3B44 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		DF9E597D23CFEE4D004666DD /* ProfilePicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePicture.swift; sourceTree = "<group>"; };
 		DF9E597F23D14A72004666DD /* VideoIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoIcon.swift; sourceTree = "<group>"; };
+		DFA08E1724453086004EFE29 /* SnapchatUserSticker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SnapchatUserSticker.xib; sourceTree = "<group>"; };
+		DFA08E19244532B6004EFE29 /* SnapchatUserSticker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapchatUserSticker.swift; sourceTree = "<group>"; };
 		DFA281DE242EFBD400052697 /* SubtitleLabelCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLabelCollectionReusableView.swift; sourceTree = "<group>"; };
 		DFA2BC462425D55400E0FAEB /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		DFA6A9F4242BE60E004A283B /* CommentLike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentLike.swift; sourceTree = "<group>"; };
@@ -384,6 +394,11 @@
 				DFDCA0A423C93D7700240CE7 /* VideoManager.swift */,
 				DFE9E6EC240EEFE100131CBF /* GiphyHelper.swift */,
 				DFDF7BF0242862D50003B983 /* EmptyStateAttributes.swift */,
+				DF4889842444FA2300260710 /* SnapchatHelper.swift */,
+				DF488986244500A300260710 /* SnapchatSticker.xib */,
+				DF4889882445032900260710 /* SnapchatSticker.swift */,
+				DFA08E1724453086004EFE29 /* SnapchatUserSticker.xib */,
+				DFA08E19244532B6004EFE29 /* SnapchatUserSticker.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -731,10 +746,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF4F7A18234C23A3001D6CE8 /* LaunchScreen.storyboard in Resources */,
+				DF488987244500A300260710 /* SnapchatSticker.xib in Resources */,
 				DF14F8EF2411B3B900E95E39 /* BPCollectionViewCell.xib in Resources */,
 				DFEE6F44239BA9030097EA52 /* ProgressHUD.bundle in Resources */,
 				DF086D8423C4197B00D3CCA0 /* FredokaOne-Regular.otf in Resources */,
 				DF95102A2360E06E006B3B44 /* Assets.xcassets in Resources */,
+				DFA08E1824453086004EFE29 /* SnapchatUserSticker.xib in Resources */,
 				DF7D0ABB23B7083600B33E40 /* Discover.storyboard in Resources */,
 				DF95101C2360DBC1006B3B44 /* GoogleService-Info.plist in Resources */,
 				DF4BC41D234D8267001AD00D /* Main.storyboard in Resources */,
@@ -802,6 +819,7 @@
 				DFF66B9324209F23003F82DB /* ChallengeDayViewController.swift in Sources */,
 				DF9E598023D14A72004666DD /* VideoIcon.swift in Sources */,
 				DFF084FB23AF3A3F00C4E2FD /* SendToUserViewController.swift in Sources */,
+				DFA08E1A244532B6004EFE29 /* SnapchatUserSticker.swift in Sources */,
 				DF09BCFF242527C0008568B0 /* CategoryItem.swift in Sources */,
 				DF21A4402365731B00E39A55 /* ResultsTableViewController.swift in Sources */,
 				DF5A223723D67F8200BA053F /* ForgotPasswordViewController.swift in Sources */,
@@ -815,6 +833,7 @@
 				DF14F8EA2411B3B900E95E39 /* BPCellConfigFile.swift in Sources */,
 				DF6FE6B02427241E00CB990B /* BlockedUser.swift in Sources */,
 				DF21A442236578C200E39A55 /* SearchUserTableViewCell.swift in Sources */,
+				DF4889852444FA2300260710 /* SnapchatHelper.swift in Sources */,
 				DF2C741E2423CA1E0020D76C /* AuthorizationButton.swift in Sources */,
 				DF14F8E72411B3B900E95E39 /* BPImageType.swift in Sources */,
 				DF41B3462413F3CD00F5B31F /* ActivityItem.swift in Sources */,
@@ -838,6 +857,7 @@
 				DFDD9ED0234FDD5D007A3177 /* VirtualContentUpdater.swift in Sources */,
 				DF70721623C68D3400F00DF0 /* SignUpViewController.swift in Sources */,
 				DFF66B952420A2B1003F82DB /* ChallengeDayTableViewCell.swift in Sources */,
+				DF4889892445032900260710 /* SnapchatSticker.swift in Sources */,
 				DF73728A23C1899D003ED359 /* CommentsViewController.swift in Sources */,
 				DFE9E6EF240EF06300131CBF /* GifViewController.swift in Sources */,
 				DF14F8ED2411B3B900E95E39 /* BubblePictures.swift in Sources */,
@@ -1063,7 +1083,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/MutuelDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1071,7 +1091,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AtemnkengFontem.Pidgin;
 				PRODUCT_NAME = Mutuel;
@@ -1092,7 +1112,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Pidgin/Pidgin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = 6P8ZRP65P6;
 				INFOPLIST_FILE = Pidgin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1100,7 +1120,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AtemnkengFontem.Pidgin;
 				PRODUCT_NAME = Mutuel;

@@ -20,6 +20,9 @@ class ProfileViewController: UIViewController{
     @IBOutlet weak var followingStackView: UIStackView!
     @IBOutlet weak var followersStackView: UIStackView!
     
+    @IBOutlet weak var snapchatButton: UIButton!
+    
+    
     var profileDelegate : ProfileDelegate?
     
     var user : Account?
@@ -61,6 +64,9 @@ class ProfileViewController: UIViewController{
         if user?.uid == User.shared.uid{
             isCurrentUser = true
         }
+        
+        snapchatButton.clipsToBounds = true
+        snapchatButton.layer.cornerRadius = snapchatButton.frame.height/5
         
         followersStackView.isUserInteractionEnabled = true
         followingStackView.isUserInteractionEnabled = true
@@ -225,7 +231,12 @@ class ProfileViewController: UIViewController{
             self.present(alertController, animated: true, completion: nil)
     }
     
-     func settingsButtonPressed(){
+    @IBAction func snapchatButtonPressed(_ sender: Any) {
+        if let account = user{
+        SnapchatHelper.shared.share(account: account)
+        }
+    }
+    func settingsButtonPressed(){
       if isCurrentUser{
             let storyboard = UIStoryboard(name: "Settings", bundle: nil)
             let vc = storyboard.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController

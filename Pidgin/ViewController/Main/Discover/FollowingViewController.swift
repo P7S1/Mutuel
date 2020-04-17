@@ -275,6 +275,7 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
             cell.challengeView.isHidden = true
         }
         
+            cell.snapchatButton.isHidden = post.isPrivate
         
         cell.caption.text = post.caption
         
@@ -308,8 +309,6 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
         
         cell.height.constant = height
         cell.contentView.setNeedsUpdateConstraints()
-        
-        cell.gradientView.isHidden = true
         cell.imageView.isSkeletonable = true
         cell.imageView.showAnimatedGradientSkeleton(usingGradient: gradient)
     cell.imageView.layer.cornerRadius = 10.0
@@ -320,7 +319,6 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
             cell.imageView.kf.setImage(with: URL(string: post.photoURL)) { (result) in
                    cell.imageView.stopSkeletonAnimation()
                 cell.imageView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.2))
-                cell.gradientView.isHidden = false
                 
             }
         }
@@ -423,6 +421,9 @@ extension FollowingViewController : UICollectionViewDelegate, UICollectionViewDa
                         }
                     }
                 }
+            }
+            cell.snapchatTapAction = { () in
+                SnapchatHelper.shared.share(post: post)
             }
             cell.setUpGestures()
         

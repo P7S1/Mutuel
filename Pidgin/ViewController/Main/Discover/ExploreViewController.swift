@@ -74,6 +74,9 @@ class ExploreViewController: UIViewController, UIGestureRecognizerDelegate {
 
         self.adLoader.load(GADRequest())
         if isUserProfile{
+            if user.username == nil{
+                self.navigationController?.popViewController(animated: true)
+            }
             navigationItem.largeTitleDisplayMode = .never
             navigationItem.title = ""
             

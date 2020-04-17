@@ -13,8 +13,10 @@ class CarbonSwipe : CarbonTabSwipeNavigation {
     
     func configure(items : [String], vc : UIViewController){
         self.insert(intoRootViewController: vc)
-           self.setNormalColor(.secondaryLabel, font: UIFont.systemFont(ofSize: 17, weight: .bold))
-           self.setSelectedColor(.label, font: UIFont.systemFont(ofSize: 17, weight: .bold))
+           self.setNormalColor(.secondaryLabel, font: UIFont(name: "AvenirNext-Bold", size: 17
+           )!)
+           self.setSelectedColor(.label, font: UIFont(name: "AvenirNext-Bold", size: 17
+           )!)
            self.setIndicatorColor(.systemPink)
            self.setTabBarHeight(40)
            self.carbonSegmentedControl?.backgroundColor = .systemBackground
@@ -36,8 +38,10 @@ extension CarbonSwipe {
     
     func config(items : [String], vc : UIViewController){
         self.insert(intoRootViewController: vc,andTargetView: vc.view)
-           self.setNormalColor(.secondaryLabel, font: UIFont.systemFont(ofSize: 17, weight: .bold))
-           self.setSelectedColor(.label, font: UIFont.systemFont(ofSize: 17, weight: .bold))
+           self.setNormalColor(.secondaryLabel, font: UIFont(name: "AvenirNext-Bold", size: 17
+           )!)
+           self.setSelectedColor(.label, font: UIFont(name: "AvenirNext-Bold", size: 17
+           )!)
            self.setIndicatorColor(.systemPink)
            self.setTabBarHeight(40)
            self.carbonSegmentedControl?.backgroundColor = .systemBackground

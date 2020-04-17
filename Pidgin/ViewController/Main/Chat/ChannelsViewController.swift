@@ -267,18 +267,23 @@ extension ChannelsViewController {
     let timestamp = channel.lastOpened.value(forKey: User.shared.uid ?? "") as? Timestamp ?? Timestamp()
     let lastRead = timestamp.dateValue()
     
-    cell.displayName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+    cell.displayName.font = UIFont(name: "AvenirNext-Bold", size: 17
+    )!
     cell.displayName.textColor = .label
     if lastRead > channel.lastMessageDate || channel.lastSentUser == User.shared.uid{
         cell.readIndicator.isHidden = true
-        cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        cell.message.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        cell.timeStamp.font = UIFont(name: "AvenirNext-Medium", size: 15
+        )!
+        cell.message.font = UIFont(name: "AvenirNext-Medium", size: 15
+        )!
         cell.timeStamp.textColor = .secondaryLabel
         cell.message.textColor = .secondaryLabel
     }else{
         cell.readIndicator.isHidden = false
-        cell.timeStamp.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        cell.message.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        cell.timeStamp.font = UIFont(name: "AvenirNext-Medium", size: 15
+        )!
+        cell.message.font = UIFont(name: "AvenirNext-Medium", size: 15
+        )!
         cell.timeStamp.textColor = .label
         cell.message.textColor = .label
 

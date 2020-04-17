@@ -24,7 +24,7 @@ class UsernameViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var datePicker: UIDatePicker!
     
     @IBOutlet weak var privacySwitch: UISwitch!
-    let allowedCharacters = CharacterSet(charactersIn:"0123456789abcdefghijklmnopqrstuvxyz_.").inverted
+    let allowedCharacters = CharacterSet(charactersIn:"0123456789abcdefghijklmnopqrstuvwxyz_.").inverted
     
     var usernameDelegate : UsernameViewControllerDelegate?
     var user = User()

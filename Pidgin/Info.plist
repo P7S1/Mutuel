@@ -20,6 +20,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-7404153809143887~7289947174</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>snapchat</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -35,6 +39,8 @@
 	<string>Allows you to use your own photos and videos for posts</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allows you to download photos and videos into your photo library</string>
+	<key>SCSDKClientId</key>
+	<string>f14d25ac-3015-40e0-beee-514ebf71c22e</string>
 	<key>SVRF_API_KEY</key>
 	<string>0e3b5b79f2dfa52d9bbf437fab983fc4</string>
 	<key>UIAppFonts</key>

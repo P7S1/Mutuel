@@ -38,5 +38,6 @@ target 'Pidgin' do
   pod 'SPPermissions/Microphone'
   pod 'SPPermissions/PhotoLibrary'
   pod 'AwesomeSpotlightView'
+  pod 'SnapSDK', :subspecs => ['SCSDKCreativeKit']
 end
 

@@ -835,7 +835,8 @@ extension ChatViewController : MessagesLayoutDelegate, MessagesDisplayDelegate{
 
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         let name = channel.metaData.value(forKey: message.sender.senderId) as? String ?? message.sender.displayName
-            return NSAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 11, weight: .medium), NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
+            return NSAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont(name: "AvenirNext-Medium", size: 11
+            )!, NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
     }
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         if !isNextMessageSameSender(at: indexPath){

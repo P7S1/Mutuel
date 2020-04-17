@@ -20,9 +20,6 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var caption: UILabel!
     
-
-    @IBOutlet weak var gradientView: BackGradientView!
-    
     @IBOutlet weak var nameLabel: UILabel!
     
     @IBOutlet weak var usernameLabel: UILabel!
@@ -54,7 +51,11 @@ class FollowingCollectionViewCell: UICollectionViewCell {
     var moreTapAction : (()->())?
     
     var challengeTapAction : (()->())?
+    
+    var snapchatTapAction : (()->())?
 
+    @IBOutlet weak var snapchatButton: UIButton!
+    
     func setUpGestures(){
        let tap = UITapGestureRecognizer(target: self, action: #selector(btnTapped))
         topView.addGestureRecognizer(tap)
@@ -64,6 +65,12 @@ class FollowingCollectionViewCell: UICollectionViewCell {
         
         let challengeGesture = UITapGestureRecognizer(target: self, action: #selector(challengeTapped))
         challengeView.addGestureRecognizer(challengeGesture)
+        
+        moreButton.roundCorners()
+        
+        snapchatButton.layer.cornerRadius = snapchatButton.frame.height/5
+        snapchatButton.clipsToBounds = true
+        
     } 
     func setUpPlayer(post : Post){
         playerContainerView.backgroundColor = .clear
@@ -91,4 +98,7 @@ class FollowingCollectionViewCell: UICollectionViewCell {
         challengeTapAction?()
     }
     
+    @IBAction func snapchatButtonTapped(_ sender: Any) {
+        snapchatTapAction?()
+    }
 }

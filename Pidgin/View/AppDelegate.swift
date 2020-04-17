@@ -82,10 +82,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
              print(error)
         }
-        
-
-
-        // Override point for customization after application launch.
         return true
     }
 
@@ -129,8 +125,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.navigationController?.navigationBar.layer.shadowOpacity = 1.0
         self.navigationController?.navigationBar.layer.masksToBounds = false
         navBarAppearanc */
-        navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold
-            )]
+        navBarAppearance.largeTitleTextAttributes = [NSAttributedString.Key.font : UIFont(name: "AvenirNext-Bold", size: 30
+        )!]
+        navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : UIFont(name: "AvenirNext-Bold", size: 17
+        )!]
         navBarAppearance.backgroundEffect = .none
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
@@ -199,8 +197,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let message = alert["body"] as? String{
                     let title = alert["title"] as? String
                     let banner = NotificationBanner(title: title, subtitle: message, style: .info, colors: CustomBannerColors())
-                    banner.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-                    banner.subtitleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+                    banner.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 17
+                    )!
+                    banner.subtitleLabel?.font = UIFont(name: "Avenir-Next Medium", size: 15
+                    )!
                     banner.subtitleLabel?.textColor = .secondaryLabel
                     banner.titleLabel?.textColor = .label
                     

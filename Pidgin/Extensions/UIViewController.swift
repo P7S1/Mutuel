@@ -48,7 +48,7 @@ extension UIViewController{
          let label = UILabel()
          label.frame = CGRect.init(x:16, y: 8, width: headerView.frame.width-10, height: headerView.frame.height-10)
         label.text = title
-        label.font = UIFont.systemFont(ofSize: 21 , weight: .bold)
+        label.font = UIFont(name: "AvenirNext-Bold", size: 21)
          if #available(iOS 13.0, *) {
             label.textColor = .label
          } else {
@@ -133,7 +133,7 @@ extension UIViewController{
       attributedStringShadow.shadowColor = UIColor.darkGray
       
       let attributes = [NSAttributedString.Key.shadow: attributedStringShadow,
-      NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17, weight: .bold)]
+      NSAttributedString.Key.font : UIFont(name: "AvenirNext-Bold", size: 17)]
       LightboxConfig.CloseButton.textAttributes = attributes
         LightboxConfig.loadImage = {
           imageView, URL, completion in

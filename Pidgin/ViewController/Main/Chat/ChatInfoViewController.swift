@@ -244,7 +244,8 @@ extension ChatInfoViewController : UITableViewDelegate, UITableViewDataSource{
         
         let layoutConfigurator = BPLayoutConfigurator(
         backgroundColorForTruncatedBubble: UIColor.secondarySystemBackground,
-        fontForBubbleTitles: UIFont.systemFont(ofSize: 15, weight: .regular),
+        fontForBubbleTitles: UIFont(name: "AvenirNext-Medium", size: 17
+        )!,
         colorForBubbleBorders: UIColor.clear,
         colorForBubbleTitles: UIColor.label,
         maxCharactersForBubbleTitles: 2,

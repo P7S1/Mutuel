@@ -24,7 +24,8 @@ public struct BPLayoutConfigurator {
     
     public init(
         backgroundColorForTruncatedBubble: UIColor = UIColor.gray,
-        fontForBubbleTitles: UIFont = UIFont.systemFont(ofSize: 15.0),
+        fontForBubbleTitles: UIFont = UIFont(name: "AvenirNext-Medium", size: 17
+        )!,
         colorForBubbleBorders: UIColor = UIColor.white,
         colorForBubbleTitles: UIColor = UIColor.white,
         maxCharactersForBubbleTitles: Int = 3,

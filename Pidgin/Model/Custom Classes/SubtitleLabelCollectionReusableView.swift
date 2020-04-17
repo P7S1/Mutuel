@@ -26,7 +26,8 @@ class SubtitleLabelCollectionReusableView: UICollectionReusableView {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM dd, yyyy"
         let text = formatter.string(from: Date())
-        label.font = UIFont.systemFont(ofSize: 21, weight: .bold)
+        label.font = UIFont(name: "AvenirNext-Bold", size: 21
+        )!
         label.textColor = .secondaryLabel
         label.text = text
         

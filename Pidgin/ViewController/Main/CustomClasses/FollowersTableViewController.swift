@@ -177,7 +177,11 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row + 1 == results.count && !self.loadedAllDocs{
+            if type == "newMessage"{
             self.getMoreUsers()
+            }else{
+                self.getUsersFollowers()
+            }
         }
     }
     
@@ -244,8 +248,11 @@ class FollowersTableViewController: UIViewController, UITableViewDelegate, UITab
             
                 } 
         }else{
+            
         let storyboard = UIStoryboard(name: "Discover", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ExploreViewController") as! ExploreViewController
+            results[indexPath.row].printClass()
+            
             guard let uid = results[indexPath.row].uid else { return }
             let docRef = db.collection("users").document(uid)
             docRef.getDocument { (snapshot, error) in

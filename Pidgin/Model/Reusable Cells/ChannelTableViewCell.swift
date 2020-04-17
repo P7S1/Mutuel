@@ -42,7 +42,8 @@ class ChannelTableViewCell: UITableViewCell {
         self.profilePic.isHidden = true
         let layoutConfigurator = BPLayoutConfigurator(
         backgroundColorForTruncatedBubble: UIColor.secondarySystemBackground,
-        fontForBubbleTitles: UIFont.systemFont(ofSize: 15, weight: .regular),
+        fontForBubbleTitles: UIFont(name: "AvenirNext-Medium", size: 15
+        )!,
         colorForBubbleBorders: UIColor.clear,
         colorForBubbleTitles: UIColor.label,
         maxCharactersForBubbleTitles: 2,
