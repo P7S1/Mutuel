@@ -8,6 +8,7 @@ workspace './Pidgin.xcworkspace'
 
 use_frameworks!
 
+
 target 'Pidgin' do
   pod 'SvrfSDK'
   pod 'NextLevel'
@@ -39,5 +40,20 @@ target 'Pidgin' do
   pod 'SPPermissions/PhotoLibrary'
   pod 'AwesomeSpotlightView'
   pod 'SnapSDK', :subspecs => ['SCSDKCreativeKit']
+
+
 end
+
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        # setup NextLevel for ARKit use
+        if target.name == 'NextLevel'
+          target.build_configurations.each do |config|
+            config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -DUSE_ARKIT'
+          end
+        end
+    end
+end
+
+
 
